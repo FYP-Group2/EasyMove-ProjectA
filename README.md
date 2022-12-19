@@ -1,1 +1,1 @@
-# EasyMove-ProjectA
+# EasyMove
