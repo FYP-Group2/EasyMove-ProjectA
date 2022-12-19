@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:driver_integrated/notification_data.dart';
+import 'package:flutter/foundation.dart';
 import 'package:driver_integrated/driver.dart';
 import 'package:driver_integrated/my_api_service.dart';
+import 'package:notification/notification_service.dart';
+import 'package:notification/notification_detail.dart';
+import 'package:driver_integrated/notification_data.dart';
 
 
 Driver driver = Driver();
@@ -10,27 +14,36 @@ DateTime now = DateTime.now();
 String year = DateTime(now.year).toString();
 String month = DateTime(now.month).toString();
 
-class NotificationView extends StatefulWidget {
-  const NotificationView({Key? key}) : super(key: key);
+class NotificationPage extends StatefulWidget {
+  const NotificationPage({Key? key}) : super(key: key);
 
   @override
-  NotificationViewState createState() => NotificationViewState();
+  NotificationPageState createState() => NotificationPageState();
 }
 
-class NotificationViewState extends State<NotificationView> {
-  late Future<List<NotificationData>>? futureNoti;
+class NotificationPageState extends State<NotificationPage> {
+  late Future<List<NotificationData>>? futureNotification;
 
   @override
   void initState(){
     super.initState();
-    futureNoti = MyApiService.fetchNoti(driver.id);
+    
+    setUpTimedFetch();
+  }
+
+  setUpTimedFetch() {
+    Timer.periodic(const Duration(milliseconds: 5000), (timer) {
+      setState(() {
+        futureNotification = MyApiService.fetchNoti(driver.id, year, month);
+      })
+    })
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: notificationViewList(),
+      body: NotificationList(),
     );
   }
 
@@ -41,10 +54,10 @@ class NotificationViewState extends State<NotificationView> {
     );
   }
 
-  Widget notificationViewList(){
+  Widget NotificationList(){
     return Center(
       child: FutureBuilder<List<NotificationData>>(
-        future: futureNoti,
+        future: futureNotification,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             return ListView.separated(
@@ -102,6 +115,13 @@ class NotificationViewState extends State<NotificationView> {
                               : Colors.grey.shade700, //default
                         ),
                       ),
+                      onTap; () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => NotificationDetailPage(notificationData: snapshot.data[index],)
+                          )
+                        );
+                      },
                     )
                 );
               },
