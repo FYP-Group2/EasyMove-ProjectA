@@ -1,11 +1,14 @@
-import 'package:dio/dio.dart';
 import 'dart:io';
-import 'package:driver_integrated/notification_data.dart';
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'dart:convert';
-
 import 'package:image_picker/image_picker.dart';
+import 'package:driver_integrated/notification_data.dart';
+
+DateTime now = DateTime.now();
+String year = DateTime(now.year).toString();
+String month = DateTime(now.month).toString();
 
 class MyApiService{
 
@@ -165,7 +168,7 @@ class MyApiService{
   static Future<List<NotificationData>> fetchNoti(int driverId) async {
     const String url = "awcgroup.com.my";
     const String unencodedPath = "/easymovenpick.com/api/notification_statement.php";
-    final Map<String, String> body = ({'uid': "$driverId"});
+    final Map<String, String> body = ({'uid': "$driverId", 'year': year, 'month': month});
     final response = await http.post(
         Uri.http(url, unencodedPath),
         body: body
