@@ -42,31 +42,33 @@ class _HomeState extends State<HomePage> {
 
   Widget _upperPart() {
     return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _driverProfile(),
-          _statusSwitch(),
-        ]
-      ),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        _driverProfile(),
+        _statusSwitch(),
+      ]),
     );
   }
 
   Widget _driverProfile() {
     return Container(
-      margin: EdgeInsets.only(left:20, top:10, right:0, bottom:10),
+      margin: EdgeInsets.only(left: 20, top: 10, right: 0, bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget> [
+        children: [
           Text(
             "Hi ${driver.name}",
-            style: Theme.of(context).textTheme.headline5?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context)
+                .textTheme
+                .headline5
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
           Container(
-            child: Image.asset(
-              'assets/icon/profilepic.png',
-              height: 100,
-              width: 100,
+            child: Text(
+              "Phone number: \n${driver.mobileNumber.toString().padLeft(10, '0')}",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
           )
         ],
@@ -84,8 +86,7 @@ class _HomeState extends State<HomePage> {
 
         MyApiService.updateDriverOnOff(driver.id, textValue);
       });
-    }
-    else {
+    } else {
       setState(() {
         isSwitched = false;
         driver.status = "off";
@@ -108,9 +109,7 @@ class _HomeState extends State<HomePage> {
               inactiveTrackColor: Colors.red.shade300,
               value: isSwitched,
               onChanged: toggleSwitch,
-            )
-        )
-    );
+            )));
   }
 
   // Widget _orderCard() {
@@ -149,4 +148,3 @@ class _HomeState extends State<HomePage> {
   // }
 
 }
-
