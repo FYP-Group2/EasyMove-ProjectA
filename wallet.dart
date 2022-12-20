@@ -10,12 +10,7 @@ import 'package:driver_integrated/my_api_service.dart';
 
 final String url = "awcgroup.com.my";
 final Map<String, String> header = {'Content-Type': 'application/json; charset=UTF-8'};
-String? commission_value;
-String display_commission_value = "";
-int? merit_value;
-String display_merit_value = "";
 bool withdraw = false;
-List<dynamic>? commissions;
 
 void makePostRequestWithdrawal(String url,String unencodedPath, Map<String,String> requestBody) async {
   final response = await http.post(
@@ -32,27 +27,6 @@ void makePostRequestWithdrawal(String url,String unencodedPath, Map<String,Strin
     withdraw = true;
   }
 }
-
-// class Wallet extends StatelessWidget {
-//   final Map<String, dynamic> walletdata;
-//   Wallet({key, required this.walletdata}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         centerTitle: true,
-//         title:
-//         Text(
-//           "Wallet",
-//           style: const TextStyle(color: Colors.white),
-//         ),
-//         backgroundColor: const Color.fromARGB(255, 255, 168, 0),
-//       ),
-//       body: walletPage(),
-//     );
-//   }
-// }
 
 class Wallet extends StatefulWidget {
   Map<String, dynamic> text = {};
@@ -77,26 +51,22 @@ class walletPageState extends State<Wallet> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _commission(),
-            Padding(
-              padding: EdgeInsets.only(top: 10, left: 175),
-              child: _requestbutton(context),
-            ),
+            _requestbutton(context),
             _merit(),
-            Padding(
-              padding: EdgeInsets.only(top: 10, left: 175),
-              child: _requestbutton(context),
-            ),
+            _requestbutton(context),
             // _commissionlist(),
           ],
         ));
   }
 
+  //apiservice for wallet
   Future<Map<String, dynamic>> initWallet() async{
     final meritData = await MyApiService.getCommissionStatement(driver.id.toString());
     widget.text = meritData;
     return meritData;
   }
 
+  //commission + bonus
   Widget _commission() {
     return Container(
       width: double.maxFinite,
@@ -120,12 +90,23 @@ class walletPageState extends State<Wallet> {
         children: [
           Text("COMMISSION + BONUS",
             style: TextStyle(color: Colors.orange[400], fontSize: 18),),
-          _commissionbonus(),
+          FutureBuilder(
+              future: initWallet(),
+              builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+                if(snapshot.hasData){
+                  return Text("RM ${widget.text["commission_bonus"].toString()}",
+                    style: const TextStyle(fontSize: 30, color: Colors.black),);
+                }else{
+                  return const Text("Loading");
+                }
+              }
+          ),
         ],
       ),
     );
   }
 
+  //merit
   Widget _merit() {
     return FutureBuilder(
       future: initWallet(),
@@ -167,41 +148,28 @@ class walletPageState extends State<Wallet> {
     );
   }
 
-  Widget _commissionbonus()
-  {
-    return FutureBuilder(
-      future: initWallet(),
-      builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
-        if(snapshot.hasData){
-            return Text("RM ${widget.text["commission_bonus"].toString()}",
-              style: const TextStyle(fontSize: 30, color: Colors.black),);
-        }else{
-          return const Text("Loading");
-        }
-      }
-    );
-  }
-
+  //withdrawal button/function
   Widget _requestbutton(context) {
-    Driver driver = Driver();
     String? user_id = driver.id.toString();
     final Map<String, String> body = {
       'uid': user_id,
       'withdraw_mert': display_merit_value
     };
     final String unencodedPath = "/easymovenpick.com/api/request_withdraw.php";
-    return GFButton(
-      color: Colors.orange,
-      onPressed: () {
-        makePostRequestWithdrawal(url, unencodedPath, body);
-        if (withdraw == true) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Withdrawal()));
-        }
-        withdraw = false;
-      },
-      child: Text("Request Withdrawal"),
-      shape: GFButtonShape.pills,
-    );
+    return Padding (
+        padding: EdgeInsets.only(top:10,left:175),
+        child: GFButton(
+        color: Colors.orange,
+        onPressed: () {
+          makePostRequestWithdrawal(url, unencodedPath, body);
+          if (withdraw == true) {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Withdrawal()));
+          }
+          withdraw = false;
+        },
+        child: Text("Request Withdrawal"),
+        shape: GFButtonShape.pills,
+      ));
   }
 }

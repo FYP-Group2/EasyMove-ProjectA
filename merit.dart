@@ -1,15 +1,14 @@
+import 'package:driver_integrated/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/driver.dart';
 
-
-int? merit_value;
 String display_merit_value = "";
-List<dynamic>? merits;
 
 class Merit extends StatefulWidget {
+  Map<String, dynamic> text = {};
   @override
   meritPageState createState() {
     return meritPageState();
@@ -32,24 +31,24 @@ class meritPageState extends State<Merit> {
             child: Column(
               children: [
                 _meritscore(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    YearFilterDropdown(),
-                    MonthFilterDropdown(),
-                    ResetFilterButton(),
-                  ],
-                ),
-                _headings(),
+                _show_withdrawable(),
+                _filterRow(),
+                _listheadings(),
                 _meritlist(),
               ],
             )));
   }
 
-  Future<List<dynamic>> initMerit() async{
+  Future<List<dynamic>> initMerit() async {
     meritMap = await MyApiService.getMeritStatement(driver.id.toString());
     List<dynamic> meritData = meritMap["merits"];
     return meritData;
+  }
+
+  Future<Map<String, dynamic>> initWallet() async{
+    final test = await MyApiService.getCommissionStatement(driver.id.toString());
+    widget.text = test;
+    return test;
   }
 
   //display merit score
@@ -105,183 +104,37 @@ class meritPageState extends State<Merit> {
     }
   }
 
-  //merit list headers
-  Widget _headings() {
-    return Container(
-      height: 50,
-      padding: EdgeInsets.only(left: 45, right: 50),
-      child: Row(
-        children: [
-          Expanded(child: Text("Date")),
-          Expanded(child: Text("Description")),
-          Expanded(child: Text("Order ID")),
-          Text("Points"),
-        ],
-      ),
-    );
-  }
-
-  //show merit list depending on filter
-  Widget _meritlist() {
-    if (year_value != "----" && month_value == "--------") {
-      return year_meritlist();
-    } else if (year_value != "----" && month_value != "--------") {
-      return month_meritlist();
-    } else {
-      return default_meritlist();
-    }
-  }
-
-  Widget default_meritlist() {
+  //show withdrawable merit
+  Widget _show_withdrawable() {
     return FutureBuilder(
-      future: initMerit(),
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if(snapshot.hasData) {
-          return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  height: 50,
-                  padding: EdgeInsets.only(left: 45, right: 50),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text('${meritMap["merits"][index]["date"]}'),
-                      ),
-                      Expanded(
-                        child: Text('${meritMap["merits"][index]["note"]}'),
-                      ),
-                      Expanded(
-                        child: meritMap["merits"][index]["order_id"] == null ?
-                          const Text("ad-hoc") :
-                          Text('${meritMap["merits"][index]["order_id"]}'),
-                      ),
-                      Text('${meritMap["merits"][index]["points"]}p'),
-                    ],
-                  ),
-                );
-              }
-          );
-        }else{
-          return const Text("Loading");
+        future: initWallet(),
+        builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+          if(snapshot.hasData){
+            return Padding(
+                padding: EdgeInsets.only(top: 20, bottom: 20),
+                child: Text("Amount withdrawable: RM ${widget.text["withdrawable_merit"].toString()}",
+                  style: const TextStyle(fontSize: 20, color: Colors.orange),)
+            );
+          }else{
+            return const Text("Loading");
+          }
         }
-      }
     );
   }
 
-  Widget year_meritlist() {
-    return FutureBuilder(
-      future: initMerit(),
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if(snapshot.hasData) {
-          return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  height: 50,
-                  padding: EdgeInsets.only(left: 45, right: 50),
-                  child: _filter_list_by_year(meritMap, index),
-                );
-              }
-          );
-        }else{
-          return const Text("Loading");
-        }
-      }
+  //filter row
+  Widget _filterRow(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        YearFilterDropdown(),
+        MonthFilterDropdown(),
+        ResetFilterButton(),
+      ],
     );
   }
 
-  Widget month_meritlist() {
-    return FutureBuilder(
-      future: initMerit(),
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if(snapshot.hasData) {
-          return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  height: 50,
-                  padding: EdgeInsets.only(left: 45, right: 50),
-                  child: _filter_list_by_month(meritMap, index),
-                );
-              }
-          );
-        }else{
-          return const Text("Loading");
-        }
-      }
-    );
-  }
-
-  //returns filtered data by year
-  Widget _filter_list_by_year(Map<String, dynamic> text, int index) {
-    if (text["merits"][index]["date"].toString().substring(6, 8) ==
-        year_value.substring(2, 4)) {
-      return Row(
-        children: [
-          Expanded(child: Text('${text["merits"][index]["date"]}'),),
-          Expanded(child: Text('${text["merits"][index]["note"]}'),),
-          Expanded(child: Text('${text["merits"][index]["order_id"]}'),),
-          Text('${meritMap["merits"][index]["points"]}p'),
-        ],
-      );
-    } else {
-      return Text("");
-    }
-  }
-
-  //returns filtered data by month
-  Widget _filter_list_by_month(Map<String, dynamic> text, int index) {
-    // if (month_value == "January") {
-    //   month_value_num = 1;
-    // }else if (month_value == "February") {
-    //   month_value_num = 2;
-    // }else if (month_value == "March") {
-    //   month_value_num = 3;
-    // }else if (month_value == "April") {
-    //   month_value_num = 4;
-    // }else if (month_value == "May") {
-    //   month_value_num = 5;
-    // }else if (month_value == "June") {
-    //   month_value_num = 6;
-    // }
-    if (month_value == "July") {
-      month_value_num = 7;
-    } else if (month_value == "August") {
-      month_value_num = 8;
-    } else if (month_value == "September") {
-      month_value_num = 9;
-    } else if (month_value == "October"){
-      month_value_num = 10;
-    } else if(month_value == "November"){
-      month_value_num = 11;
-    } else if(month_value == "December"){
-      month_value_num = 12;
-    }
-
-    if (text["merits"][index]["date"].toString().substring(3, 5) == month_value_num.toString()) {
-      return Row(
-        children: [
-          Expanded(child: Text('${text["merits"][index]["date"]}'),),
-          Expanded(child: Text('${text["merits"][index]["note"]}'),),
-          Expanded(child: Text('${text["merits"][index]["order_id"]}'),),
-          Text('${meritMap["merits"][index]["points"]}p'),
-        ],
-      );
-    } else {
-      return Text("");
-    }
-  }
-
+  //filter row elements
   //filter dropdown year
   Widget YearFilterDropdown() {
     return Container(
@@ -349,6 +202,166 @@ class meritPageState extends State<Merit> {
       },
       child: Text("Reset",style: TextStyle(fontSize: 16),),
       shape: GFButtonShape.pills,
+    );
+  }
+
+  //merit list headers
+  Widget _listheadings() {
+    return Container(
+      height: 50,
+      padding: EdgeInsets.only(left: 45, right: 50),
+      child: Row(
+        children: [
+          Expanded(child: Text("Date")),
+          Expanded(child: Text("Description")),
+          Expanded(child: Text("Order ID")),
+          Text("Points"),
+        ],
+      ),
+    );
+  }
+
+  //show merit list depending on filter
+  Widget _meritlist() {
+    if (year_value != "----" && month_value == "--------") {
+      return year_meritlist();
+    } else if (year_value != "----" && month_value != "--------") {
+      return month_meritlist();
+    } else if (year_value == "----" && month_value != "--------") {
+      return month_meritlist();
+    } else {
+      return default_meritlist();
+    }
+  }
+
+  //default merit list
+  Widget default_meritlist() {
+    return FutureBuilder(
+      future: initMerit(),
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+        if(snapshot.hasData) {
+          return ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: snapshot.data!.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  height: 50,
+                  padding: EdgeInsets.only(left: 45, right: 50),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text('${meritMap["merits"][index]["date"]}'),
+                      ),
+                      Expanded(
+                        child: Text('${meritMap["merits"][index]["note"]}'),
+                      ),
+                      Expanded(
+                        child: meritMap["merits"][index]["order_id"] == null ?
+                          const Text("ad-hoc") :
+                          Text('${meritMap["merits"][index]["order_id"]}'),
+                      ),
+                      Text('${meritMap["merits"][index]["points"]}p'),
+                    ],
+                  ),
+                );
+              }
+          );
+        }else{
+          return const Text("Loading");
+        }
+      }
+    );
+  }
+
+  //year filtered merit list
+  Widget year_meritlist() {
+    return FutureBuilder(
+        future: initMerit(),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  if (meritMap["merits"][index]["date"].toString().substring(6, 8) == year_value.substring(2, 4)) {
+                    return Container(
+                        height: 50,
+                        padding: EdgeInsets.only(left: 45, right: 50),
+                        child: Row(
+                          children: [
+                            Expanded(child: Text(
+                                '${meritMap["merits"][index]["date"]}'),),
+                            Expanded(child: Text(
+                                '${meritMap["merits"][index]["note"]}'),),
+                            Expanded(child: Text(
+                                '${meritMap["merits"][index]["order_id"]}'),),
+                            Text('${meritMap["merits"][index]["points"]}p'),
+                          ],
+                        )
+                    );
+                  } else{
+                    return SizedBox.shrink();
+                  }
+                }
+            );
+          }else{
+            return const Text("Loading");
+          }
+        }
+    );
+  }
+
+  //month filtered merit list
+  Widget month_meritlist() {
+    if (month_value == "July") {
+      month_value_num = 7;
+    } else if (month_value == "August") {
+      month_value_num = 8;
+    } else if (month_value == "September") {
+      month_value_num = 9;
+    } else if (month_value == "October"){
+      month_value_num = 10;
+    } else if(month_value == "November"){
+      month_value_num = 11;
+    } else if(month_value == "December"){
+      month_value_num = 12;
+    }
+    return FutureBuilder(
+      future: initMerit(),
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+        if(snapshot.hasData) {
+          return ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: snapshot.data!.length,
+              itemBuilder: (BuildContext context, int index) {
+                if (meritMap["merits"][index]["date"].toString().substring(3, 5) == month_value_num.toString()) {
+                  return Container(
+                    height: 50,
+                    padding: EdgeInsets.only(left: 45, right: 50),
+                    child: Row(
+                      children: [
+                      Expanded(child: Text('${meritMap["merits"][index]["date"]}'),),
+                      Expanded(child: Text('${meritMap["merits"][index]["note"]}'),),
+                      Expanded(child: Text('${meritMap["merits"][index]["order_id"]}'),),
+                      Text('${meritMap["merits"][index]["points"]}p'),
+                      ]
+                    ));
+                  }
+                else{
+                  return SizedBox.shrink();
+                }
+              }
+          );
+        }else{
+          return const Text("Loading");
+        }
+      }
     );
   }
 }
