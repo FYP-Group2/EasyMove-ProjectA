@@ -57,7 +57,7 @@ class walletPageState extends State<Wallet> {
             _commission(),
             _requestcomsbutton(context),
             _merit(),
-            _requestbutton(context),
+            _requestmeritbutton(context),
             // _commissionlist(),
           ],
         ));
@@ -141,7 +141,8 @@ class walletPageState extends State<Wallet> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (snapshot.hasData) ...[
+                if (snapshot.hasData &&
+                    widget.text["withdrawable_merit"] != null) ...[
                   Text(
                     "MERIT",
                     style: TextStyle(color: Colors.orange[400], fontSize: 18),
@@ -151,7 +152,14 @@ class walletPageState extends State<Wallet> {
                     style: const TextStyle(fontSize: 30, color: Colors.black),
                   ),
                 ] else ...[
-                  const Text("Loading"),
+                  Text(
+                    "MERIT",
+                    style: TextStyle(color: Colors.orange[400], fontSize: 18),
+                  ),
+                  const Text(
+                    "RM 0",
+                    style: TextStyle(fontSize: 30, color: Colors.black),
+                  ),
                 ]
               ],
             ),
@@ -160,7 +168,7 @@ class walletPageState extends State<Wallet> {
   }
 
   //withdrawal button/function
-  Widget _requestbutton(context) {
+  /*Widget _requestbutton(context) {
     String? user_id = driver.id.toString();
     final Map<String, String> body = {
       'uid': user_id,
@@ -182,6 +190,74 @@ class walletPageState extends State<Wallet> {
           child: Text("Request Withdrawal"),
           shape: GFButtonShape.pills,
         ));
+  }*/
+
+  //withdrawal button/function
+  Widget _requestmeritbutton(context) {
+    String? user_id = driver.id.toString();
+    final Map<String, String> body = {
+      'uid': user_id,
+      'withdraw_merit': display_merit_value
+    };
+    final String unencodedPath = "/easymovenpick.com/api/request_withdraw.php";
+    return Padding(
+      padding: EdgeInsets.only(top: 10, left: 175),
+      child: FutureBuilder(
+          future: initWallet(),
+          builder: (BuildContext context,
+              AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            return GFButton(
+              color: Colors.orange,
+              onPressed: () {
+                if (snapshot.hasData &&
+                    widget.text["withdrawable_merit"] != null) {
+                  if (int.parse(widget.text["withdrawable_merit"]) > 10) {
+                    makePostRequestWithdrawal(url, unencodedPath, body);
+                    display_merit_value =
+                        (double.parse(widget.text["withdrawable_merit"]) - 10)
+                            .toString();
+                    if (withdraw == true) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Withdrawal()));
+                    }
+                    withdraw = false;
+                  } else {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UnableWithdrawal()));
+                  }
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text("Sorry,"),
+                      content:
+                          const Text("You don't have merit in your wallet!"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          },
+                          child: Container(
+                            color: Colors.orange,
+                            padding: const EdgeInsets.all(14),
+                            child: const Text("okay",
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+              child: Text("Request Withdrawal"),
+              shape: GFButtonShape.pills,
+            );
+          }),
+    );
   }
 
   //withdrawal button/function
