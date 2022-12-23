@@ -202,17 +202,17 @@ class walletPageState extends State<Wallet> {
               color: Colors.orange,
               onPressed: () {
                 if (snapshot.hasData) {
-                  if (double.parse(widget.text["commission_bonus"]) > 5.99) {
+                  if (double.parse(widget.text["commission_bonus"]) > 5.00) {
                     makePostRequestWithdrawal(url, unencodedPath, body);
+                    display_merit_value =
+                        (double.parse(widget.text["commission_bonus"]) - 5.00)
+                            .floor()
+                            .toString();
                     if (withdraw == true) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => Withdrawal()));
-                      display_merit_value = [
-                        (double.parse(widget.text["commission_bonus"]) + 5.00) -
-                            double.parse(widget.text["commission_bonus"])
-                      ].toString();
                     }
                     withdraw = false;
                   } else {
