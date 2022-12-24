@@ -2,10 +2,23 @@ import 'package:driver_integrated/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/driver.dart';
 
+bool withdraw = false;
 String display_merit_value = "";
+void PostConvert(
+    String url, String unencodedPath, Map<String, String> requestBody) async {
+  final response =
+  await http.post(Uri.http(url, unencodedPath), body: requestBody);
+  final data = json.decode(response.body);
+  String success = (data["result"]);
+  if (success == true) {
+    withdraw = true;
+  }
+}
 
 class Merit extends StatefulWidget {
   Map<String, dynamic> text = {};
@@ -32,6 +45,7 @@ class meritPageState extends State<Merit> {
               children: [
                 _meritscore(),
                 _show_withdrawable(),
+                _withdraw_merit_button(),
                 _filterRow(),
                 _listheadings(),
                 _meritlist(),
@@ -43,12 +57,6 @@ class meritPageState extends State<Merit> {
     meritMap = await MyApiService.getMeritStatement(driver.id.toString());
     List<dynamic> meritData = meritMap["merits"];
     return meritData;
-  }
-
-  Future<Map<String, dynamic>> initWallet() async{
-    final test = await MyApiService.getCommissionStatement(driver.id.toString());
-    widget.text = test;
-    return test;
   }
 
   //display merit score
@@ -107,18 +115,83 @@ class meritPageState extends State<Merit> {
   //show withdrawable merit
   Widget _show_withdrawable() {
     return FutureBuilder(
-        future: initWallet(),
-        builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+        future: initMerit(),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if(snapshot.hasData){
             return Padding(
-                padding: EdgeInsets.only(top: 20, bottom: 20),
-                child: Text("Amount withdrawable: RM ${widget.text["withdrawable_merit"].toString()}",
+                padding: EdgeInsets.only(top: 20),
+                child: Text("Amount withdrawable: RM ${meritMap["withdrawable_merit"].toString()}",
                   style: const TextStyle(fontSize: 20, color: Colors.orange),)
             );
           }else{
             return const Text("Loading");
           }
         }
+    );
+  }
+
+  //withdraw merit button
+  Widget _withdraw_merit_button() {
+    return Padding(
+      padding: EdgeInsets.only(top:5),
+      child: GFButton(
+        color: Colors.orange,
+        onPressed: () {
+          //call api - notice page
+          String user_id = driver.id.toString();
+          final String url = "awcgroup.com.my";
+          final String unencodedPath = "/easymovenpick.com/api/convert_merit.php";
+          final Map<String, String> body = {
+            'uid': user_id,
+          };
+          PostConvert(url,unencodedPath,body);
+          if (withdraw == true){
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                content:
+                const Text("You don't have merit in your wallet!"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Container(
+                      color: Colors.orange,
+                      padding: const EdgeInsets.all(14),
+                      child: const Text("Done",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }else{
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                content:
+                const Text("Insufficient Merit for Withdrawal"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Container(
+                      color: Colors.orange,
+                      padding: const EdgeInsets.all(14),
+                      child: const Text("okay",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+        child: Text("Withdraw",style: TextStyle(fontSize: 16)),
+        shape: GFButtonShape.pills,
+      ),
     );
   }
 
@@ -158,35 +231,24 @@ class meritPageState extends State<Merit> {
 
   //filter dropdown month
   Widget MonthFilterDropdown() {
-    return Container(
-      child: DropdownButton(
-        value: month_value,
-        items: month.map((String month) {
-          return DropdownMenuItem(
-            value: month,
-            child: Text(month),
-          );
-        }).toList(),
-        icon: const Icon(Icons.keyboard_arrow_down),
-        onChanged: (String? newValue) {
+    return DropdownButton<String>(
+      items: monthMap.map((description, value) {
+        return MapEntry(description,
+            DropdownMenuItem<String>(
+              value: description,
+              child: Text(description),
+            ));
+      })
+          .values
+          .toList(),
+      value: month_value,
+      onChanged: (String? newValue) {
+        if (newValue != null) {
           setState(() {
-            month_value = newValue!;
-            if (month_value == "January") {
-              month_value_num = 1;
-            }else if (month_value == "February") {
-              month_value_num = 2;
-            }else if (month_value == "March") {
-              month_value_num = 3;
-            }else if (month_value == "April") {
-              month_value_num = 4;
-            }else if (month_value == "May") {
-              month_value_num = 5;
-            }else if (month_value == "June") {
-              month_value_num = 6;
-            }
+            month_value = newValue;
           });
-        },
-      ),
+        }
+      },
     );
   }
 
@@ -317,19 +379,6 @@ class meritPageState extends State<Merit> {
 
   //month filtered merit list
   Widget month_meritlist() {
-    if (month_value == "July") {
-      month_value_num = 7;
-    } else if (month_value == "August") {
-      month_value_num = 8;
-    } else if (month_value == "September") {
-      month_value_num = 9;
-    } else if (month_value == "October"){
-      month_value_num = 10;
-    } else if(month_value == "November"){
-      month_value_num = 11;
-    } else if(month_value == "December"){
-      month_value_num = 12;
-    }
     return FutureBuilder(
       future: initMerit(),
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
@@ -340,7 +389,7 @@ class meritPageState extends State<Merit> {
               shrinkWrap: true,
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
-                if (meritMap["merits"][index]["date"].toString().substring(3, 5) == month_value_num.toString()) {
+                if (meritMap["merits"][index]["date"].toString().substring(3, 5) == monthMap[month_value].toString()) {
                   return Container(
                     height: 50,
                     padding: EdgeInsets.only(left: 45, right: 50),
@@ -367,21 +416,21 @@ class meritPageState extends State<Merit> {
 }
 
 //year drop down list values
-var month = [
-  '--------',
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+const Map<String, int> monthMap = {'--------':0,
+  'January':1,
+  'February':2,
+  'March':3,
+  'April':4,
+  'May':5,
+  'June':6,
+  'July':7,
+  'August':8,
+  'September':9,
+  'October':10,
+  'November':11,
+  'December':12};
+
+
 String month_value = '--------';
 
 int month_value_num = 0;

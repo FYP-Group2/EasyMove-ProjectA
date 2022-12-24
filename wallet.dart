@@ -18,11 +18,10 @@ bool withdraw = false;
 void makePostRequestWithdrawal(
     String url, String unencodedPath, Map<String, String> requestBody) async {
   final response =
-      await http.post(Uri.http(url, unencodedPath), body: requestBody);
+  await http.post(Uri.http(url, unencodedPath), body: requestBody);
   // print(response.statusCode);
   // print(response.body);
   final data = json.decode(response.body);
-  print(data);
   String msg = (data["message"]);
   if (msg == "Request sent successfully.") {
     withdraw = true;
@@ -66,7 +65,7 @@ class walletPageState extends State<Wallet> {
   //apiservice for wallet
   Future<Map<String, dynamic>> initWallet() async {
     final meritData =
-        await MyApiService.getCommissionStatement(driver.id.toString());
+    await MyApiService.getCommissionStatement(driver.id.toString());
     widget.text = meritData;
     return meritData;
   }
@@ -142,13 +141,13 @@ class walletPageState extends State<Wallet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (snapshot.hasData &&
-                    widget.text["withdrawable_merit"] != null) ...[
+                    widget.text["withdrew_merit"] != null) ...[
                   Text(
                     "MERIT",
                     style: TextStyle(color: Colors.orange[400], fontSize: 18),
                   ),
                   Text(
-                    "RM ${widget.text["withdrawable_merit"].toString()}",
+                    "RM ${widget.text["withdrew_merit"].toString()}",
                     style: const TextStyle(fontSize: 30, color: Colors.black),
                   ),
                 ] else ...[
@@ -210,12 +209,9 @@ class walletPageState extends State<Wallet> {
               color: Colors.orange,
               onPressed: () {
                 if (snapshot.hasData &&
-                    widget.text["withdrawable_merit"] != null) {
-                  if (int.parse(widget.text["withdrawable_merit"]) > 10) {
+                    widget.text["withdrew_merit"] != null) {
+                  if ((widget.text["withdrew_merit"]) > 0) {
                     makePostRequestWithdrawal(url, unencodedPath, body);
-                    display_merit_value =
-                        (double.parse(widget.text["withdrawable_merit"]) - 10)
-                            .toString();
                     if (withdraw == true) {
                       Navigator.push(
                           context,
@@ -235,7 +231,7 @@ class walletPageState extends State<Wallet> {
                     builder: (ctx) => AlertDialog(
                       title: const Text("Sorry,"),
                       content:
-                          const Text("You don't have merit in your wallet!"),
+                      const Text("You don't have merit in your wallet!"),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () {
