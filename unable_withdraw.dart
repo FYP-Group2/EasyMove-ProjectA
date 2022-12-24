@@ -41,7 +41,7 @@ class UnableWithdrawal extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => AccountPage(title: "Account")));
               },
-              text: "Done",
+              text: "Back",
               shape: GFButtonShape.pills,
             ),
           ],

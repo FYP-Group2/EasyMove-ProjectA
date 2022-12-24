@@ -18,7 +18,7 @@ bool withdraw = false;
 void makePostRequestWithdrawal(
     String url, String unencodedPath, Map<String, String> requestBody) async {
   final response =
-  await http.post(Uri.http(url, unencodedPath), body: requestBody);
+      await http.post(Uri.http(url, unencodedPath), body: requestBody);
   // print(response.statusCode);
   // print(response.body);
   final data = json.decode(response.body);
@@ -65,7 +65,7 @@ class walletPageState extends State<Wallet> {
   //apiservice for wallet
   Future<Map<String, dynamic>> initWallet() async {
     final meritData =
-    await MyApiService.getCommissionStatement(driver.id.toString());
+        await MyApiService.getCommissionStatement(driver.id.toString());
     widget.text = meritData;
     return meritData;
   }
@@ -156,8 +156,7 @@ class walletPageState extends State<Wallet> {
                     style: TextStyle(color: Colors.orange[400], fontSize: 18),
                   ),
                   const Text(
-                    "RM 0",
-                    style: TextStyle(fontSize: 30, color: Colors.black),
+                    "Loading",
                   ),
                 ]
               ],
@@ -208,10 +207,12 @@ class walletPageState extends State<Wallet> {
             return GFButton(
               color: Colors.orange,
               onPressed: () {
-                if (snapshot.hasData &&
-                    widget.text["withdrew_merit"] != null) {
-                  if ((widget.text["withdrew_merit"]) > 0) {
+                if (snapshot.hasData && widget.text["withdrew_merit"] != null) {
+                  if ((widget.text["withdrew_merit"]) > 5) {
                     makePostRequestWithdrawal(url, unencodedPath, body);
+                    display_merit_value =
+                        (widget.text["withdrew_merit"] - 5).toString();
+
                     if (withdraw == true) {
                       Navigator.push(
                           context,
@@ -229,9 +230,12 @@ class walletPageState extends State<Wallet> {
                   showDialog(
                     context: context,
                     builder: (ctx) => AlertDialog(
-                      title: const Text("Sorry,"),
+                      title: const Text(
+                        "Error!",
+                        style: TextStyle(color: Colors.red),
+                      ),
                       content:
-                      const Text("You don't have merit in your wallet!"),
+                          const Text("There is a problem, unable to withdraw!"),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () {
