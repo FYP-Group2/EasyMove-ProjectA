@@ -29,7 +29,7 @@ class UnableWithdrawal extends StatelessWidget {
                   border: Border.all(color: Colors.orange, width: 3),
                   borderRadius: BorderRadius.circular(25.0)),
               child: Text(
-                "Unable to withdraw. Your wallet must have balance!",
+                "Unable to withdraw. Your wallet must have RM 5 balance!",
                 style: TextStyle(fontSize: 18),
               ),
             ),
