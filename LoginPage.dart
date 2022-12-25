@@ -5,17 +5,55 @@ import 'package:driver_integrated/NavBar.dart';
 import 'package:driver_integrated/driver.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:driver_integrated/home.dart';
 
 final String url = "awcgroup.com.my";
 final String unencodedPath = "/easymovenpick.com/api/driver_login.php";
-final Map<String, String> headers = {
-  'Content-Type': 'application/json; charset=UTF-8'
-};
+final Map<String, String> headers = {'Content-Type': 'application/json; charset=UTF-8'};
 String? response_message;
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   Driver driver = Driver();
-  NotificationService notificationService = NotificationService();
+  // NotificationService notificationService = NotificationService();
+  bool userIsLoggedIn = false;
+
+  Future<void> getLoggedInState() async{
+    WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences prefs =await SharedPreferences.getInstance();
+    var username=prefs.getString("username");
+    print(username);
+    runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: username==null?const LoginPage():const HomePage(title: 'Home',),));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    getLoggedInState();
+    Timer(
+      const Duration(seconds: 10),
+          () => Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => userIsLoggedIn != null
+                ? userIsLoggedIn
+                ? const HomePage(title: 'Home',)
+                : const LoginPage()
+                : const LoginPage()),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +71,8 @@ class LoginPage extends StatelessWidget {
       String name = auth_user["name"];
       int mobileNumber = auth_user["mobile_number"];
       driver.initializeDriver(id, region, vehicleType, name, mobileNumber);
-      notificationService.init();
-      notificationService.start();
+      // notificationService.init();
+      // notificationService.start();
 
       response_message = (data["auth_user"]["message"]);
       print(response.statusCode);
@@ -58,7 +96,7 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Image.asset('assets/images/icon.png'),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 20, bottom: 15),
               child: Text(
                 "Username",
@@ -66,7 +104,7 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             inputusername,
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 20, bottom: 15),
               child: Text(
                 "Password",
@@ -78,12 +116,18 @@ class LoginPage extends StatelessWidget {
               padding: EdgeInsets.only(top: 30),
               child: GFButton(
                 color: Colors.white, //need to change
-                onPressed: () {
+                onPressed: () async {
                   final Map<String, String> body = {
                     'username': username_value.text,
                     "password": password_value.text
                   };
                   makePostRequest(url, unencodedPath, headers, body);
+
+                  SharedPreferences pref =await SharedPreferences.getInstance();
+                  pref.setString("username", username_value.text);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_){
+                    return HomePage(title: 'Home',);
+                  }));
                 },
                 text: "Login",
                 textColor: Colors.orange[400],
