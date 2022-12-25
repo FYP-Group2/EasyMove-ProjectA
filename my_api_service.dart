@@ -88,6 +88,18 @@ class MyApiService{
     });
   }
 
+  static void photoPOC(int oid, String filePath) async{
+    const String url = "https://awcgroup.com.my/easymovenpick.com/api/post_photo.php";
+
+    Map<String, dynamic> map = Map();
+    map["poc"] = await MultipartFile.fromFile(filePath, filename: "pod_image.jpeg", contentType: MediaType("image", "jpeg"));
+    map["oid"] = "$oid";
+    FormData formData = FormData.fromMap(map);
+    await Dio().post(url, data: formData).then((value){
+      print("response: $value");
+    });
+  }
+
   static Future<List> getRegions() async{
     Map<String, int> regionMap = {};
     List<String> regionList = [];
@@ -153,7 +165,7 @@ class MyApiService{
     return walletData;
   }
 
-  static void updateDriverOnOff(int driverId, String onOff) async {
+  static Future<void> updateDriverOnOff(int driverId, String onOff) async {
     const String url = "awcgroup.com.my";
     const String unencodedPath = "/easymovenpick.com/api/driver_on_off.php";
     final Map<String,String> body = {'uid': "$driverId", 'onoff': onOff};
@@ -180,6 +192,19 @@ class MyApiService{
     } else {
       throw Exception('Failed to load notification');
     }
+  }
+
+  static Future<Map<String, dynamic>> driverLogIn(Map<String, String> body) async {
+    final String url = "awcgroup.com.my";
+    final String unencodedPath = "/easymovenpick.com/api/driver_login.php";
+    final response = await http.post(
+        Uri.http(url, unencodedPath),
+        body: body
+    );
+
+    final data = json.decode(response.body);
+    return data;
+
   }
 
 }
