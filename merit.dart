@@ -7,17 +7,13 @@ import 'dart:convert';
 import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/driver.dart';
 
-bool withdraw = false;
 String display_merit_value = "";
-void PostConvert(
-    String url, String unencodedPath, Map<String, String> requestBody) async {
+Future<bool> PostConvert(String url, String unencodedPath, Map<String, String> requestBody) async {
   final response =
   await http.post(Uri.http(url, unencodedPath), body: requestBody);
   final data = json.decode(response.body);
-  String success = (data["result"]);
-  if (success == true) {
-    withdraw = true;
-  }
+  bool success = (data["result"]);
+  return success;
 }
 
 class Merit extends StatefulWidget {
@@ -136,58 +132,22 @@ class meritPageState extends State<Merit> {
       padding: EdgeInsets.only(top:5),
       child: GFButton(
         color: Colors.orange,
-        onPressed: () {
+        onPressed: () async {
           //call api - notice page
           String user_id = driver.id.toString();
           final String url = "awcgroup.com.my";
           final String unencodedPath = "/easymovenpick.com/api/convert_merit.php";
-          final Map<String, String> body = {
+          final Map<String, String> sbody = {
             'uid': user_id,
           };
-          PostConvert(url,unencodedPath,body);
-          if (withdraw == true){
-            showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                content:
-                const Text("You don't have merit in your wallet!"),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                    child: Container(
-                      color: Colors.orange,
-                      padding: const EdgeInsets.all(14),
-                      child: const Text("Done",
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }else{
-            showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                content:
-                const Text("Insufficient Merit for Withdrawal"),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                    child: Container(
-                      color: Colors.orange,
-                      padding: const EdgeInsets.all(14),
-                      child: const Text("okay",
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
+          await PostConvert(url,unencodedPath,sbody).then((value){
+            if(value == true){
+              showSuccessDialog();
+              Navigator.push(context,MaterialPageRoute(builder:(context) => Merit()));
+            }else{
+              showErrorDialog();
+            }
+          });
         },
         child: Text("Withdraw",style: TextStyle(fontSize: 16)),
         shape: GFButtonShape.pills,
@@ -412,6 +372,72 @@ class meritPageState extends State<Merit> {
         }
       }
     );
+  }
+
+  showErrorDialog() async {
+  await Future.delayed(Duration(microseconds: 1));
+    showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+    content:
+      const Text("Insufficient Merit for Withdrawal"),
+    actions: <Widget>[
+      TextButton(
+      onPressed: () {
+        Navigator.of(ctx).pop();
+        },
+      child: Container(
+        color: Colors.orange,
+        padding: const EdgeInsets.all(14),
+        child: const Text("Okay", style: TextStyle(color: Colors.white)),
+      ),
+      ),
+    ],
+    ),
+  );
+  }
+
+  showSuccessDialog() async {
+    await Future.delayed(Duration(microseconds: 1));
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content:
+        const Text("Withdrawn Successfully"),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: Container(
+              color: Colors.orange,
+              padding: const EdgeInsets.all(14),
+              child: const Text("Done",
+                  style: TextStyle(color: Colors.white)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  showError() async {
+    await Future.delayed(Duration(microseconds: 1));
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text("HAHAHA"),
+            // actions: <Widget>[
+            //   GFButton(
+            //     child: Text("No"),
+            //     onPressed: ,
+            //   ),
+            //   FlatButton(child: Text("Yes")),
+            // ],
+          );
+        });
   }
 }
 
