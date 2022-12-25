@@ -98,7 +98,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
   }
@@ -411,7 +411,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
     }
   }
 
-  Widget myAlertBoxTitle(String action){
+  Widget orderActionAlertBoxTitle(String action){
     switch(action){
       case("accept"):
         return const Text("Are you sure to accept this order?");
@@ -433,7 +433,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           title: const Text("Order Confirmation"),//myAlertBoxTitle(action),
           content: Container(
             height: MediaQuery.of(context).size.height / 6,
-            child: myAlertBoxTitle(action),
+            child: orderActionAlertBoxTitle(action),
           ),
           actions:[
             TextButton(
@@ -451,13 +451,12 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
             ),
             TextButton(
               onPressed: () {
-                if(action != "pod") {
+                Navigator.of(context).pop(false);
+                if(action == "accept") {
                   MyApiService.updateOrder(driver.id, orderId, action);
-                }
-                Navigator.of(context).pop(true);
-                setState(() {});
-                if(action == "pod"){
-                  podImageAlertBox(orderId);
+                  setState(() {});
+                }else{
+                  uploadImageAlertBox(orderId, action);
                 }
               },
               child: const Text(
@@ -474,16 +473,16 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
     );
   }
 
-  void podImageAlertBox(int orderId) {
+  void uploadImageAlertBox(int orderId, String action) {
     showDialog(
       context: context,
       builder: (context){
         return SimpleDialog(
-          title: const Text("Please choose an option to upload an image as Proof of Delivery"),
+          title: const Text("Please choose an option to upload an image"),
           children: <Widget>[
             SimpleDialogOption(
               onPressed: (){
-                getImage(ImageSource.gallery, orderId);
+                getImage(ImageSource.gallery, orderId, action);
                 Navigator.of(context).pop();
                 setState(() {});
               },
@@ -497,7 +496,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               ),
             SimpleDialogOption(
               onPressed: (){
-                getImage(ImageSource.camera, orderId);
+                getImage(ImageSource.camera, orderId, action);
                 Navigator.of(context).pop();
                 setState(() {});
               },
@@ -549,16 +548,21 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
     );
   }
 
-  Future<void> getImage(ImageSource media, int orderId) async{
+  Future<void> getImage(ImageSource media, int orderId, String action) async{
     XFile? image = await imagePicker.pickImage(source: media);
     File imageFile = File(image!.path);
     String filePath = imageFile.path;
-    uploadPOD(orderId, filePath);
+    uploadImage(orderId, filePath, action);
   }
 
-  void uploadPOD(int orderId, String filePath){
-    MyApiService.updateOrder(driver.id, orderId, "pod");
-    MyApiService.photoPOD(orderId, filePath);
+  void uploadImage(int orderId, String filePath, String action){
+    if(action == "collect"){
+      MyApiService.updateOrder(driver.id, orderId, "collect");
+      MyApiService.photoPOC(orderId, filePath);
+    }else if(action == "pod") {
+      MyApiService.updateOrder(driver.id, orderId, "pod");
+      MyApiService.photoPOD(orderId, filePath);
+    }
   }
 
 }
