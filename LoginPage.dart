@@ -1,13 +1,13 @@
+import 'package:driver_integrated/SignupVehicle.dart';
 import 'package:driver_integrated/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:driver_integrated/NavBar.dart';
 import 'package:driver_integrated/driver.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:driver_integrated/home.dart';
+import 'package:driver_integrated/my_api_service.dart';
 
 final String url = "awcgroup.com.my";
 final String unencodedPath = "/easymovenpick.com/api/driver_login.php";
@@ -28,12 +28,31 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> getLoggedInState() async{
     WidgetsFlutterBinding.ensureInitialized();
-    SharedPreferences prefs =await SharedPreferences.getInstance();
-    var username=prefs.getString("username");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var username = prefs.getString("username");
+    var password = prefs.getString("password");
+
+    if(username != null && password != null){
+      if(username != "null" && password != "null") {
+        print("Username: $username, Password: $password");
+        final Map<String, String> body = {
+          "username": username,
+          "password": password
+        };
+
+        Map<String, dynamic> data = await MyApiService.driverLogIn(body);
+        dynamic authUser = data["auth_user"];
+        int id = authUser["id"];
+        int region = authUser["region"];
+        int vehicleType = authUser["vehicle_type"];
+        String name = authUser["name"];
+        int mobileNumber = authUser["mobile_number"];
+        driver.initializeDriver(id, region, vehicleType, name, mobileNumber);
+        userIsLoggedIn = true;
+      }
+    }
+
     print(username);
-    runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: username==null?const LoginPage():const HomePage(title: 'Home',),));
   }
 
   @override
@@ -41,50 +60,63 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
 
     getLoggedInState();
-    Timer(
-      const Duration(seconds: 10),
-          () => Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => userIsLoggedIn != null
-                ? userIsLoggedIn
-                ? const HomePage(title: 'Home',)
-                : const LoginPage()
-                : const LoginPage()),
-      ),
-    );
+    Future.delayed(const Duration(seconds: 3), (){
+      if(userIsLoggedIn) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const NavBar( currentPage: PageItem.Home,)),
+        );
+      }
+    });
+
+    // Timer(
+    //   const Duration(seconds: 2),
+    //       () => Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => userIsLoggedIn != null
+    //             ? userIsLoggedIn
+    //             ? const NavBar( currentPage: PageItem.Home,)
+    //             : const LoginPage()
+    //             : const LoginPage()),
+    //   ),
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
-    void makePostRequest(String url, String unencodedPath,
-        Map<String, String> header, Map<String, String> requestBody) async {
-      final response = await http.post(Uri.http(url, unencodedPath),
-          // headers: header,
-          body: requestBody);
-      final data = json.decode(response.body);
-      final auth_user = data["auth_user"];
-
-      int id = auth_user["id"];
-      int region = auth_user["region"];
-      int vehicleType = auth_user["vehicle_type"];
-      String name = auth_user["name"];
-      int mobileNumber = auth_user["mobile_number"];
-      driver.initializeDriver(id, region, vehicleType, name, mobileNumber);
-      // notificationService.init();
-      // notificationService.start();
-
+    Future<void> makePostRequest(Map<String, String> requestBody, bool newLogIn) async {
+      Map<String, dynamic> data = await MyApiService.driverLogIn(requestBody);
+      dynamic authUser = data["auth_user"];
       response_message = (data["auth_user"]["message"]);
-      print(response.statusCode);
-      print(response_message);
+
       if (response_message == "Login successfully.") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => NavBar(
-                    currentPage: PageItem.Home,
-                  )),
-        );
+        int id = authUser["id"];
+        int region = authUser["region"];
+        int vehicleType = authUser["vehicle_type"];
+        String name = authUser["name"];
+        int mobileNumber = authUser["mobile_number"];
+        driver.initializeDriver(id, region, vehicleType, name, mobileNumber);
+        // notificationService.init();
+        // notificationService.start();
+
+        if(newLogIn) {
+          await SharedPreferences.getInstance().then((pref){
+            pref.setString("username", requestBody["username"]!);
+            pref.setString("password", requestBody["password"]!);
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      const NavBar(
+                        currentPage: PageItem.Home,
+                      )),
+            );
+          });
+        }
+
       }
     }
 
@@ -92,50 +124,48 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.orange[400],
         body: Center(
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Image.asset('assets/images/icon.png'),
-            const Padding(
-              padding: EdgeInsets.only(top: 20, bottom: 15),
-              child: Text(
-                "Username",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            inputusername,
-            const Padding(
-              padding: EdgeInsets.only(top: 20, bottom: 15),
-              child: Text(
-                "Password",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              ),
-            ),
-            inputpassword,
-            Padding(
-              padding: EdgeInsets.only(top: 30),
-              child: GFButton(
-                color: Colors.white, //need to change
-                onPressed: () async {
-                  final Map<String, String> body = {
-                    'username': username_value.text,
-                    "password": password_value.text
-                  };
-                  makePostRequest(url, unencodedPath, headers, body);
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image.asset('assets/images/icon.png'),
+                const Padding(
+                  padding: EdgeInsets.only(top: 20, bottom: 15),
+                  child: Text(
+                    "Username",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+                inputusername,
+                const Padding(
+                  padding: EdgeInsets.only(top: 20, bottom: 15),
+                  child: Text(
+                    "Password",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+                inputpassword,
+                Padding(
+                  padding: EdgeInsets.only(top: 30),
+                  child: GFButton(
+                    color: Colors.white, //need to change
+                    onPressed: () async {
+                      final Map<String, String> body = {
+                        "username": username_value.text,
+                        "password": password_value.text
+                      };
+                      await makePostRequest(body, true);
 
-                  SharedPreferences pref =await SharedPreferences.getInstance();
-                  pref.setString("username", username_value.text);
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_){
-                    return HomePage(title: 'Home',);
-                  }));
-                },
-                text: "Login",
-                textColor: Colors.orange[400],
-                textStyle: TextStyle(fontSize: 16, color: Colors.orange[400]),
-              ),
-            ),
-          ],
-        )));
+                      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_){
+                      //   return HomePage(title: 'Home',);
+                      // }));
+                    },
+                    text: "Login",
+                    textColor: Colors.orange[400],
+                    textStyle: TextStyle(fontSize: 16, color: Colors.orange[400]),
+                  ),
+                ),
+              ],
+            )));
   }
 }
 

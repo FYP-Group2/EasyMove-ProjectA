@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:driver_integrated/merit.dart';
+import 'merit.dart';
 import 'package:driver_integrated/wallet.dart';
 import 'package:driver_integrated/my_location_service.dart';
 import 'package:driver_integrated/driver.dart';
 import 'package:driver_integrated/my_api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:driver_integrated/notification_service.dart';
 
 Driver driver = Driver();
@@ -35,7 +36,13 @@ class AccountPage extends StatefulWidget {
 
 class _MyAccountPageState extends State<AccountPage> {
   MyLocationService myLocationService = MyLocationService(driver.id);
-  NotificationService notificationService = NotificationService();
+  //NotificationService notificationService = NotificationService();
+
+  Future<void> unsetPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("username", "null");
+    prefs.setString("password", "null");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,13 +116,14 @@ class _MyAccountPageState extends State<AccountPage> {
         height:50,
         child:GFButton(
           color: Colors.orange,
-          onPressed: () {
+          onPressed: () async {
             if(driver.status == "on") {
               driver.status = "off";
               myLocationService.stop();
-              MyApiService.updateDriverOnOff(driver.id, "off");
+              await MyApiService.updateDriverOnOff(driver.id, "off");
             }
-            notificationService.stop();
+            //notificationService.stop();
+            await unsetPref();
             Navigator.popUntil(context,ModalRoute.withName(Navigator.defaultRouteName));
           },
           shape: GFButtonShape.pills,
