@@ -6,8 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:driver_integrated/LoginPage.dart';
 import 'package:driver_integrated/SignupDetails.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:driver_integrated/firebase_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(MyApp());
+@pragma('vm:entry-point')
+Future<void> backgroundMessageHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  // await Firebase.initializeApp();
+  FirebaseService firebaseService = FirebaseService();
+  firebaseService.show(message.data["title"], message.data["body"]);
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -26,6 +43,19 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage>{
+  FirebaseService firebaseService = FirebaseService();
+
+  void initMyApp() async {
+    await firebaseService.initialize().then((value) =>
+        print("\n\n------\nMy Registration token : ${firebaseService.getFcmToken()}\n------"));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initMyApp();
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
