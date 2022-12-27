@@ -8,14 +8,15 @@ import 'package:driver_integrated/my_api_service.dart';
 
 final String url = "awcgroup.com.my";
 final String unencodedPath = "/easymovenpick.com/api/driver_apply.php";
-final Map<String, String> headers = {'Content-Type': 'application/json; charset=UTF-8'};
+final Map<String, String> headers = {
+  'Content-Type': 'application/json; charset=UTF-8'
+};
 
-void makePostRequest(String url, String unencodedPath, Map<String, String> header, Map<String,String> requestBody) async {
-  final response = await http.post(
-      Uri.http(url,unencodedPath),
+void makePostRequest(String url, String unencodedPath,
+    Map<String, String> header, Map<String, String> requestBody) async {
+  final response = await http.post(Uri.http(url, unencodedPath),
       // headers: header,
-      body: requestBody
-  );
+      body: requestBody);
   print(response.statusCode);
   print(response.body);
 }
@@ -26,8 +27,20 @@ XFile? driver_license_image;
 XFile? back_vehicle_image;
 XFile? front_vehicle_image;
 
+bool agree = false;
+
 class SignupVehicle extends StatelessWidget {
-  SignupVehicle(this.fullname,this.ic,this.mobilenumber,this.emergencycontact,this.employmenttype,this.region,this.frontic,this.backic,this.username,this.password);
+  SignupVehicle(
+      this.fullname,
+      this.ic,
+      this.mobilenumber,
+      this.emergencycontact,
+      this.employmenttype,
+      this.region,
+      this.frontic,
+      this.backic,
+      this.username,
+      this.password);
   final String fullname;
   final String ic;
   final String mobilenumber;
@@ -42,56 +55,64 @@ class SignupVehicle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80.0),
-        child: AppBar(
-          title: Image.asset(
-              'assets/images/icon.png', height: 100),
-          centerTitle: true,
-          backgroundColor: Color(0xFFFFA600),
-        ),
-      ),
-      body: signupForm(),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-        gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Colors.grey.shade300,Colors.white],
-        stops: [0.05,0.2],
-        ),
-        ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          GestureDetector(
-            onTap:(){
-              if (_formKey.currentState!.validate() && driver_license_image != null && back_vehicle_image != null && front_vehicle_image != null) {
-                final Map<String, String> body = {'region':"$region",
-                                                  "type": "${vehicleMap[vehicle_type_value]}",
-                                                  "name":fullname,
-                                                  "time":employmenttype,
-                                                  "mobile":mobilenumber,
-                                                  "emergency":emergencycontact,
-                                                  "plate":vehicleplate_value.text,
-                                                  "owner": vehicleowner_value.text,
-                                                  "username" : username,
-                                                  "password": password};
-                makePostRequest(url, unencodedPath, headers, body);
-                Navigator.push(context,
-                  MaterialPageRoute(builder:(context) => Notice()),
-                );
-              }
-            },
-            child: Container(
-              child: Text("Done", style: TextStyle(color: Colors.orange[400],fontSize: 30),),
-              padding: EdgeInsets.only(right:40, bottom: 5,top:10),
-            ),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(80.0),
+          child: AppBar(
+            title: Image.asset('assets/images/icon.png', height: 100),
+            centerTitle: true,
+            backgroundColor: Color(0xFFFFA600),
           ),
-        ],
-    )
-      )
-      );
+        ),
+        body: signupForm(),
+        bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.grey.shade300, Colors.white],
+                stops: [0.05, 0.2],
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    if (agree == true) {
+                      if (_formKey.currentState!.validate() &&
+                          driver_license_image != null &&
+                          back_vehicle_image != null &&
+                          front_vehicle_image != null) {
+                        final Map<String, String> body = {
+                          'region': "$region",
+                          "type": "${vehicleMap[vehicle_type_value]}",
+                          "name": fullname,
+                          "time": employmenttype,
+                          "mobile": mobilenumber,
+                          "emergency": emergencycontact,
+                          "plate": vehicleplate_value.text,
+                          "owner": vehicleowner_value.text,
+                          "username": username,
+                          "password": password
+                        };
+                        makePostRequest(url, unencodedPath, headers, body);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Notice()),
+                        );
+                      }
+                    }
+                  },
+                  child: Container(
+                    child: Text(
+                      "Done",
+                      style: TextStyle(color: Colors.orange[400], fontSize: 30),
+                    ),
+                    padding: EdgeInsets.only(right: 40, bottom: 5, top: 10),
+                  ),
+                ),
+              ],
+            )));
   }
 }
 
@@ -105,11 +126,11 @@ class signupForm extends StatefulWidget {
 class signupFormState extends State<signupForm> {
   final ImagePicker picker = ImagePicker();
 
-  Future<List> getVehicles() async{
+  Future<List> getVehicles() async {
     vehicles = await MyApiService.getVehicles();
     vehicleMap = vehicles[0];
     vehicleType = vehicles[1];
-    if(vehicle_type_value == ""){
+    if (vehicle_type_value == "") {
       vehicle_type_value = vehicleType[0];
     }
     return vehicles;
@@ -124,12 +145,12 @@ class signupFormState extends State<signupForm> {
         driver_license_image = img;
       });
     }
-    if(info == "frontvehicle"){
+    if (info == "frontvehicle") {
       setState(() {
         front_vehicle_image = img;
       });
     }
-    if(info == "backvehicle"){
+    if (info == "backvehicle") {
       setState(() {
         back_vehicle_image = img;
       });
@@ -143,7 +164,7 @@ class signupFormState extends State<signupForm> {
         builder: (BuildContext context) {
           return AlertDialog(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             title: Text('Please choose media to select'),
             content: Container(
               height: MediaQuery.of(context).size.height / 6,
@@ -153,7 +174,7 @@ class signupFormState extends State<signupForm> {
                     //if user click this button, user can upload image from gallery
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage(ImageSource.gallery,info);
+                      getImage(ImageSource.gallery, info);
                     },
                     child: Row(
                       children: [
@@ -166,7 +187,7 @@ class signupFormState extends State<signupForm> {
                     //if user click this button. user can upload image from camera
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage(ImageSource.camera,info);
+                      getImage(ImageSource.camera, info);
                     },
                     child: Row(
                       children: [
@@ -183,165 +204,221 @@ class signupFormState extends State<signupForm> {
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        padding: EdgeInsets.only(left:15,right:15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+        key: _formKey,
+        child: SingleChildScrollView(
+            padding: EdgeInsets.only(left: 15, right: 15),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+                    Widget>[
+              //input vehicle type
+              Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 16),
+                    child: Text("Vehicle Type"),
+                  ),
+                  FutureBuilder(
+                    future: getVehicles(),
+                    builder: (context, snapshot) {
+                      return DropdownButton(
+                        value: vehicle_type_value,
+                        items: vehicleType.map<DropdownMenuItem<String>>(
+                            (String vehicleType) {
+                          return DropdownMenuItem(
+                            value: vehicleType,
+                            child: Text(vehicleType),
+                          );
+                        }).toList(),
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            vehicle_type_value = newValue!;
+                          });
+                        },
+                      );
+                    },
+                  )
+                ],
+              ),
 
-            //input vehicle type
-            Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 16),
-                  child: Text("Vehicle Type"),
-                ),
-                FutureBuilder(
-                  future: getVehicles(),
-                  builder: (context, snapshot){
-                    return DropdownButton(
-                      value: vehicle_type_value,
-                      items: vehicleType.map<DropdownMenuItem<String>>((String vehicleType) {
-                        return DropdownMenuItem(
-                          value: vehicleType,
-                          child: Text(vehicleType),
-                        );
-                      }).toList(),
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                      onChanged: (String? newValue) {
+              //input vehicle owner
+              inputvehicleowner,
+
+              //input vehicle plate
+              Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: inputvehicleplate,
+              ),
+
+              //input driver's license
+              Column(
+                children: [
+                  Text(
+                    "Front Of Driver's Driving License",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  GFButton(
+                    color: Colors.orange,
+                    onPressed: () {
+                      myAlert('driverlicense');
+                    },
+                    text: "Upload Image",
+                    shape: GFButtonShape.pills,
+                  ),
+                ],
+              ),
+
+              //show image
+              driver_license_image != null
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.only(left: 5, right: 5, bottom: 20),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          //to show image
+                          File(driver_license_image!.path),
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                          height: 300,
+                        ),
+                      ),
+                    )
+                  : Text(
+                      "",
+                      style: TextStyle(fontSize: 20),
+                    ),
+
+              //input for front of vehicle
+              Column(
+                children: [
+                  Text(
+                    "Front Of Vehicle",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  GFButton(
+                    color: Colors.orange,
+                    onPressed: () {
+                      myAlert('frontvehicle');
+                    },
+                    text: "Upload Image",
+                    shape: GFButtonShape.pills,
+                  ),
+                ],
+              ),
+
+              //show image
+              front_vehicle_image != null
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.only(left: 5, right: 5, bottom: 20),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          //to show image
+                          File(front_vehicle_image!.path),
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                          height: 300,
+                        ),
+                      ),
+                    )
+                  : Text(
+                      "",
+                      style: TextStyle(fontSize: 20),
+                    ),
+
+              //input for back of vehicle
+              Column(
+                children: [
+                  Text(
+                    "Back Of Vehicle",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  GFButton(
+                    color: Colors.orange,
+                    onPressed: () {
+                      myAlert('backvehicle');
+                    },
+                    text: "Upload Image",
+                    shape: GFButtonShape.pills,
+                  ),
+                ],
+              ),
+
+              //show image
+              back_vehicle_image != null
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.only(left: 5, right: 5, bottom: 20),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          //to show image
+                          File(back_vehicle_image!.path),
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                          height: 300,
+                        ),
+                      ),
+                    )
+                  : Text(
+                      "",
+                      style: TextStyle(fontSize: 20),
+                    ),
+
+              Row(
+                children: [
+                  Material(
+                    child: Checkbox(
+                      value: agree,
+                      onChanged: (value) {
                         setState(() {
-                          vehicle_type_value = newValue!;
+                          agree = value ?? false;
                         });
                       },
-                    );
-                  },
-                )
-              ],
-            ),
-
-            //input vehicle owner
-            inputvehicleowner,
-
-            //input vehicle plate
-            Padding(
-              padding: EdgeInsets.only(bottom:10),
-            child: inputvehicleplate,
-            ),
-
-
-
-            //input driver's license
-            Column(
-              children: [
-                Text("Front Of Driver's Driving License",style: TextStyle(fontSize: 18),),
-                GFButton(
-                  color: Colors.orange,
-                  onPressed: () {
-                    myAlert('driverlicense');
-                  },
-                  text: "Upload Image",
-                  shape: GFButtonShape.pills,
-                ),
-              ],
-            ),
-
-            //show image
-            driver_license_image != null
-                ? Padding(
-              padding: const EdgeInsets.only(left: 5, right:5 ,bottom:20),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  //to show image
-                  File(driver_license_image!.path),
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                  height: 300,
-                ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                                title: const Text(
+                                  "Terms and Condition",
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                                content: const Text(
+                                    "This is the term and condition."),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(ctx).pop();
+                                    },
+                                    child: Container(
+                                      color: Colors.orange,
+                                      padding: const EdgeInsets.all(14),
+                                      child: const Text("Close",
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ),
+                                  ),
+                                ],
+                              ));
+                    },
+                    child: const Text(
+                      'I have read and accept terms and conditions',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Color.fromARGB(255, 16, 145, 251)),
+                    ),
+                  )
+                ],
               ),
-            )
-                : Text(
-              "",
-              style: TextStyle(fontSize: 20),
-            ),
-
-            //input for front of vehicle
-            Column(
-              children: [
-                Text("Front Of Vehicle",style: TextStyle(fontSize: 18),),
-                GFButton(
-                  color: Colors.orange,
-                  onPressed: () {
-                    myAlert('frontvehicle');
-                  },
-                  text: "Upload Image",
-                  shape: GFButtonShape.pills,
-                ),
-              ],
-            ),
-
-            //show image
-            front_vehicle_image != null
-                ? Padding(
-              padding: const EdgeInsets.only(left: 5, right:5 ,bottom:20),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  //to show image
-                  File(front_vehicle_image!.path),
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                  height: 300,
-                ),
-              ),
-            )
-                : Text(
-              "",
-              style: TextStyle(fontSize: 20),
-            ),
-
-            //input for back of vehicle
-            Column(
-              children: [
-                Text("Back Of Vehicle",style: TextStyle(fontSize: 18),),
-                GFButton(
-                  color: Colors.orange,
-                  onPressed: () {
-                    myAlert('backvehicle');
-                  },
-                  text: "Upload Image",
-                  shape: GFButtonShape.pills,
-                ),
-              ],
-            ),
-
-            //show image
-            back_vehicle_image != null
-                ? Padding(
-              padding: const EdgeInsets.only(left: 5, right:5 ,bottom:20),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  //to show image
-                  File(back_vehicle_image!.path),
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                  height: 300,
-                ),
-              ),
-            )
-                : Text(
-              "",
-              style: TextStyle(fontSize: 20),
-            ),
-
-      ]
-    )
-    )
-    );
+            ])));
   }
 }
 
@@ -356,8 +433,8 @@ TextEditingController vehicleplate_value = TextEditingController();
 //input for vehicle plate
 var inputvehicleplate = TextFormField(
   controller: vehicleplate_value,
-  validator: (value){
-    if (value == null || value.isEmpty){
+  validator: (value) {
+    if (value == null || value.isEmpty) {
       return 'Please enter the vehicle registered plate';
     }
     return null;
@@ -374,8 +451,8 @@ TextEditingController vehicleowner_value = TextEditingController();
 //input for vehicle owner
 var inputvehicleowner = TextFormField(
   controller: vehicleowner_value,
-  validator: (value){
-    if (value == null || value.isEmpty){
+  validator: (value) {
+    if (value == null || value.isEmpty) {
       return 'Please enter the owner of the vehicle';
     }
     return null;
