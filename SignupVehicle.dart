@@ -390,8 +390,7 @@ class signupFormState extends State<signupForm> {
                                   "Terms and Condition",
                                   style: TextStyle(color: Colors.blue),
                                 ),
-                                content: const Text(
-                                    "This is the term and condition."),
+                                content: const Text(" "),
                                 actions: <Widget>[
                                   TextButton(
                                     onPressed: () {
