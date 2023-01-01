@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:driver_integrated/account.dart';
 import 'package:driver_integrated/main.dart';
+import 'package:driver_integrated/NavBar.dart';
 
 class UnableWithdrawal extends StatelessWidget {
   const UnableWithdrawal({Key? key}) : super(key: key);
@@ -36,10 +37,12 @@ class UnableWithdrawal extends StatelessWidget {
             GFButton(
               color: Colors.orange,
               onPressed: () {
-                Navigator.push(
+                Navigator.pop(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AccountPage(title: "Account")));
+                        builder: (context) => NavBar(
+                              currentPage: PageItem.Account,
+                            )));
               },
               text: "Back",
               shape: GFButtonShape.pills,
