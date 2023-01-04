@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:getwidget/getwidget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:driver_integrated/Notice.dart';
 import 'package:driver_integrated/my_api_service.dart';
+import 'package:driver_integrated/firebase_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final String url = "awcgroup.com.my";
 final String unencodedPath = "/easymovenpick.com/api/driver_apply.php";
@@ -12,13 +15,15 @@ final Map<String, String> headers = {
   'Content-Type': 'application/json; charset=UTF-8'
 };
 
-void makePostRequest(String url, String unencodedPath,
+Future<bool> makePostRequest(String url, String unencodedPath,
     Map<String, String> header, Map<String, String> requestBody) async {
   final response = await http.post(Uri.http(url, unencodedPath),
       // headers: header,
       body: requestBody);
-  print(response.statusCode);
-  print(response.body);
+
+  final data = json.decode(response.body);
+  bool result = data["application"]["result"];
+  return result;
 }
 
 final _formKey = GlobalKey<FormState>();
@@ -51,6 +56,7 @@ class SignupVehicle extends StatelessWidget {
   final XFile? backic;
   final String username;
   final String password;
+  FirebaseService firebaseService = FirebaseService();
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +66,7 @@ class SignupVehicle extends StatelessWidget {
           child: AppBar(
             title: Image.asset('assets/images/icon.png', height: 100),
             centerTitle: true,
-            backgroundColor: Color(0xFFFFA600),
+            backgroundColor: const Color(0xFFFFA600),
           ),
         ),
         body: signupForm(),
@@ -70,14 +76,14 @@ class SignupVehicle extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [Colors.grey.shade300, Colors.white],
-                stops: [0.05, 0.2],
+                stops: const [0.05, 0.2],
               ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     if (agree == true) {
                       if (_formKey.currentState!.validate() &&
                           driver_license_image != null &&
@@ -95,7 +101,27 @@ class SignupVehicle extends StatelessWidget {
                           "username": username,
                           "password": password
                         };
-                        makePostRequest(url, unencodedPath, headers, body);
+
+                        await makePostRequest(url, unencodedPath, headers, body).then((result) async{
+                          if(result){
+                            String icPath = File(frontic!.path).path;
+                            String licensePath = File(driver_license_image!.path).path;
+                            String frontVehiclePath = File(front_vehicle_image!.path).path;
+                            String backVehiclePath = File(back_vehicle_image!.path).path;
+                            MyApiService.photoRegister(username, icPath, licensePath, frontVehiclePath, backVehiclePath);
+
+                            await MyApiService.getDriverId(username).then((data) {
+                              dynamic authUser = data["auth_user"];
+                              int id = authUser["id"];
+                              MyApiService.updateToken(id, firebaseService.fcmToken!);
+                            });
+
+                            await SharedPreferences.getInstance().then((pref) {
+                              pref.setString("tempusername", username);
+                            });
+                          }
+                        });
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => Notice()),
@@ -104,11 +130,11 @@ class SignupVehicle extends StatelessWidget {
                     }
                   },
                   child: Container(
+                    padding: const EdgeInsets.only(right: 40, bottom: 5, top: 10),
                     child: Text(
                       "Done",
                       style: TextStyle(color: Colors.orange[400], fontSize: 30),
                     ),
-                    padding: EdgeInsets.only(right: 40, bottom: 5, top: 10),
                   ),
                 ),
               ],
@@ -164,7 +190,7 @@ class signupFormState extends State<signupForm> {
         builder: (BuildContext context) {
           return AlertDialog(
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             title: Text('Please choose media to select'),
             content: Container(
               height: MediaQuery.of(context).size.height / 6,
@@ -210,8 +236,8 @@ class signupFormState extends State<signupForm> {
         child: SingleChildScrollView(
             padding: EdgeInsets.only(left: 15, right: 15),
             child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-                    Widget>[
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+                Widget>[
               //input vehicle type
               Column(
                 children: [
@@ -225,12 +251,12 @@ class signupFormState extends State<signupForm> {
                       return DropdownButton(
                         value: vehicle_type_value,
                         items: vehicleType.map<DropdownMenuItem<String>>(
-                            (String vehicleType) {
-                          return DropdownMenuItem(
-                            value: vehicleType,
-                            child: Text(vehicleType),
-                          );
-                        }).toList(),
+                                (String vehicleType) {
+                              return DropdownMenuItem(
+                                value: vehicleType,
+                                child: Text(vehicleType),
+                              );
+                            }).toList(),
                         icon: const Icon(Icons.keyboard_arrow_down),
                         onChanged: (String? newValue) {
                           setState(() {
@@ -273,23 +299,23 @@ class signupFormState extends State<signupForm> {
               //show image
               driver_license_image != null
                   ? Padding(
-                      padding:
-                          const EdgeInsets.only(left: 5, right: 5, bottom: 20),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.file(
-                          //to show image
-                          File(driver_license_image!.path),
-                          fit: BoxFit.cover,
-                          width: MediaQuery.of(context).size.width,
-                          height: 300,
-                        ),
-                      ),
-                    )
+                padding:
+                const EdgeInsets.only(left: 5, right: 5, bottom: 20),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    //to show image
+                    File(driver_license_image!.path),
+                    fit: BoxFit.cover,
+                    width: MediaQuery.of(context).size.width,
+                    height: 300,
+                  ),
+                ),
+              )
                   : Text(
-                      "",
-                      style: TextStyle(fontSize: 20),
-                    ),
+                "",
+                style: TextStyle(fontSize: 20),
+              ),
 
               //input for front of vehicle
               Column(
@@ -312,23 +338,23 @@ class signupFormState extends State<signupForm> {
               //show image
               front_vehicle_image != null
                   ? Padding(
-                      padding:
-                          const EdgeInsets.only(left: 5, right: 5, bottom: 20),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.file(
-                          //to show image
-                          File(front_vehicle_image!.path),
-                          fit: BoxFit.cover,
-                          width: MediaQuery.of(context).size.width,
-                          height: 300,
-                        ),
-                      ),
-                    )
+                padding:
+                const EdgeInsets.only(left: 5, right: 5, bottom: 20),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    //to show image
+                    File(front_vehicle_image!.path),
+                    fit: BoxFit.cover,
+                    width: MediaQuery.of(context).size.width,
+                    height: 300,
+                  ),
+                ),
+              )
                   : Text(
-                      "",
-                      style: TextStyle(fontSize: 20),
-                    ),
+                "",
+                style: TextStyle(fontSize: 20),
+              ),
 
               //input for back of vehicle
               Column(
@@ -351,23 +377,23 @@ class signupFormState extends State<signupForm> {
               //show image
               back_vehicle_image != null
                   ? Padding(
-                      padding:
-                          const EdgeInsets.only(left: 5, right: 5, bottom: 20),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.file(
-                          //to show image
-                          File(back_vehicle_image!.path),
-                          fit: BoxFit.cover,
-                          width: MediaQuery.of(context).size.width,
-                          height: 300,
-                        ),
-                      ),
-                    )
+                padding:
+                const EdgeInsets.only(left: 5, right: 5, bottom: 20),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    //to show image
+                    File(back_vehicle_image!.path),
+                    fit: BoxFit.cover,
+                    width: MediaQuery.of(context).size.width,
+                    height: 300,
+                  ),
+                ),
+              )
                   : Text(
-                      "",
-                      style: TextStyle(fontSize: 20),
-                    ),
+                "",
+                style: TextStyle(fontSize: 20),
+              ),
 
               Row(
                 children: [
@@ -386,26 +412,26 @@ class signupFormState extends State<signupForm> {
                       showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
-                                title: const Text(
-                                  "Terms and Condition",
-                                  style: TextStyle(color: Colors.blue),
+                            title: const Text(
+                              "Terms and Condition",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            content: const Text(" "),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(ctx).pop();
+                                },
+                                child: Container(
+                                  color: Colors.orange,
+                                  padding: const EdgeInsets.all(14),
+                                  child: const Text("Close",
+                                      style:
+                                      TextStyle(color: Colors.white)),
                                 ),
-                                content: const Text(" "),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(ctx).pop();
-                                    },
-                                    child: Container(
-                                      color: Colors.orange,
-                                      padding: const EdgeInsets.all(14),
-                                      child: const Text("Close",
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                    ),
-                                  ),
-                                ],
-                              ));
+                              ),
+                            ],
+                          ));
                     },
                     child: const Text(
                       'I have read and accept terms and conditions',

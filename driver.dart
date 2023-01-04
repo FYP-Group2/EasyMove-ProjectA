@@ -22,4 +22,9 @@ class Driver {
     this.mobileNumber = mobileNumber;
     status = "off";
   }
+
+  void initializeDriverId(int id) {
+    this.id = id;
+  }
+
 }

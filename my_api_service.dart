@@ -76,10 +76,25 @@ class MyApiService{
     return data["order"];
   }
 
+  static void photoRegister(String username, String icPath, String licensePath, String frontVehiclePath, String backVehiclePath) async{
+    const String url = "https://awcgroup.com.my/easymovenpick.com/api/post_photo.php";
+
+    Map<String, dynamic> map = {};
+    map["username"] = username;
+    map["ic"] = await MultipartFile.fromFile(icPath, filename: "ic.jpeg", contentType: MediaType("image", "jpeg"));
+    map["license"] = await MultipartFile.fromFile(licensePath, filename: "license.jpeg", contentType: MediaType("image", "jpeg"));
+    map["front"] = await MultipartFile.fromFile(frontVehiclePath, filename: "front.jpeg", contentType: MediaType("image", "jpeg"));
+    map["back"] = await MultipartFile.fromFile(backVehiclePath, filename: "back.jpeg", contentType: MediaType("image", "jpeg"));
+    FormData formData = FormData.fromMap(map);
+    await Dio().post(url, data: formData).then((value){
+      print("response: $value");
+    });
+  }
+
   static void photoPOD(int oid, String filePath) async{
     const String url = "https://awcgroup.com.my/easymovenpick.com/api/post_photo.php";
 
-    Map<String, dynamic> map = Map();
+    Map<String, dynamic> map = {};
     map["pod"] = await MultipartFile.fromFile(filePath, filename: "pod_image.jpeg", contentType: MediaType("image", "jpeg"));
     map["oid"] = "$oid";
     FormData formData = FormData.fromMap(map);
@@ -91,7 +106,7 @@ class MyApiService{
   static void photoPOC(int oid, String filePath) async{
     const String url = "https://awcgroup.com.my/easymovenpick.com/api/post_photo.php";
 
-    Map<String, dynamic> map = Map();
+    Map<String, dynamic> map = {};
     map["poc"] = await MultipartFile.fromFile(filePath, filename: "pod_image.jpeg", contentType: MediaType("image", "jpeg"));
     map["oid"] = "$oid";
     FormData formData = FormData.fromMap(map);
@@ -203,7 +218,34 @@ class MyApiService{
     );
 
     final data = json.decode(response.body);
+    print(data);
     return data;
+
+  }
+
+  static Future<Map<String, dynamic>> getDriverId(String username) async {
+    final Map<String, String> body = {"username": username};
+    final String url = "awcgroup.com.my";
+    final String unencodedPath = "/easymovenpick.com/api/driver_id.php";
+    final response = await http.post(
+        Uri.http(url, unencodedPath),
+        body: body
+    );
+
+    final data = json.decode(response.body);
+    print("--------output--------\n$data");
+    return data;
+
+  }
+
+  static Future<void> updateToken(int driverId, String token) async {
+    final String url = "awcgroup.com.my";
+    final String unencodedPath = "/easymovenpick.com/api/insert_token.php";
+    final Map<String, String> body = ({'uid': "$driverId", 'token': token});
+    await http.post(
+        Uri.http(url, unencodedPath),
+        body: body
+    );
 
   }
 

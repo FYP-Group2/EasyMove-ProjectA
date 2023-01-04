@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class FirebaseService{
@@ -31,9 +32,8 @@ class FirebaseService{
 
     });
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // print('Got a message whilst in the foreground!');
-      // print('Message data: ${message.data}');
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
+      await FlutterAppBadger.isAppBadgeSupported().then((value) => value?FlutterAppBadger.updateBadgeCount(1):null);
       show(message.data["title"], message.data["body"]);
     });
 

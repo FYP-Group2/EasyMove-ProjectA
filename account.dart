@@ -42,6 +42,7 @@ class _MyAccountPageState extends State<AccountPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("username", "null");
     prefs.setString("password", "null");
+    prefs.setString("tempusername", "null");
   }
 
   @override

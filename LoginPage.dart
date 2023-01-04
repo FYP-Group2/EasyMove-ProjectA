@@ -1,17 +1,13 @@
-import 'package:driver_integrated/SignupVehicle.dart';
-import 'package:driver_integrated/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:driver_integrated/NavBar.dart';
 import 'package:driver_integrated/driver.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:driver_integrated/home.dart';
 import 'package:driver_integrated/my_api_service.dart';
+import 'package:driver_integrated/firebase_service.dart';
 
-final String url = "awcgroup.com.my";
-final String unencodedPath = "/easymovenpick.com/api/driver_login.php";
-final Map<String, String> headers = {'Content-Type': 'application/json; charset=UTF-8'};
+
 String? response_message;
 
 class LoginPage extends StatefulWidget {
@@ -25,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   Driver driver = Driver();
   // NotificationService notificationService = NotificationService();
   bool userIsLoggedIn = false;
+  FirebaseService firebaseService = FirebaseService();
 
   Future<void> getLoggedInState() async{
     WidgetsFlutterBinding.ensureInitialized();
@@ -62,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
     getLoggedInState();
     Future.delayed(const Duration(seconds: 3), (){
       if(userIsLoggedIn) {
+        MyApiService.updateToken(driver.id, firebaseService.fcmToken!);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -69,19 +67,6 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     });
-
-    // Timer(
-    //   const Duration(seconds: 2),
-    //       () => Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => userIsLoggedIn != null
-    //             ? userIsLoggedIn
-    //             ? const NavBar( currentPage: PageItem.Home,)
-    //             : const LoginPage()
-    //             : const LoginPage()),
-    //   ),
-    // );
   }
 
   @override
@@ -98,6 +83,7 @@ class _LoginPageState extends State<LoginPage> {
         String name = authUser["name"];
         int mobileNumber = authUser["mobile_number"];
         driver.initializeDriver(id, region, vehicleType, name, mobileNumber);
+        MyApiService.updateToken(driver.id, firebaseService.fcmToken!);
         // notificationService.init();
         // notificationService.start();
 
@@ -145,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 inputpassword,
                 Padding(
-                  padding: EdgeInsets.only(top: 30),
+                  padding: const EdgeInsets.only(top: 30),
                   child: GFButton(
                     color: Colors.white, //need to change
                     onPressed: () async {
