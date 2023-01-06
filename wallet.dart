@@ -141,13 +141,13 @@ class walletPageState extends State<Wallet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (snapshot.hasData &&
-                    widget.text["withdrew_merit"] != null) ...[
+                    widget.text["withdrawable_merit"] != null) ...[
                   Text(
                     "MERIT",
                     style: TextStyle(color: Colors.orange[400], fontSize: 18),
                   ),
                   Text(
-                    "RM ${widget.text["withdrew_merit"].toString()}",
+                    "RM ${widget.text["withdrawable_merit"].toString()}",
                     style: const TextStyle(fontSize: 30, color: Colors.black),
                   ),
                 ] else ...[
@@ -207,11 +207,12 @@ class walletPageState extends State<Wallet> {
             return GFButton(
               color: Colors.orange,
               onPressed: () {
-                if (snapshot.hasData && widget.text["withdrew_merit"] != null) {
-                  if ((widget.text["withdrew_merit"]) > 5) {
+                if (snapshot.hasData &&
+                    widget.text["withdrawable_merit"] != null) {
+                  if ((widget.text["withdrawable_merit"]) > 5) {
                     makePostRequestWithdrawal(url, unencodedPath, body);
                     display_merit_value =
-                        (widget.text["withdrew_merit"] - 5).toString();
+                        (widget.text["withdrawable_merit"] - 5).toString();
 
                     if (withdraw == true) {
                       Navigator.push(
