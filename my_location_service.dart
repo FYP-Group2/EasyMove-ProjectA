@@ -1,6 +1,6 @@
+import 'package:driver_integrated/my_api_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cron/cron.dart';
-import 'package:http/http.dart' as http;
 
 class MyLocationService{
   static final MyLocationService _instance = MyLocationService._internal();
@@ -68,15 +68,7 @@ class MyLocationService{
   /// Update the location to database through website API
   void _locationAPI(Position position) async {
     final String strPosition = "$position,placeholder";
-    const String url = "awcgroup.com.my";
-    const String unencodedPath = "/easymovenpick.com/api/location.php";
-    final Map<String, String> body = {"uid" : "$driverId",
-      "location": strPosition};
-
-    await http.post(
-        Uri.http(url, unencodedPath),
-        body: body
-    );
+    MyApiService.updateLocation(strPosition, driverId);
   }
 
   /// Handle permission for location service

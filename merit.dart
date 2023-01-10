@@ -1,20 +1,9 @@
-import 'package:driver_integrated/wallet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/driver.dart';
 
 String display_merit_value = "";
-Future<bool> PostConvert(String url, String unencodedPath, Map<String, String> requestBody) async {
-  final response =
-  await http.post(Uri.http(url, unencodedPath), body: requestBody);
-  final data = json.decode(response.body);
-  bool success = (data["result"]);
-  return success;
-}
 
 class Merit extends StatefulWidget {
   Map<String, dynamic> text = {};
@@ -58,42 +47,42 @@ class meritPageState extends State<Merit> {
   //display merit score
   Widget _meritscore() {
     return FutureBuilder(
-      future: initMerit(),
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        return Container(
-          margin: EdgeInsets.only(left: 50, right: 50, top: 20),
-          padding: EdgeInsets.only(top: 15, bottom: 15),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.black, width: 0.1),
-              borderRadius: BorderRadius.circular(5.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                )
-              ]
-          ),
-          child: Column(
-            children: [
-              Container(
-                height: 70,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _meritvalue(),
-                  ],
+        future: initMerit(),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          return Container(
+            margin: EdgeInsets.only(left: 50, right: 50, top: 20),
+            padding: EdgeInsets.only(top: 15, bottom: 15),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black, width: 0.1),
+                borderRadius: BorderRadius.circular(5.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                  )
+                ]
+            ),
+            child: Column(
+              children: [
+                Container(
+                  height: 70,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _meritvalue(),
+                    ],
+                  ),
                 ),
-              ),
-              const Text("MERIT SCORE",
-                style: TextStyle(fontSize: 20, color: Colors.orange),),
-            ],
-          ),
-        );
-      }
+                const Text("MERIT SCORE",
+                  style: TextStyle(fontSize: 20, color: Colors.orange),),
+              ],
+            ),
+          );
+        }
     );
   }
 
@@ -134,13 +123,7 @@ class meritPageState extends State<Merit> {
         color: Colors.orange,
         onPressed: () async {
           //call api - notice page
-          String user_id = driver.id.toString();
-          final String url = "awcgroup.com.my";
-          final String unencodedPath = "/easymovenpick.com/api/convert_merit.php";
-          final Map<String, String> sbody = {
-            'uid': user_id,
-          };
-          await PostConvert(url,unencodedPath,sbody).then((value){
+          await MyApiService.convertMerit(driver.id).then((value){
             if(value == true){
               showSuccessDialog();
               Navigator.push(context,MaterialPageRoute(builder:(context) => Merit()));
@@ -259,41 +242,41 @@ class meritPageState extends State<Merit> {
   //default merit list
   Widget default_meritlist() {
     return FutureBuilder(
-      future: initMerit(),
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if(snapshot.hasData) {
-          return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  height: 50,
-                  padding: EdgeInsets.only(left: 45, right: 50),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text('${meritMap["merits"][index]["date"]}'),
-                      ),
-                      Expanded(
-                        child: Text('${meritMap["merits"][index]["note"]}'),
-                      ),
-                      Expanded(
-                        child: meritMap["merits"][index]["order_id"] == null ?
+        future: initMerit(),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if(snapshot.hasData) {
+            return ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 50,
+                    padding: EdgeInsets.only(left: 45, right: 50),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text('${meritMap["merits"][index]["date"]}'),
+                        ),
+                        Expanded(
+                          child: Text('${meritMap["merits"][index]["note"]}'),
+                        ),
+                        Expanded(
+                          child: meritMap["merits"][index]["order_id"] == null ?
                           const Text("ad-hoc") :
                           Text('${meritMap["merits"][index]["order_id"]}'),
-                      ),
-                      Text('${meritMap["merits"][index]["points"]}p'),
-                    ],
-                  ),
-                );
-              }
-          );
-        }else{
-          return const Text("Loading");
+                        ),
+                        Text('${meritMap["merits"][index]["points"]}p'),
+                      ],
+                    ),
+                  );
+                }
+            );
+          }else{
+            return const Text("Loading");
+          }
         }
-      }
     );
   }
 
@@ -340,61 +323,61 @@ class meritPageState extends State<Merit> {
   //month filtered merit list
   Widget month_meritlist() {
     return FutureBuilder(
-      future: initMerit(),
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if(snapshot.hasData) {
-          return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                if (meritMap["merits"][index]["date"].toString().substring(3, 5) == monthMap[month_value].toString()) {
-                  return Container(
-                    height: 50,
-                    padding: EdgeInsets.only(left: 45, right: 50),
-                    child: Row(
-                      children: [
-                      Expanded(child: Text('${meritMap["merits"][index]["date"]}'),),
-                      Expanded(child: Text('${meritMap["merits"][index]["note"]}'),),
-                      Expanded(child: Text('${meritMap["merits"][index]["order_id"]}'),),
-                      Text('${meritMap["merits"][index]["points"]}p'),
-                      ]
-                    ));
+        future: initMerit(),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if(snapshot.hasData) {
+            return ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  if (meritMap["merits"][index]["date"].toString().substring(3, 5) == monthMap[month_value].toString()) {
+                    return Container(
+                        height: 50,
+                        padding: EdgeInsets.only(left: 45, right: 50),
+                        child: Row(
+                            children: [
+                              Expanded(child: Text('${meritMap["merits"][index]["date"]}'),),
+                              Expanded(child: Text('${meritMap["merits"][index]["note"]}'),),
+                              Expanded(child: Text('${meritMap["merits"][index]["order_id"]}'),),
+                              Text('${meritMap["merits"][index]["points"]}p'),
+                            ]
+                        ));
                   }
-                else{
-                  return SizedBox.shrink();
+                  else{
+                    return SizedBox.shrink();
+                  }
                 }
-              }
-          );
-        }else{
-          return const Text("Loading");
+            );
+          }else{
+            return const Text("Loading");
+          }
         }
-      }
     );
   }
 
   showErrorDialog() async {
-  await Future.delayed(Duration(microseconds: 1));
+    await Future.delayed(Duration(microseconds: 1));
     showDialog(
-    context: context,
-    builder: (ctx) => AlertDialog(
-    content:
-      const Text("Insufficient Merit for Withdrawal"),
-    actions: <Widget>[
-      TextButton(
-      onPressed: () {
-        Navigator.of(ctx).pop();
-        },
-      child: Container(
-        color: Colors.orange,
-        padding: const EdgeInsets.all(14),
-        child: const Text("Okay", style: TextStyle(color: Colors.white)),
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content:
+        const Text("Insufficient Merit for Withdrawal"),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: Container(
+              color: Colors.orange,
+              padding: const EdgeInsets.all(14),
+              child: const Text("Okay", style: TextStyle(color: Colors.white)),
+            ),
+          ),
+        ],
       ),
-      ),
-    ],
-    ),
-  );
+    );
   }
 
   showSuccessDialog() async {

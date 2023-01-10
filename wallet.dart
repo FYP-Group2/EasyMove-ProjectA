@@ -1,28 +1,15 @@
 import 'package:driver_integrated/merit.dart';
 import 'package:driver_integrated/unable_withdraw.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:driver_integrated/driver.dart';
 import 'package:driver_integrated/withdrawal.dart';
 import 'package:driver_integrated/my_api_service.dart';
 
-final String url = "awcgroup.com.my";
-final Map<String, String> header = {
-  'Content-Type': 'application/json; charset=UTF-8'
-};
 bool withdraw = false;
 
-void makePostRequestWithdrawal(
-    String url, String unencodedPath, Map<String, String> requestBody) async {
-  final response =
-      await http.post(Uri.http(url, unencodedPath), body: requestBody);
-  // print(response.statusCode);
-  // print(response.body);
-  final data = json.decode(response.body);
-  String msg = (data["message"]);
+void makePostRequestWithdrawal(Map<String, String> body) async {
+  String msg = await MyApiService.requestWithdraw(body);
   if (msg == "Request sent successfully.") {
     withdraw = true;
   }
@@ -64,8 +51,7 @@ class walletPageState extends State<Wallet> {
 
   //apiservice for wallet
   Future<Map<String, dynamic>> initWallet() async {
-    final meritData =
-        await MyApiService.getCommissionStatement(driver.id.toString());
+    final meritData = await MyApiService.getCommissionStatement(driver.id.toString());
     widget.text = meritData;
     return meritData;
   }
@@ -166,38 +152,12 @@ class walletPageState extends State<Wallet> {
   }
 
   //withdrawal button/function
-  /*Widget _requestbutton(context) {
-    String? user_id = driver.id.toString();
-    final Map<String, String> body = {
-      'uid': user_id,
-      'withdraw_merit': display_merit_value
-    };
-    final String unencodedPath = "/easymovenpick.com/api/request_withdraw.php";
-    return Padding(
-        padding: EdgeInsets.only(top: 10, left: 175),
-        child: GFButton(
-          color: Colors.orange,
-          onPressed: () {
-            makePostRequestWithdrawal(url, unencodedPath, body);
-            if (withdraw == true) {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Withdrawal()));
-            }
-            withdraw = false;
-          },
-          child: Text("Request Withdrawal"),
-          shape: GFButtonShape.pills,
-        ));
-  }*/
-
-  //withdrawal button/function
   Widget _requestmeritbutton(context) {
     String? user_id = driver.id.toString();
     final Map<String, String> body = {
       'uid': user_id,
       'withdraw_merit': display_merit_value
     };
-    final String unencodedPath = "/easymovenpick.com/api/request_withdraw.php";
     return Padding(
       padding: EdgeInsets.only(top: 10, left: 175),
       child: FutureBuilder(
@@ -210,7 +170,7 @@ class walletPageState extends State<Wallet> {
                 if (snapshot.hasData &&
                     widget.text["withdrawable_merit"] != null) {
                   if ((widget.text["withdrawable_merit"]) > 5) {
-                    makePostRequestWithdrawal(url, unencodedPath, body);
+                    makePostRequestWithdrawal(body);
                     display_merit_value =
                         (widget.text["withdrawable_merit"] - 5).toString();
 
@@ -236,7 +196,7 @@ class walletPageState extends State<Wallet> {
                         style: TextStyle(color: Colors.red),
                       ),
                       content:
-                          const Text("There is a problem, unable to withdraw!"),
+                      const Text("There is a problem, unable to withdraw!"),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () {
@@ -268,7 +228,6 @@ class walletPageState extends State<Wallet> {
       'uid': user_id,
       'withdraw_merit': display_merit_value
     };
-    final String unencodedPath = "/easymovenpick.com/api/request_withdraw.php";
     return Padding(
       padding: EdgeInsets.only(top: 10, left: 175),
       child: FutureBuilder(
@@ -280,7 +239,7 @@ class walletPageState extends State<Wallet> {
               onPressed: () {
                 if (snapshot.hasData) {
                   if (double.parse(widget.text["commission_bonus"]) > 5.00) {
-                    makePostRequestWithdrawal(url, unencodedPath, body);
+                    makePostRequestWithdrawal(body);
                     display_merit_value =
                         (double.parse(widget.text["commission_bonus"]) - 5.00)
                             .floor()

@@ -1,30 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:getwidget/getwidget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:driver_integrated/Notice.dart';
 import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/firebase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-final String url = "awcgroup.com.my";
-final String unencodedPath = "/easymovenpick.com/api/driver_apply.php";
-final Map<String, String> headers = {
-  'Content-Type': 'application/json; charset=UTF-8'
-};
-
-Future<bool> makePostRequest(String url, String unencodedPath,
-    Map<String, String> header, Map<String, String> requestBody) async {
-  final response = await http.post(Uri.http(url, unencodedPath),
-      // headers: header,
-      body: requestBody);
-
-  final data = json.decode(response.body);
-  bool result = data["application"]["result"];
-  return result;
-}
 
 final _formKey = GlobalKey<FormState>();
 //for uploading image
@@ -102,7 +83,7 @@ class SignupVehicle extends StatelessWidget {
                           "password": password
                         };
 
-                        await makePostRequest(url, unencodedPath, headers, body).then((result) async{
+                        await MyApiService.driverApply(body).then((result) async{
                           if(result){
                             String icPath = File(frontic!.path).path;
                             String licensePath = File(driver_license_image!.path).path;
