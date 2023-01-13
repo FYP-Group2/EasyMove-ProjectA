@@ -1,4 +1,4 @@
-class MyOrder{
+class MyOrder {
   int id;
   late String status;
   late String origin;
@@ -11,6 +11,8 @@ class MyOrder{
   late String customerName;
   late String phone;
   late String zone;
+  late String vehicleType;
+  late String message;
   late bool isAssigned;
   late String oLat;
   late String oLon;
@@ -18,23 +20,24 @@ class MyOrder{
   late String dLon;
 
   MyOrder(
-      this.id,
-      this.status,
-      this.origin,
-      this.destination,
-      this.distance,
-      this.createdTime,
-      this.collectTime,
-      this.deliverTime,
-      this.branchName,
-      this.customerName,
-      this.phone,
-      this.zone,
-      this.isAssigned,
-      this.oLat,
-      this.oLon,
-      this.dLat,
-      this.dLon
-    );
-
+    this.id,
+    this.status,
+    this.origin,
+    this.destination,
+    this.distance,
+    this.createdTime,
+    this.collectTime,
+    this.deliverTime,
+    this.branchName,
+    this.customerName,
+    this.phone,
+    this.zone,
+    this.vehicleType,
+    this.message,
+    this.isAssigned,
+    this.oLat,
+    this.oLon,
+    this.dLat,
+    this.dLon,
+  );
 }
