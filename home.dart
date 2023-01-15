@@ -78,25 +78,24 @@ class _HomeState extends State<HomePage> {
   
   Widget _driverProfile() {
     return Container(
-      margin: EdgeInsets.only(left: 20, top: 10, right: 0, bottom: 10),
+      margin: const EdgeInsets.only(left: 20, top: 20, right: 0, bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // profile pic
           Container(
-            constraints: BoxConstraints.expand(height: 100, width: 100),
+            constraints: const BoxConstraints.expand(height: 100, width: 100),
             // child: Placeholder(
             //     color: Colors.black,
             //     strokeWidth: 4,
             //     fallbackWidth: 10,
             //     fallbackHeight: 100,
             // ),
-            child: Image(
-              image: "assets/icon/profilepic.png"),
+            child: Image.asset("assets/icon/profilepic.png"),
           ),
           //vehicle plate no.
           Container(
-            constraints: BoxConstraints.expand(height: 100, width: 300),
+            constraints: const BoxConstraints.expand(height: 25, width: 300),
             // child: Placeholder(
             //     color: Colors.black,
             //     strokeWidth: 4,
@@ -104,7 +103,7 @@ class _HomeState extends State<HomePage> {
             //     fallbackHeight: 100,
             // ),
             child: Text(
-              "Plate No.: ${driver.name}",
+              "Plate No. : ${driver.name}",
               style: Theme.of(context)
                   .textTheme
                   .headline5
@@ -113,7 +112,7 @@ class _HomeState extends State<HomePage> {
           ),
           // ic no.
           Container(
-            constraints: BoxConstraints.expand(height: 100, width: 300),
+            constraints: const BoxConstraints.expand(height: 25, width: 300),
             // child: Placeholder(
             //     color: Colors.black,
             //     strokeWidth: 4,
@@ -121,7 +120,7 @@ class _HomeState extends State<HomePage> {
             //     fallbackHeight: 100,
             // ),
             child: Text(
-              "IC No.: ${driver.ic}",
+              "IC No. : ${driver.name}",
               style: Theme.of(context)
                   .textTheme
                   .headline5
@@ -172,21 +171,20 @@ class _HomeState extends State<HomePage> {
   Widget _announceCard() {
     return Expanded(
         child: ListView.builder(
-            itemCount:allorder.length,
+            itemCount:alldata.length,
             itemBuilder: (BuildContext context, int index) {
-              OrderData data = allorder[index];
+              AnnounceData data = alldata[index];
   
               return Container(
                 height: 100,
-                margin: const EdgeInsets.only(left:20, top:10, right:20, bottom:10),
+                margin: const EdgeInsets.only(left:20, top:0, right:20, bottom:5),
                 child: Card(
                   child: ListTile (
-                    title: Text(data.id),
+                    title: Text(data.title),
                     subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget> [
-                          Text(data.company),
-                          Text(data.address)
+                          Text(data.content)
                         ]
                     ),
                     tileColor: Colors.white60,
