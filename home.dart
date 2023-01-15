@@ -33,7 +33,7 @@ class _HomeState extends State<HomePage> {
         child: Column(
           children: [
             _upperPart(),
-            //_orderCard(),
+            _announceCard(),
           ],
         ),
       ),
@@ -49,22 +49,79 @@ class _HomeState extends State<HomePage> {
     );
   }
 
+//   Widget _driverProfile() {
+//     return Container(
+//       margin: EdgeInsets.only(left: 20, top: 10, right: 0, bottom: 10),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text(
+//             "Hi ${driver.name}",
+//             style: Theme.of(context)
+//                 .textTheme
+//                 .headline5
+//                 ?.copyWith(fontWeight: FontWeight.bold),
+//           ),
+//           Container(
+//             child: Text(
+//               "Phone number: \n${driver.mobileNumber.toString().padLeft(10, '0')}",
+//               style: Theme.of(context)
+//                   .textTheme
+//                   .headline5
+//                   ?.copyWith(fontWeight: FontWeight.bold),
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+  
   Widget _driverProfile() {
     return Container(
       margin: EdgeInsets.only(left: 20, top: 10, right: 0, bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Hi ${driver.name}",
-            style: Theme.of(context)
-                .textTheme
-                .headline5
-                ?.copyWith(fontWeight: FontWeight.bold),
-          ),
+          // profile pic
           Container(
+            constraints: BoxConstraints.expand(height: 100, width: 100),
+            // child: Placeholder(
+            //     color: Colors.black,
+            //     strokeWidth: 4,
+            //     fallbackWidth: 10,
+            //     fallbackHeight: 100,
+            // ),
+            child: Image(
+              image: "assets/icon/profilepic.png"),
+          ),
+          //vehicle plate no.
+          Container(
+            constraints: BoxConstraints.expand(height: 100, width: 300),
+            // child: Placeholder(
+            //     color: Colors.black,
+            //     strokeWidth: 4,
+            //     fallbackWidth: 10,
+            //     fallbackHeight: 100,
+            // ),
             child: Text(
-              "Phone number: \n${driver.mobileNumber.toString().padLeft(10, '0')}",
+              "Plate No.: ${driver.name}",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          // ic no.
+          Container(
+            constraints: BoxConstraints.expand(height: 100, width: 300),
+            // child: Placeholder(
+            //     color: Colors.black,
+            //     strokeWidth: 4,
+            //     fallbackWidth: 10,
+            //     fallbackHeight: 100,
+            // ),
+            child: Text(
+              "IC No.: ${driver.ic}",
               style: Theme.of(context)
                   .textTheme
                   .headline5
@@ -112,39 +169,35 @@ class _HomeState extends State<HomePage> {
             )));
   }
 
-  // Widget _orderCard() {
-  //   return Expanded(
-  //       child: ListView.builder(
-  //           itemCount:allorder.length,
-  //           itemBuilder: (BuildContext context, int index) {
-  //             OrderData data = allorder[index];
-  //
-  //             return Container(
-  //               height: 100,
-  //               margin: const EdgeInsets.only(left:20, top:10, right:20, bottom:10),
-  //               child: Card(
-  //                 child: ListTile (
-  //                   title: Text(data.id),
-  //                   subtitle: Column(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: <Widget> [
-  //                         Text(data.company),
-  //                         Text(data.address)
-  //                       ]
-  //                   ),
-  //                   leading: const CircleAvatar(
-  //                     backgroundImage: AssetImage("assets/icon/truck.png"),
-  //                   ),
-  //                   trailing: const Icon(Icons.arrow_forward_ios_outlined),
-  //                   tileColor: Colors.white60,
-  //                   shape: RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(20.0),
-  //                   ),
-  //                 ),
-  //               ),
-  //             );
-  //           })
-  //   );
-  // }
+  Widget _announceCard() {
+    return Expanded(
+        child: ListView.builder(
+            itemCount:allorder.length,
+            itemBuilder: (BuildContext context, int index) {
+              OrderData data = allorder[index];
+  
+              return Container(
+                height: 100,
+                margin: const EdgeInsets.only(left:20, top:10, right:20, bottom:10),
+                child: Card(
+                  child: ListTile (
+                    title: Text(data.id),
+                    subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget> [
+                          Text(data.company),
+                          Text(data.address)
+                        ]
+                    ),
+                    tileColor: Colors.white60,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                  ),
+                ),
+              );
+            })
+    );
+  }
 
 }
