@@ -5,6 +5,7 @@ class Driver {
   late int vehicleType;
   late String name;
   late int mobileNumber;
+  late String plateNumber;
   String status = "off";
 
   Driver._internal();
@@ -14,12 +15,13 @@ class Driver {
   }
 
   void initializeDriver(
-      int id, int region, int vehicleType, String name, int mobileNumber) {
+      int id, int region, int vehicleType, String name, int mobileNumber, String plateNumber) {
     this.id = id;
     this.region = region;
     this.vehicleType = vehicleType;
     this.name = name;
     this.mobileNumber = mobileNumber;
+    this.plateNumber = plateNumber;
     status = "off";
   }
 
