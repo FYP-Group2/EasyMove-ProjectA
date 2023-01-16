@@ -255,4 +255,14 @@ class MyApiService {
     final data = json.decode(response.body);
     return (data["message"]);
   }
+    
+  static Future<Map<String, dynamic>> getNews() async {
+    const String urls = "awcgroup.com.my";
+    const String unencodedPath = "/easymovenpick.com/api/get_news.php";
+    final response = await http.post(
+        Uri.http(urls, unencodedPath)
+    );
+    final data = json.decode(response.body);
+    return (data);
+  }
 }
