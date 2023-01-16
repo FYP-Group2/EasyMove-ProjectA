@@ -44,7 +44,8 @@ class _LoginPageState extends State<LoginPage> {
         int vehicleType = authUser["vehicle_type"];
         String name = authUser["name"];
         int mobileNumber = authUser["mobile_number"];
-        driver.initializeDriver(id, region, vehicleType, name, mobileNumber);
+        String plateNumber = authUser["plate_number"];
+        driver.initializeDriver(id, region, vehicleType, name, mobileNumber, plateNumber);
         userIsLoggedIn = true;
       }
     }
@@ -82,7 +83,8 @@ class _LoginPageState extends State<LoginPage> {
         int vehicleType = authUser["vehicle_type"];
         String name = authUser["name"];
         int mobileNumber = authUser["mobile_number"];
-        driver.initializeDriver(id, region, vehicleType, name, mobileNumber);
+        String plateNumber = authUser["plate_number"];
+        driver.initializeDriver(id, region, vehicleType, name, mobileNumber, plateNumber);
         MyApiService.updateToken(driver.id, firebaseService.fcmToken!);
         // notificationService.init();
         // notificationService.start();
