@@ -103,7 +103,7 @@ class _HomeState extends State<HomePage> {
             //     fallbackHeight: 100,
             // ),
             child: Text(
-              "Plate No. : ${driver.name}",
+              "Plate No. : ${driver.plateNumber}",
               style: Theme.of(context)
                   .textTheme
                   .headline5
