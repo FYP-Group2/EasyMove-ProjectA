@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:driver_integrated/my_api_service.dart';
-import 'package:driver_integrated/driver.dart';
 import 'package:driver_integrated/my_location_service.dart';
+import 'package:driver_integrated/driver.dart';
+import 'dart:async';
 
 Driver driver = Driver();
 
@@ -15,10 +16,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomeState extends State<HomePage> {
-  Map<String, dynamic> newsMap = {};
   var textValue = 'off';
   bool isSwitched = driver.status == "on";
   MyLocationService locationService = MyLocationService(driver.id);
+  Map<String, dynamic> newsMap = {};
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,6 @@ class _HomeState extends State<HomePage> {
         child: Column(
           children: [
             _upperPart(),
-//             _announceCard(),
             _news(),
           ],
         ),
@@ -50,33 +50,6 @@ class _HomeState extends State<HomePage> {
       ]),
     );
   }
-
-//   Widget _driverProfile() {
-//     return Container(
-//       margin: EdgeInsets.only(left: 20, top: 10, right: 0, bottom: 10),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(
-//             "Hi ${driver.name}",
-//             style: Theme.of(context)
-//                 .textTheme
-//                 .headline5
-//                 ?.copyWith(fontWeight: FontWeight.bold),
-//           ),
-//           Container(
-//             child: Text(
-//               "Phone number: \n${driver.mobileNumber.toString().padLeft(10, '0')}",
-//               style: Theme.of(context)
-//                   .textTheme
-//                   .headline5
-//                   ?.copyWith(fontWeight: FontWeight.bold),
-//             ),
-//           )
-//         ],
-//       ),
-//     );
-//   }
   
   Widget _driverProfile() {
     return Container(
@@ -98,12 +71,6 @@ class _HomeState extends State<HomePage> {
           //vehicle plate no.
           Container(
             constraints: const BoxConstraints.expand(height: 25, width: 300),
-            // child: Placeholder(
-            //     color: Colors.black,
-            //     strokeWidth: 4,
-            //     fallbackWidth: 10,
-            //     fallbackHeight: 100,
-            // ),
             child: Text(
               "Plate No. : ${driver.plateNumber}",
               style: Theme.of(context)
@@ -115,14 +82,8 @@ class _HomeState extends State<HomePage> {
           // ic no.
           Container(
             constraints: const BoxConstraints.expand(height: 25, width: 300),
-            // child: Placeholder(
-            //     color: Colors.black,
-            //     strokeWidth: 4,
-            //     fallbackWidth: 10,
-            //     fallbackHeight: 100,
-            // ),
             child: Text(
-              "IC No. : ${driver.name}",
+              "IC No. : leave it first",
               style: Theme.of(context)
                   .textTheme
                   .headline5
@@ -157,46 +118,16 @@ class _HomeState extends State<HomePage> {
   }
 
   Widget _statusSwitch() {
-    return Container(
-        child: Transform.scale(
-            scale: 1,
-            child: Switch(
-              activeColor: Colors.green,
-              activeTrackColor: Colors.green.shade300,
-              inactiveThumbColor: Colors.red,
-              inactiveTrackColor: Colors.red.shade300,
-              value: isSwitched,
-              onChanged: toggleSwitch,
-            )));
-  }
-
-  Widget _announceCard() {
-    return Expanded(
-        child: ListView.builder(
-            itemCount:alldata.length,
-            itemBuilder: (BuildContext context, int index) {
-              AnnounceData data = alldata[index];
-  
-              return Container(
-                height: 100,
-                margin: const EdgeInsets.only(left:20, top:0, right:20, bottom:5),
-                child: Card(
-                  child: ListTile (
-                    title: Text(data.title),
-                    subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget> [
-                          Text(data.content)
-                        ]
-                    ),
-                    tileColor: Colors.white60,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                ),
-              );
-            })
+    return Transform.scale(
+        scale: 1,
+        child: Switch(
+          activeColor: Colors.green,
+          activeTrackColor: Colors.green.shade300,
+          inactiveThumbColor: Colors.red,
+          inactiveTrackColor: Colors.red.shade300,
+          value: isSwitched,
+          onChanged: toggleSwitch,
+        )
     );
   }
 
@@ -205,42 +136,52 @@ class _HomeState extends State<HomePage> {
     List<dynamic> newsData = newsMap["message"];
     return newsData;
   }
-  
+
   Widget _news(){
-    return FutureBuilder(
-        future: initNews(),
-        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-          return ListView.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  padding: EdgeInsets.only(left: 30, right: 30,top: 15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child:Text('${newsMap["message"][index]["photo"]}'),
-                      ),
-                      Expanded(
-                      flex: 5,
-                      child:Column(
-                        children: [
-                          Text('${newsMap["message"][index]["title"]}',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                          Text('${newsMap["message"][index]["release_date"]}'),
-                          Text('${newsMap["message"][index]["news_content"]}'),
-                          ],
-                        )
-                      ),
-                    ],
-                  ),
-                );
-              }
-          );
-        }
+    return Expanded(
+        child: FutureBuilder(
+          future: initNews(),
+          builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+            return ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    padding: const EdgeInsets.only(left: 30, right: 30,top: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                            flex: 5,
+                            child: Text(
+                                '${newsMap["message"][index]["photo"]}'
+                            ),
+                        ),
+                        Expanded(
+                            flex: 5,
+                            child:Column(
+                              children: [
+                                Text(
+                                  '${newsMap["message"][index]["title"]}',
+                                  style: const TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                    '${newsMap["message"][index]["release_date"]}'
+                                ),
+                                Text(
+                                    '${newsMap["message"][index]["news_content"]}'
+                                ),
+                              ],
+                            )
+                        ),
+                      ],
+                    ),
+                  );
+                });
+          },
+        )
     );
   }
 }
