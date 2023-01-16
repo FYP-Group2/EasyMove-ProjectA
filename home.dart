@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomeState extends State<HomePage> {
+  Map<String, dynamic> newsMap = {};
   var textValue = 'off';
   bool isSwitched = driver.status == "on";
   MyLocationService locationService = MyLocationService(driver.id);
@@ -33,7 +34,8 @@ class _HomeState extends State<HomePage> {
         child: Column(
           children: [
             _upperPart(),
-            _announceCard(),
+//             _announceCard(),
+            _news(),
           ],
         ),
       ),
@@ -198,4 +200,47 @@ class _HomeState extends State<HomePage> {
     );
   }
 
+  Future<List<dynamic>> initNews() async {
+    newsMap = await MyApiService.getNews();
+    List<dynamic> newsData = newsMap["message"];
+    return newsData;
+  }
+  
+  Widget _news(){
+    return FutureBuilder(
+        future: initNews(),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          return ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: snapshot.data!.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  padding: EdgeInsets.only(left: 30, right: 30,top: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child:Text('${newsMap["message"][index]["photo"]}'),
+                      ),
+                      Expanded(
+                      flex: 5,
+                      child:Column(
+                        children: [
+                          Text('${newsMap["message"][index]["title"]}',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                          Text('${newsMap["message"][index]["release_date"]}'),
+                          Text('${newsMap["message"][index]["news_content"]}'),
+                          ],
+                        )
+                      ),
+                    ],
+                  ),
+                );
+              }
+          );
+        }
+    );
+  }
 }
