@@ -8,7 +8,7 @@ import 'package:driver_integrated/my_api_service.dart';
 
 bool withdraw = false;
 
-void makePostRequestWithdrawal(Map<String, String> body) async {
+Future<void> makePostRequestWithdrawal(Map<String, String> body) async {
   String msg = await MyApiService.requestWithdraw(body);
   if (msg == "Request sent successfully.") {
     withdraw = true;
@@ -31,9 +31,9 @@ class walletPageState extends State<Wallet> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text(
+          title: const Text(
             "Wallet",
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.white),
           ),
           backgroundColor: const Color.fromARGB(255, 255, 168, 0),
         ),
@@ -60,8 +60,8 @@ class walletPageState extends State<Wallet> {
   Widget _commission() {
     return Container(
       width: double.maxFinite,
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.only(left: 50, right: 50, top: 30),
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(left: 50, right: 50, top: 30),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.black, width: 0.1),
@@ -71,7 +71,7 @@ class walletPageState extends State<Wallet> {
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 5,
             blurRadius: 7,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           )
         ],
       ),
@@ -108,8 +108,8 @@ class walletPageState extends State<Wallet> {
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           return Container(
             width: double.maxFinite,
-            padding: EdgeInsets.all(10),
-            margin: EdgeInsets.only(left: 50, right: 50, top: 20),
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(left: 50, right: 50, top: 20),
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(color: Colors.black, width: 0.1),
@@ -119,7 +119,7 @@ class walletPageState extends State<Wallet> {
                   color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 5,
                   blurRadius: 7,
-                  offset: Offset(0, 3),
+                  offset: const Offset(0, 3),
                 )
               ],
             ),
@@ -127,13 +127,13 @@ class walletPageState extends State<Wallet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (snapshot.hasData &&
-                    widget.text["withdrawable_merit"] != null) ...[
+                    widget.text["withdrew_merit"] != null) ...[
                   Text(
                     "MERIT",
                     style: TextStyle(color: Colors.orange[400], fontSize: 18),
                   ),
                   Text(
-                    "RM ${widget.text["withdrawable_merit"].toString()}",
+                    "RM ${widget.text["withdrew_merit"].toString()}",
                     style: const TextStyle(fontSize: 30, color: Colors.black),
                   ),
                 ] else ...[
@@ -159,33 +159,41 @@ class walletPageState extends State<Wallet> {
       'withdraw_merit': display_merit_value
     };
     return Padding(
-      padding: EdgeInsets.only(top: 10, left: 175),
+      padding: const EdgeInsets.only(top: 10, left: 175),
       child: FutureBuilder(
           future: initWallet(),
           builder: (BuildContext context,
               AsyncSnapshot<Map<String, dynamic>> snapshot) {
             return GFButton(
               color: Colors.orange,
-              onPressed: () {
-                if (snapshot.hasData &&
-                    widget.text["withdrawable_merit"] != null) {
-                  if ((widget.text["withdrawable_merit"]) > 5) {
-                    makePostRequestWithdrawal(body);
+              onPressed: () async {
+                if (snapshot.hasData && widget.text["withdrew_merit"] != null) {
+                  if(widget.text["withdrew_merit"] > 0) {
                     display_merit_value =
-                        (widget.text["withdrawable_merit"] - 5).toString();
-
-                    if (withdraw == true) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Withdrawal()));
-                    }
-                    withdraw = false;
-                  } else {
+                        (widget.text["withdrew_merit"]).toString();
+                    body['withdraw_merit'] = display_merit_value;
+                    await makePostRequestWithdrawal(body).then((value) {
+                      if (withdraw == true) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    Withdrawal(
+                                      withdrawableAmount: double.parse(
+                                          widget.text["withdrew_merit"]
+                                              .toString()),
+                                      withdrawType: "merit",
+                                    )
+                            )
+                        );
+                        withdraw = false;
+                      }
+                    });
+                  }else{
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => UnableWithdrawal()));
+                            builder: (context) => const UnableWithdrawal(withdrawType: "merit",)));
                   }
                 } else {
                   showDialog(
@@ -214,8 +222,8 @@ class walletPageState extends State<Wallet> {
                   );
                 }
               },
-              child: Text("Request Withdrawal"),
               shape: GFButtonShape.pills,
+              child: const Text("Request Withdrawal"),
             );
           }),
     );
@@ -229,38 +237,45 @@ class walletPageState extends State<Wallet> {
       'withdraw_merit': display_merit_value
     };
     return Padding(
-      padding: EdgeInsets.only(top: 10, left: 175),
+      padding: const EdgeInsets.only(top: 10, left: 175),
       child: FutureBuilder(
           future: initWallet(),
           builder: (BuildContext context,
               AsyncSnapshot<Map<String, dynamic>> snapshot) {
             return GFButton(
               color: Colors.orange,
-              onPressed: () {
+              onPressed: () async {
                 if (snapshot.hasData) {
-                  if (double.parse(widget.text["commission_bonus"]) > 5.00) {
-                    makePostRequestWithdrawal(body);
+                  if (double.parse(widget.text["commission_bonus"].toString()) > 30.00) {
                     display_merit_value =
-                        (double.parse(widget.text["commission_bonus"]) - 5.00)
+                        (double.parse(widget.text["commission_bonus"].toString()) - 30.00)
                             .floor()
                             .toString();
-                    if (withdraw == true) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Withdrawal()));
-                    }
-                    withdraw = false;
+                    body['withdraw_merit'] = display_merit_value;
+                    await makePostRequestWithdrawal(body).then((value) {
+                      if (withdraw == true) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Withdrawal(
+                                  withdrawableAmount: double.parse(widget.text["commission_bonus"].toString()) - 30.00,
+                                  withdrawType: "commission",
+                                )
+                            )
+                        );
+                      }
+                      withdraw = false;
+                    });
                   } else {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => UnableWithdrawal()));
+                            builder: (context) => const UnableWithdrawal(withdrawType: "commission",)));
                   }
                 }
               },
-              child: Text("Request Withdrawal"),
               shape: GFButtonShape.pills,
+              child: const Text("Request Withdrawal"),
             );
           }),
     );

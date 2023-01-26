@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/my_location_service.dart';
 import 'package:driver_integrated/driver.dart';
 import 'dart:async';
+
+import 'package:flutter/services.dart';
 
 Driver driver = Driver();
 
@@ -50,7 +54,7 @@ class _HomeState extends State<HomePage> {
       ]),
     );
   }
-  
+
   Widget _driverProfile() {
     return Container(
       margin: const EdgeInsets.only(left: 20, top: 20, right: 0, bottom: 10),
@@ -68,6 +72,29 @@ class _HomeState extends State<HomePage> {
             // ),
             child: Image.asset("assets/icon/profilepic.png"),
           ),
+          Container(
+            constraints: const BoxConstraints.expand(height: 25, width: 300),
+            //name
+            child: Text(
+              "Name : ${driver.name}",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          //phone number
+          Container(
+            constraints: const BoxConstraints.expand(height: 25, width: 300),
+            //name
+            child: Text(
+              "Phone No. : ${driver.mobileNumber}",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
           //vehicle plate no.
           Container(
             constraints: const BoxConstraints.expand(height: 25, width: 300),
@@ -79,17 +106,6 @@ class _HomeState extends State<HomePage> {
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
-          // ic no.
-          Container(
-            constraints: const BoxConstraints.expand(height: 25, width: 300),
-            child: Text(
-              "IC No. : leave it first",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-          )
         ],
       ),
     );
@@ -139,9 +155,10 @@ class _HomeState extends State<HomePage> {
 
   Widget _news(){
     return Expanded(
-        child: FutureBuilder(
-          future: initNews(),
-          builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+      child: FutureBuilder(
+        future: initNews(),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if(snapshot.hasData) {
             return ListView.builder(
                 physics: const AlwaysScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
@@ -149,23 +166,28 @@ class _HomeState extends State<HomePage> {
                 itemCount: snapshot.data!.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
-                    padding: const EdgeInsets.only(left: 30, right: 30,top: 15),
+                    padding: const EdgeInsets.only(
+                        left: 30, right: 30, top: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Expanded(
-                            flex: 5,
-                            child: Text(
-                                '${newsMap["message"][index]["photo"]}'
-                            ),
+                          flex: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: newsMap["message"][index]["photo"] == ""
+                              ? const Text("No Image available")
+                              : Image.memory(base64Decode("${newsMap["message"][index]["photo"]}")),
+                          ),
                         ),
                         Expanded(
                             flex: 5,
-                            child:Column(
+                            child: Column(
                               children: [
                                 Text(
                                   '${newsMap["message"][index]["title"]}',
-                                  style: const TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                     '${newsMap["message"][index]["release_date"]}'
@@ -180,8 +202,11 @@ class _HomeState extends State<HomePage> {
                     ),
                   );
                 });
-          },
-        )
+          }else{
+            return const CircularProgressIndicator();
+          }
+        },
+      )
     );
   }
 }

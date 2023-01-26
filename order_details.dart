@@ -1,10 +1,11 @@
 import 'package:driver_integrated/order.dart';
 import 'package:flutter/material.dart';
 import 'package:driver_integrated/my_order.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:driver_integrated/driver.dart';
-import 'package:driver_integrated/my_api_service.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_launch/flutter_launch.dart';
 
 class Order_details extends StatelessWidget {
   const Order_details({super.key, required this.order});
@@ -28,9 +29,9 @@ class _RowOrder extends StatelessWidget {
   openMapsList(context) async {
     try {
       final oCoords =
-          Coords(double.parse(order.oLat), double.parse(order.oLon));
+      Coords(double.parse(order.oLat), double.parse(order.oLon));
       final dCoords =
-          Coords(double.parse(order.dLat), double.parse(order.dLon));
+      Coords(double.parse(order.dLat), double.parse(order.dLon));
       final availableMaps = await MapLauncher.installedMaps;
 
       showModalBottomSheet(
@@ -363,15 +364,33 @@ class _RowOrder extends StatelessWidget {
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.only(top: 0, bottom: 5),
-                              child: Text(
-                                order.phone,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  await FlutterLaunch.launchWhatsapp(phone: order.phone, message: "");
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const FaIcon(
+                                      FontAwesomeIcons.whatsapp,
+                                      color: Colors.green,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Text(
+                                        order.phone,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  ]
                                 ),
                               ),
+
                             ),
                           ),
                         ],

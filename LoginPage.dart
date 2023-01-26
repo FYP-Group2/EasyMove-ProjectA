@@ -98,9 +98,9 @@ class _LoginPageState extends State<LoginPage> {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      const NavBar(
-                        currentPage: PageItem.Home,
-                      )),
+                  const NavBar(
+                    currentPage: PageItem.Home,
+                  )),
             );
           });
         }

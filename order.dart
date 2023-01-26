@@ -183,10 +183,10 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance:${data[index].distance} KM\n"
-                        "Collect Time: ${data[index].collectTime}\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                            "Destination:\n${data[index].destination}\n\n"
+                            "Distance:${data[index].distance} KM\n"
+                            "Collect Time: ${data[index].collectTime}\n"
+                            "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -223,10 +223,10 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n"
-                        "Collect Time: ${data[index].collectTime}\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                            "Destination:\n${data[index].destination}\n\n"
+                            "Distance: ${data[index].distance} KM\n"
+                            "Collect Time: ${data[index].collectTime}\n"
+                            "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -263,11 +263,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n"
-                        "Status: ${data[index].status}\n"
-                        "Collect Time: ${data[index].collectTime}\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                            "Destination:\n${data[index].destination}\n\n"
+                            "Distance: ${data[index].distance} KM\n"
+                            "Status: ${data[index].status}\n"
+                            "Collect Time: ${data[index].collectTime}\n"
+                            "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -304,11 +304,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n"
-                        "Status: ${data[index].status}\n"
-                        "Collect Time: ${data[index].collectTime}\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                            "Destination:\n${data[index].destination}\n\n"
+                            "Distance: ${data[index].distance} KM\n"
+                            "Status: ${data[index].status}\n"
+                            "Collect Time: ${data[index].collectTime}\n"
+                            "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -345,11 +345,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n"
-                        "Status: ${data[index].status}\n"
-                        "Collect Time: ${data[index].collectTime}\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                            "Destination:\n${data[index].destination}\n\n"
+                            "Distance: ${data[index].distance} KM\n"
+                            "Status: ${data[index].status}\n"
+                            "Collect Time: ${data[index].collectTime}\n"
+                            "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         true);
                   } else {
@@ -393,8 +393,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 context,
                 MaterialPageRoute(
                     builder: (context) => Order_details(
-                          order: order,
-                        )));
+                      order: order,
+                    )));
           } else if (direction == DismissDirection.endToStart) {
             if (order.isAssigned && order.status == "Ordered") {
               assignedAlertBox(order.id);
@@ -493,7 +493,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
               title:
-                  const Text("Order Confirmation"), //myAlertBoxTitle(action),
+              const Text("Order Confirmation"), //myAlertBoxTitle(action),
               content: Container(
                 height: MediaQuery.of(context).size.height / 6,
                 child: orderActionAlertBoxTitle(action),
@@ -592,7 +592,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         builder: (context) {
           return AlertDialog(
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             title: const Text("Order Confirmation"), //myAlertBoxTitle(action),
             content: Container(
               height: MediaQuery.of(context).size.height / 6,
@@ -639,5 +639,6 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
       MyApiService.updateOrder(driver.id, orderId, "pod");
       MyApiService.photoPOD(orderId, filePath);
     }
+    setState(() {});
   }
 }
