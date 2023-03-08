@@ -1,0 +1,38 @@
+buildscript {
+    ext.kotlin_version = '1.6.10'
+    repositories {
+        // TODO: ADD THIS PART FOR FIREBASE MESSAGING (CONFIRM THAT YOU HAVE THIS)
+        google()
+        mavenCentral()
+        // TODO: --------------- END HERE ------------------
+    }
+
+    dependencies {
+        // TODO: ADD THIS PART FOR FIREBASE MESSAGING
+        classpath 'com.google.gms:google-services:4.3.13'
+        // TODO: --------------- END HERE ------------------
+        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+// TODO: ADD THIS PART FOR FIREBASE MESSAGING (CONFIRM THAT YOU HAVE THIS)
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+// TODO: --------------- END HERE ------------------
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
