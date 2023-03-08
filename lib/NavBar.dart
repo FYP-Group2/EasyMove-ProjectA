@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:driver_integrated/home.dart';
 import 'package:driver_integrated/order.dart';
-import 'package:driver_integrated/notification.dart';
+import 'package:driver_integrated/driver.dart';
 import 'package:driver_integrated/account.dart';
+import 'package:driver_integrated/notification_view.dart';
 
 enum PageItem {
   Home("Home"),
@@ -46,6 +47,8 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
+  Driver driver = Driver();
+
   PageItem currentPage;
   _NavBarState({required this.currentPage});
   final _navigatorKeys = {
@@ -56,12 +59,39 @@ class _NavBarState extends State<NavBar> {
   };
 
   void _selectPage(PageItem pageItem) {
-    if (pageItem == currentPage) {
-      // pop to first route
-      _navigatorKeys[PageItem]!.currentState!.popUntil((route) =>
-      route.isFirst);
-    } else {
-      setState(() => currentPage = pageItem);
+    if(driver.status == "on" || pageItem != PageItem.Order) {
+      if (pageItem == currentPage) {
+        // pop to first route
+        _navigatorKeys[PageItem]!.currentState!.popUntil((route) =>
+        route.isFirst);
+      } else {
+        setState(() => currentPage = pageItem);
+      }
+    }else{
+      showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: const Text("Currently Offline"),
+            content: Container(
+              height: MediaQuery.of(context).size.height / 6,
+              child: const Text("Please turn yourself online by toggling the button at home page before going to other pages"),
+            ),
+            actions: [
+              TextButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                  setState(() {});
+                },
+                child: const Text(
+                  "OK",
+                  style: TextStyle(color: Color.fromARGB(255, 255, 168, 0), fontSize: 20),
+                ),
+              )
+            ],
+          );
+        }
+      );
     }
   }
 

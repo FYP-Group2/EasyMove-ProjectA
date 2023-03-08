@@ -19,18 +19,6 @@ class _RowOrder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        /*leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-            onPressed: (() {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const OrderList(title: 'Order List View')));
-            })),*/
         title: const Text(
           'Order Details',
           style: TextStyle(color: Colors.black),

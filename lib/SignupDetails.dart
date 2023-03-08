@@ -3,6 +3,9 @@ import 'package:getwidget/getwidget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:driver_integrated/SignupVehicle.dart';
 import 'dart:io';
+import 'package:driver_integrated/my_api_service.dart';
+import 'package:driver_integrated/validation_helpers.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 final _formKey = GlobalKey<FormState>();
 
@@ -10,54 +13,76 @@ final _formKey = GlobalKey<FormState>();
 XFile? front_ic_image;
 XFile? back_ic_image;
 
-
 class SignupDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80.0),
-          child: AppBar(
-            title: Image.asset(
-                'assets/images/icon.png', height: 100),
-            centerTitle: true,
-            backgroundColor: Color(0xFFFFA600),
-          ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
+        child: AppBar(
+          title: Image.asset('assets/images/icon.png', height: 100),
+          centerTitle: true,
+          backgroundColor: Color(0xFFFFA600),
         ),
-        body: signupForm(),
+      ),
+      body: signupForm(),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.grey.shade300,Colors.white],
-            stops: [0.05,0.2],
-          )
-        ),
-      child:Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          new GestureDetector(
-              onTap:(){
-                if (_formKey.currentState!.validate() && front_ic_image != null && back_ic_image != null) {
-                  Navigator.push(context,
-                    MaterialPageRoute(builder:(context) => SignupVehicle(fullname_value.text,ic_value.text,mobilenumber_value.text,emergencycontact_value.text,employment_type_value,region_value,front_ic_image,back_ic_image,username_value.text,password_value.text )),
-                  );
-                }
-              },
-              child: new Text("Next", style: TextStyle(color: Colors.orange[400],fontSize: 30),),
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.grey.shade300, Colors.white],
+          stops: [0.05, 0.2],
+        )),
+        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          GestureDetector(
+            onTap: () {
+              if (!_formKey.currentState!.validate()) {
+                return;
+              } else if (front_ic_image == null || back_ic_image == null) {
+                Fluttertoast.showToast(
+                    msg: "Please provide the required images",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SignupVehicle(
+                          fullname_value.text,
+                          ic_value.text,
+                          mobilenumber_value.text,
+                          emergencycontact_value.text,
+                          employment_type_value,
+                          regionMap[region_value]!,
+                          front_ic_image,
+                          back_ic_image,
+                          username_value.text,
+                          password_value.text)),
+                );
+              }
+            },
+            child: Text(
+              "Next",
+              style: TextStyle(color: Colors.orange[400], fontSize: 30),
+            ),
           ),
           Padding(
             padding: EdgeInsets.only(right: 20),
-            child:Icon(
-              IconData(0xe09e, fontFamily: 'MaterialIcons', matchTextDirection: true),size: 50, color: Colors.orange[400],
+            child: Icon(
+              const IconData(0xe09e,
+                  fontFamily: 'MaterialIcons', matchTextDirection: true),
+              size: 50,
+              color: Colors.orange[400],
             ),
-            ),
-          ]
-
+          ),
+        ]),
       ),
-      ),
-      );
+    );
   }
 }
 
@@ -69,9 +94,23 @@ class signupForm extends StatefulWidget {
 }
 
 //signupform (page1)
-class signupFormState extends State<signupForm>{
-
+class signupFormState extends State<signupForm> {
   final ImagePicker picker = ImagePicker();
+
+  Future<List> getRegions() async {
+    regions = await MyApiService.getRegions();
+    regionMap = regions[0];
+    region = regions[1];
+    if (region_value == "") {
+      region_value = region[0];
+    }
+    return regions;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   //we can upload image from camera or from gallery based on parameter
   Future getImage(ImageSource media, String info) async {
@@ -82,7 +121,7 @@ class signupFormState extends State<signupForm>{
         front_ic_image = img;
       });
     }
-    if(info == "backic"){
+    if (info == "backic") {
       setState(() {
         back_ic_image = img;
       });
@@ -96,7 +135,7 @@ class signupFormState extends State<signupForm>{
         builder: (BuildContext context) {
           return AlertDialog(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             title: Text('Please choose a media to upload from'),
             content: Container(
               height: MediaQuery.of(context).size.height / 6,
@@ -106,7 +145,7 @@ class signupFormState extends State<signupForm>{
                     //if user click this button, user can upload image from gallery
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage(ImageSource.gallery,info);
+                      getImage(ImageSource.gallery, info);
                     },
                     child: Row(
                       children: [
@@ -119,7 +158,7 @@ class signupFormState extends State<signupForm>{
                     //if user click this button. user can upload image from camera
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage(ImageSource.camera,info);
+                      getImage(ImageSource.camera, info);
                     },
                     child: Row(
                       children: [
@@ -136,13 +175,12 @@ class signupFormState extends State<signupForm>{
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-        child: new SingleChildScrollView(
-          padding: EdgeInsets.only(left:15,right:15),
-          child: new Column(
-
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(left: 15, right: 15),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             //input field for full name
@@ -163,35 +201,34 @@ class signupFormState extends State<signupForm>{
             //input field for emergency contact number
             Padding(
               padding: EdgeInsets.only(bottom: 15),
-              child:inputemergencycontactmobilenumber,
+              child: inputemergencycontactmobilenumber,
             ),
 
             //two drop down list
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-
                 //employment type
                 Column(
                   children: [
                     Text("Employment Type"),
                     //input field for employment type
                     Container(
-                    child:DropdownButton(
-                      value: employment_type_value,
-                      items: employment_type.map((String employment_type) {
-                        return DropdownMenuItem(
-                          value: employment_type,
-                          child: Text(employment_type),
-                        );
-                      }).toList(),
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          employment_type_value = newValue!;
-                        });
-                      },
-                    ),
+                      child: DropdownButton(
+                        value: employment_type_value,
+                        items: employment_type.map((String employment_type) {
+                          return DropdownMenuItem(
+                            value: employment_type,
+                            child: Text(employment_type),
+                          );
+                        }).toList(),
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            employment_type_value = newValue!;
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -200,22 +237,28 @@ class signupFormState extends State<signupForm>{
                 Column(
                   children: [
                     Text("Region"),
-                    //input field for region
-                    DropdownButton(
-                      value: region_value,
-                      items: region.map((String region) {
-                        return DropdownMenuItem(
-                          value: region,
-                          child: Text(region),
+                    FutureBuilder(
+                      future: getRegions(),
+                      builder: (context, snapshot) {
+                        //input field for region
+                        return DropdownButton(
+                          value: region_value,
+                          items: region
+                              .map<DropdownMenuItem<String>>((String region) {
+                            return DropdownMenuItem(
+                              value: region,
+                              child: Text(region),
+                            );
+                          }).toList(),
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              region_value = newValue!;
+                            });
+                          },
                         );
-                      }).toList(),
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          region_value = newValue!;
-                        });
                       },
-                    ),
+                    )
                   ],
                 ),
               ],
@@ -224,7 +267,10 @@ class signupFormState extends State<signupForm>{
             //input for front of driver's IC
             Column(
               children: [
-                Text("Front Of Driver's I.C.",style: TextStyle(fontSize: 18),),
+                Text(
+                  "Front Of Driver's I.C. *",
+                  style: TextStyle(fontSize: 18),
+                ),
                 GFButton(
                   color: Colors.orange,
                   onPressed: () {
@@ -239,27 +285,31 @@ class signupFormState extends State<signupForm>{
             //show image
             front_ic_image != null
                 ? Padding(
-              padding: const EdgeInsets.only(left: 5, right:5 ,bottom:20),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  //to show image
-                  File(front_ic_image!.path),
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                  height: 300,
-                ),
-              ),
-            )
+                    padding:
+                        const EdgeInsets.only(left: 5, right: 5, bottom: 20),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(
+                        //to show image
+                        File(front_ic_image!.path),
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width,
+                        height: 300,
+                      ),
+                    ),
+                  )
                 : Text(
-              "",
-              style: TextStyle(fontSize: 20),
-            ),
+                    "",
+                    style: TextStyle(fontSize: 20),
+                  ),
 
             //input for back of driver's IC
             Column(
               children: [
-                Text("Back Of Driver's I.C.",style: TextStyle(fontSize: 18),),
+                Text(
+                  "Back Of Driver's I.C. *",
+                  style: TextStyle(fontSize: 18),
+                ),
                 GFButton(
                   color: Colors.orange,
                   onPressed: () {
@@ -274,25 +324,26 @@ class signupFormState extends State<signupForm>{
             //show image
             back_ic_image != null
                 ? Padding(
-              padding: const EdgeInsets.only(left: 5, right:5, bottom: 20),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  //to show image
-                  File(back_ic_image!.path),
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                  height: 300,
-                ),
-              ),
-            )
+                    padding:
+                        const EdgeInsets.only(left: 5, right: 5, bottom: 20),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(
+                        //to show image
+                        File(back_ic_image!.path),
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width,
+                        height: 300,
+                      ),
+                    ),
+                  )
                 : Text(
-              "",
-              style: TextStyle(fontSize: 20),
-            ),
+                    "",
+                    style: TextStyle(fontSize: 20),
+                  ),
           ],
         ),
-        ),
+      ),
     );
   }
 }
@@ -306,14 +357,9 @@ var inputfullname = TextFormField(
   decoration: const InputDecoration(
     // icon: const Icon(Icons.person),
     hintText: 'Enter your name',
-    labelText: 'Full Name As Per IC',
+    labelText: 'Full Name As Per IC *',
   ),
-  validator: (value){
-    if (value == null || value.isEmpty){
-      return 'Please enter your full name as per IC';
-    }
-    return null;
-  },
+  validator: (value) => validateName(value, "full name as per IC"),
 );
 
 //to get input username value
@@ -325,14 +371,9 @@ var inputusername = TextFormField(
   decoration: const InputDecoration(
     // icon: const Icon(Icons.person),
     hintText: 'Create your username',
-    labelText: 'Login Username',
+    labelText: 'Login Username *',
   ),
-  validator: (value){
-    if (value == null || value.isEmpty){
-      return 'Please create your username';
-    }
-    return null;
-  },
+  validator: (value) => validateStringNotEmpty(value, "username"),
 );
 
 //to get input password value
@@ -345,14 +386,9 @@ var inputpassword = TextFormField(
   decoration: const InputDecoration(
     // icon: const Icon(Icons.person),
     hintText: 'Create your password',
-    labelText: 'Login Password',
+    labelText: 'Login Password *',
   ),
-  validator: (value){
-    if (value == null || value.isEmpty){
-      return 'Please create your password';
-    }
-    return null;
-  },
+  validator: validatePassword,
 );
 
 //to get input full name value
@@ -361,19 +397,13 @@ TextEditingController ic_value = TextEditingController();
 //input ic number
 var inputicnumber = TextFormField(
   controller: ic_value,
-
   keyboardType: TextInputType.number,
   decoration: const InputDecoration(
     // icon: const Icon(Icons.person),
     hintText: 'Enter your I.C. number',
-    labelText: 'Identity Card Number',
+    labelText: 'Identity Card Number *',
   ),
-  validator: (value){
-    if (value == null || value.isEmpty){
-      return 'Please enter your IC number';
-    }
-    return null;
-  },
+  validator: validateIcNumber,
 );
 
 //to get input full name value
@@ -386,14 +416,9 @@ var inputmobilenumber = TextFormField(
   decoration: const InputDecoration(
     // icon: const Icon(Icons.person),
     hintText: 'Enter your mobile number',
-    labelText: 'Mobile Phone Number',
+    labelText: 'Mobile Phone Number *',
   ),
-  validator: (value){
-    if (value == null || value.isEmpty){
-      return 'Please enter your mobile number';
-    }
-    return null;
-  },
+  validator: (value) => validatePhoneNumber(value, "Phone Number"),
 );
 
 //to get input full name value
@@ -406,14 +431,9 @@ var inputemergencycontactmobilenumber = TextFormField(
   decoration: const InputDecoration(
     // icon: const Icon(Icons.person),
     hintText: 'Enter your emergency contact mobile number',
-    labelText: 'Emergency Contact Mobile Phone Number',
+    labelText: 'Emergency Contact Mobile Phone Number *',
   ),
-  validator: (value){
-    if (value == null || value.isEmpty){
-      return 'Please enter your emergency contact number';
-    }
-    return null;
-  },
+  validator: (value) => validatePhoneNumber(value, "Emergency Phone Number"),
 );
 
 //employment type drop down list values
@@ -423,12 +443,7 @@ var employment_type = [
 ];
 String employment_type_value = 'Part-Time';
 
-//region drop down list values
-var region = [
-  'Region 1',
-  'Region 2',
-  'Region 3',
-];
-String region_value = 'Region 1';
-
-
+late Map<String, int> regionMap;
+List regions = [];
+List<String> region = [];
+String region_value = "";

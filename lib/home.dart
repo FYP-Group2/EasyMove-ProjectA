@@ -1,23 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:driver_integrated/dummy_order.dart';
+import 'package:driver_integrated/my_api_service.dart';
+import 'package:driver_integrated/my_location_service.dart';
 import 'package:driver_integrated/driver.dart';
+import 'dart:async';
+
+import 'package:flutter/services.dart';
 
 Driver driver = Driver();
-bool isSwitched = driver.status == "on";
-
-const String url = "awcgroup.com.my";
-const String unencodedPath = "/easymovenpick.com/api/driver_on_off.php";
-final Map<String, String> headers = {'Content-Type': 'application/json; charset=UTF-8'};
-
-void makePostRequest(String url, String unencodedPath , Map<String, String> header, Map<String,String> requestBody) async {
-  final response = await http.post(
-      Uri.http(url,unencodedPath),
-      body: requestBody
-  );
-  print(response.statusCode);
-  print(response.body);
-}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title, this.onPush});
@@ -30,6 +21,9 @@ class HomePage extends StatefulWidget {
 
 class _HomeState extends State<HomePage> {
   var textValue = 'off';
+  bool isSwitched = driver.status == "on";
+  MyLocationService locationService = MyLocationService(driver.id);
+  Map<String, dynamic> newsMap = {};
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +39,7 @@ class _HomeState extends State<HomePage> {
         child: Column(
           children: [
             _upperPart(),
-            _orderCard(),
+            _news(),
           ],
         ),
       ),
@@ -54,32 +48,64 @@ class _HomeState extends State<HomePage> {
 
   Widget _upperPart() {
     return Container(
-      child: Row(
-        children: [
-          _driverProfile(),
-          _statusSwitch(),
-        ]
-      ),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        _driverProfile(),
+        _statusSwitch(),
+      ]),
     );
   }
 
   Widget _driverProfile() {
     return Container(
-      margin: EdgeInsets.only(left:20, top:10, right:0, bottom:10),
+      margin: const EdgeInsets.only(left: 20, top: 20, right: 0, bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget> [
-          Text(
-            "Hi Driver",
-            style: Theme.of(context).textTheme.headline5?.copyWith(fontWeight: FontWeight.bold),
+        children: [
+          // profile pic
+          Container(
+            constraints: const BoxConstraints.expand(height: 100, width: 100),
+            // child: Placeholder(
+            //     color: Colors.black,
+            //     strokeWidth: 4,
+            //     fallbackWidth: 10,
+            //     fallbackHeight: 100,
+            // ),
+            child: Image.asset("assets/icon/profilepic.png"),
           ),
           Container(
-            child: Image.asset(
-              'assets/icon/profilepic.png',
-              height: 100,
-              width: 100,
+            constraints: const BoxConstraints.expand(height: 25, width: 300),
+            //name
+            child: Text(
+              "Name : ${driver.name}",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
-          )
+          ),
+          //phone number
+          Container(
+            constraints: const BoxConstraints.expand(height: 25, width: 300),
+            //name
+            child: Text(
+              "Phone No. : ${driver.mobileNumber}",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          //vehicle plate no.
+          Container(
+            constraints: const BoxConstraints.expand(height: 25, width: 300),
+            child: Text(
+              "Plate No. : ${driver.plateNumber}",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );
@@ -91,75 +117,96 @@ class _HomeState extends State<HomePage> {
         isSwitched = true;
         driver.status = "on";
         textValue = 'on';
+        locationService.start();
 
-        final Map<String,String> body = {'uid': '1', 'onoff': textValue};
-        makePostRequest(url, unencodedPath, headers, body);
+        MyApiService.updateDriverOnOff(driver.id, textValue);
       });
-      print('Driver is Online');
-    }
-    else {
+    } else {
       setState(() {
         isSwitched = false;
         driver.status = "off";
         textValue = 'off';
+        locationService.stop();
 
-        final Map<String,String> body = {'uid': '1', 'onoff': textValue};
-        makePostRequest(url, unencodedPath, headers, body);
+        MyApiService.updateDriverOnOff(driver.id, textValue);
       });
-      print('Driver is Offline');
     }
   }
 
   Widget _statusSwitch() {
-    return Container(
-        margin: EdgeInsets.only(left:200, top:0, right:0, bottom:0),
-        child: Transform.scale(
-            scale: 1,
-            child: Switch(
-              activeColor: Colors.green,
-              activeTrackColor: Colors.green.shade300,
-              inactiveThumbColor: Colors.red,
-              inactiveTrackColor: Colors.red.shade300,
-              value: isSwitched,
-              onChanged: toggleSwitch,
-            )
+    return Transform.scale(
+        scale: 1,
+        child: Switch(
+          activeColor: Colors.green,
+          activeTrackColor: Colors.green.shade300,
+          inactiveThumbColor: Colors.red,
+          inactiveTrackColor: Colors.red.shade300,
+          value: isSwitched,
+          onChanged: toggleSwitch,
         )
     );
   }
 
-  Widget _orderCard() {
-    return Expanded(
-        child: ListView.builder(
-            itemCount:allorder.length,
-            itemBuilder: (BuildContext context, int index) {
-              OrderData data = allorder[index];
+  Future<List<dynamic>> initNews() async {
+    newsMap = await MyApiService.getNews();
+    List<dynamic> newsData = newsMap["message"];
+    return newsData;
+  }
 
-              return Container(
-                height: 100,
-                margin: EdgeInsets.only(left:20, top:10, right:20, bottom:10),
-                child: Card(
-                  child: ListTile (
-                    title: Text(data.id),
-                    subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget> [
-                          Text(data.company),
-                          Text(data.address)
-                        ]
+  Widget _news(){
+    return Expanded(
+      child: FutureBuilder(
+        future: initNews(),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if(snapshot.hasData) {
+            return ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    padding: const EdgeInsets.only(
+                        left: 30, right: 30, top: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: newsMap["message"][index]["photo"] == ""
+                              ? const Text("No Image available")
+                              : Image.memory(base64Decode("${newsMap["message"][index]["photo"]}")),
+                          ),
+                        ),
+                        Expanded(
+                            flex: 5,
+                            child: Column(
+                              children: [
+                                Text(
+                                  '${newsMap["message"][index]["title"]}',
+                                  style: const TextStyle(fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                    '${newsMap["message"][index]["release_date"]}'
+                                ),
+                                Text(
+                                    '${newsMap["message"][index]["news_content"]}'
+                                ),
+                              ],
+                            )
+                        ),
+                      ],
                     ),
-                    leading: const CircleAvatar(
-                      backgroundImage: AssetImage("assets/icon/truck.png"),
-                    ),
-                    trailing: Icon(Icons.arrow_forward_ios_outlined),
-                    tileColor: Colors.white60,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                ),
-              );
-            })
+                  );
+                });
+          }else{
+            return const CircularProgressIndicator();
+          }
+        },
+      )
     );
   }
 }
-

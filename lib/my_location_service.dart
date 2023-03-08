@@ -1,12 +1,13 @@
+import 'package:driver_integrated/my_api_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cron/cron.dart';
-import 'package:http/http.dart' as http;
 
 class MyLocationService{
   static final MyLocationService _instance = MyLocationService._internal();
   final List<Position> _positions = <Position>[];
   final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
   final Cron _cron = Cron();
+  late ScheduledTask _scheduledTask;
   late int driverId;
 
   MyLocationService._internal();
@@ -22,12 +23,12 @@ class MyLocationService{
     if (!hasPermission) {
       return;
     }
-    _cron.schedule(Schedule.parse('* * * * *'), () => _updatePosition());
+    _scheduledTask = _cron.schedule(Schedule.parse('* * * * *'), () => _updatePosition());
   }
 
   /// Stop automatic update of location.
   void stop(){
-    _cron.close();
+    _scheduledTask.cancel();
   }
 
   /// Get the latest recorded position.
@@ -66,15 +67,8 @@ class MyLocationService{
 
   /// Update the location to database through website API
   void _locationAPI(Position position) async {
-    const String url = "awcgroup.com.my";
-    const String unencodedPath = "/easymovenpick.com/api/location.php";
-    final Map<String, String> body = {"uid" : "$driverId",
-      "location": "$position"};
-
-    await http.post(
-        Uri.http(url, unencodedPath),
-        body: body
-    );
+    final String strPosition = "$position,placeholder";
+    MyApiService.updateLocation(strPosition, driverId);
   }
 
   /// Handle permission for location service
