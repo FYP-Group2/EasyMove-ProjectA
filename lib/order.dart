@@ -40,6 +40,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
   Future<List<MyOrder>> populateOrders(String orderStatus, bool assign) async {
     List<MyOrder> myOrders = [];
     List orderIds = await MyApiService.getOrdersId(driver.id, orderStatus);
+    //myOrders.sort((a, b) =>(double.parse(a.collectTime)).compareTo((double.parse(b.collectTime))));
     for (var oid in orderIds) {
       final data = await MyApiService.getOrder(oid);
       String status = data["status"].toString();
@@ -90,7 +91,10 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           }
         }
       } else {
-        if ( !myOrder.isAssigned || (myOrder.isAssigned && data["assign"] == driver.id && orderStatus != "new") ) {
+        if (!myOrder.isAssigned ||
+            (myOrder.isAssigned &&
+                data["assign"] == driver.id &&
+                orderStatus != "new")) {
           myOrders.add(myOrder);
         }
       }
@@ -109,6 +113,9 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    //List<MyOrder> orders = [];
+    //orders.sort((a, b) => (double.parse(a.collectTime)).compareTo((double.parse(b.collectTime))));
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -176,16 +183,17 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 );
               }
               final data = snapshot.data;
+              data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
               return ListView.builder(
                 itemCount: data!.length + 1,
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance:${data[index].distance} KM\n"
-                            "Collect Time: ${data[index].collectTime}\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance:${data[index].distance} KM\n"
+                        "Collect Time: ${data[index].collectTime}\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -216,16 +224,17 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 );
               }
               final data = snapshot.data;
+              data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
               return ListView.builder(
                 itemCount: data!.length + 1,
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n"
-                            "Collect Time: ${data[index].collectTime}\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n"
+                        "Collect Time: ${data[index].collectTime}\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -256,17 +265,18 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 );
               }
               final data = snapshot.data;
+              data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
               return ListView.builder(
                 itemCount: data!.length + 1,
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n"
-                            "Status: ${data[index].status}\n"
-                            "Collect Time: ${data[index].collectTime}\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n"
+                        "Status: ${data[index].status}\n"
+                        "Collect Time: ${data[index].collectTime}\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -297,17 +307,18 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 );
               }
               final data = snapshot.data;
+              data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
               return ListView.builder(
                 itemCount: data!.length + 1,
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n"
-                            "Status: ${data[index].status}\n"
-                            "Collect Time: ${data[index].collectTime}\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n"
+                        "Status: ${data[index].status}\n"
+                        "Collect Time: ${data[index].collectTime}\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -338,17 +349,18 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 );
               }
               final data = snapshot.data;
+              data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
               return ListView.builder(
                 itemCount: data!.length + 1,
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n"
-                            "Status: ${data[index].status}\n"
-                            "Collect Time: ${data[index].collectTime}\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n"
+                        "Status: ${data[index].status}\n"
+                        "Collect Time: ${data[index].collectTime}\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         true);
                   } else {
@@ -392,8 +404,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 context,
                 MaterialPageRoute(
                     builder: (context) => Order_details(
-                      order: order,
-                    )));
+                          order: order,
+                        )));
           } else if (direction == DismissDirection.endToStart) {
             if (order.isAssigned && order.status == "Ordered") {
               assignedAlertBox(order.id);
@@ -492,7 +504,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
               title:
-              const Text("Order Confirmation"), //myAlertBoxTitle(action),
+                  const Text("Order Confirmation"), //myAlertBoxTitle(action),
               content: Container(
                 height: MediaQuery.of(context).size.height / 6,
                 child: orderActionAlertBoxTitle(action),
@@ -591,7 +603,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         builder: (context) {
           return AlertDialog(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             title: const Text("Order Confirmation"), //myAlertBoxTitle(action),
             content: Container(
               height: MediaQuery.of(context).size.height / 6,
