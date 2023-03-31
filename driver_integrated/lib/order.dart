@@ -5,6 +5,7 @@ import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/driver.dart';
 import 'package:driver_integrated/my_order.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const OrderPage());
@@ -182,18 +183,29 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   ],
                 );
               }
-              final data = snapshot.data;
-              data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
+              final now = DateTime.now();
+              //final data = snapshot.data;
+              final data = snapshot.data!
+                  .where((item) => DateFormat('dd/MM/yy hh:mm a')
+                          .parse(item.createdTime
+                              .replaceAll(',', '')
+                              .replaceAll('am', ' AM')
+                              .replaceAll('pm', ' PM'))
+                          .isAfter(now)
+                      //&&item.vehicleType == '${driver.vehicleType}'
+                      )
+                  .toList();
+              data.sort((a, b) => a.collectTime.compareTo(b.collectTime));
               return ListView.builder(
                 itemCount: data!.length + 1,
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance:${data[index].distance} KM\n"
-                            "Collect Time: ${data[index].collectTime}\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance:${data[index].distance} KM\n"
+                        "Collect Time: ${data[index].collectTime}\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -231,10 +243,10 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n"
-                            "Collect Time: ${data[index].collectTime}\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n"
+                        "Collect Time: ${data[index].collectTime}\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -272,11 +284,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n"
-                            "Status: ${data[index].status}\n"
-                            "Collect Time: ${data[index].collectTime}\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n"
+                        "Status: ${data[index].status}\n"
+                        "Collect Time: ${data[index].collectTime}\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -314,11 +326,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n"
-                            "Status: ${data[index].status}\n"
-                            "Collect Time: ${data[index].collectTime}\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n"
+                        "Status: ${data[index].status}\n"
+                        "Collect Time: ${data[index].collectTime}\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -356,11 +368,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n"
-                            "Status: ${data[index].status}\n"
-                            "Collect Time: ${data[index].collectTime}\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n"
+                        "Status: ${data[index].status}\n"
+                        "Collect Time: ${data[index].collectTime}\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         true);
                   } else {
@@ -404,8 +416,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 context,
                 MaterialPageRoute(
                     builder: (context) => Order_details(
-                      order: order,
-                    )));
+                          order: order,
+                        )));
           } else if (direction == DismissDirection.endToStart) {
             if (order.isAssigned && order.status == "Ordered") {
               assignedAlertBox(order.id);
@@ -504,7 +516,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
               title:
-              const Text("Order Confirmation"), //myAlertBoxTitle(action),
+                  const Text("Order Confirmation"), //myAlertBoxTitle(action),
               content: Container(
                 height: MediaQuery.of(context).size.height / 6,
                 child: orderActionAlertBoxTitle(action),
@@ -603,7 +615,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         builder: (context) {
           return AlertDialog(
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             title: const Text("Order Confirmation"), //myAlertBoxTitle(action),
             content: Container(
               height: MediaQuery.of(context).size.height / 6,
