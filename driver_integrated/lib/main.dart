@@ -151,17 +151,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+
+import 'package:driver_integrated/my_api_service.dart';
 import 'package:flutter/material.dart';
-import 'package:driver_integrated/driver.dart';
 import 'package:driver_integrated/LoginPage.dart';
 import 'package:driver_integrated/SignupDetails.dart';
-import 'package:driver_integrated/my_api_service.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:driver_integrated/firebase_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:driver_integrated/driver.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:driver_integrated/notification_view.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 @pragma('vm:entry-point')
@@ -185,9 +187,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-        title: "EasyMove",
-        theme: ThemeData(primarySwatch: Colors.orange),
-        home: const Homepage(),
+      title: "EasyMove",
+      theme: ThemeData(primarySwatch: Colors.indigo),
+      home: const Homepage(),
     );
   }
 }
@@ -212,128 +214,135 @@ class HomepageState extends State<Homepage>{
     initMyApp();
   }
 
-  // updated by alice n angel
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.orange[400],
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: <Color>[
-                  Colors.yellow.shade700,
-                  Colors.orange.shade700
-                ]
+      body: SafeArea(
+        child: Container(
+          // we will give media query height
+          // double.infinity make it big as my parent allows
+          // while MediaQuery make it big as per the screen
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: <Color>[Color(0xFFffcc33), Colors.orange.shade700])
+            ),
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height,
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 80),
+            child: SingleChildScrollView(
+              child: Column(
+                // even space distribution
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                verticalDirection: VerticalDirection.down,
+                children: <Widget>[
+                  Column(
+                    children: const <Widget>[
+                      Text(
+                        "Welcome",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+
+                        ),
+
+                      ),
+                      SizedBox(
+                        height: 100,
+                      ),
+                    ],
+                  ),
+                  Container(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: 230,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 120,
+                  ),
+                  Column(
+                    children: <Widget>[
+                      // the login button
+                      MaterialButton(
+                        minWidth: double.infinity,
+                        height: 60,
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+
+                        },
+                        // defining the shape
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: Colors.white70
+                          ),
+                          borderRadius: BorderRadius.circular(50)
+                              .copyWith(bottomRight: Radius.circular(0)),
+                        ),
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18
+                          ),
+                        ),
+                      ),
+                      // creating the signup button
+                      SizedBox(height:20),
+                      Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                  blurRadius: 4,
+                                  color: Colors.black12.withOpacity(0.2),
+                                  offset: Offset(2,2)
+                              )
+                            ],
+                            gradient:  LinearGradient(
+                                colors: <Color>[Color(0xFFffcc33), Colors.orange.shade700]),
+                            borderRadius: BorderRadius.circular(50)
+                                .copyWith(bottomRight: Radius.circular(0)),
+                          ),
+                          width: double.infinity,
+                          height: 60,
+
+                          child: ElevatedButton(
+                            onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> SignupDetails()));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)
+                                    .copyWith(bottomRight: Radius.circular(0)),
+                              ),
+                            ),
+                            child: Text(
+                              "Sign up",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18
+                              ),
+                            ),
+                          )
+                      ),
+                    ] ,
+                  )
+
+
+
+                ],
+              ),
             )
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset(
-                  'assets/images/logo.png',
-                  height: 218,
-                  width: 218
-              ),
-              // login button
-              Padding(
-                padding: const EdgeInsets.only(top:50, right: 100.0, left: 100.0),
-                child: GestureDetector(
-                  onTap: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()
-                      )
-                    );
-                  },
-                  child: Container(
-                    height: 45,
-                    decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              blurRadius: 4,
-                              color: Colors.black12.withOpacity(0.2),
-                              offset: Offset(2,2)
-                          )
-                        ],
-                        borderRadius: BorderRadius.circular(100)
-                            .copyWith(bottomRight: Radius.circular(0)
-                        ),
-                        gradient: LinearGradient(
-                            colors: <Color> [
-                              Colors.yellow.shade700,
-                              Colors.orange.shade700
-                            ]
-                        )
-                    ),
-                    child: const Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Login",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // sign up button
-              Padding(
-                padding: const EdgeInsets.only(top:20, right: 100.0, left: 100.0),
-                child: GestureDetector(
-                  onTap: () async {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignupDetails()
-                        )
-                    );
-                  },
-                  child: Container(
-                    height: 45,
-                    decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              blurRadius: 4,
-                              color: Colors.black12.withOpacity(0.2),
-                              offset: Offset(2,2)
-                          )
-                        ],
-                        borderRadius: BorderRadius.circular(100)
-                            .copyWith(bottomRight: Radius.circular(0)
-                        ),
-                        gradient: LinearGradient(
-                            colors: <Color> [
-                              Colors.yellow.shade700,
-                              Colors.orange.shade700
-                            ]
-                        )
-                    ),
-                    child: const Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Sign Up",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+
         ),
       ),
-      // notification button
+
       floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -342,7 +351,7 @@ class HomepageState extends State<Homepage>{
             width: 70,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.white24, width: 1.5),
-              color:Color(0xFFffcc33) ,
+              color:Color(0xffffcc33) ,
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -350,32 +359,34 @@ class HomepageState extends State<Homepage>{
               color: Colors.white,
             ),
           ),
-          onPressed: () async {
+          onPressed: () async{
             await SharedPreferences.getInstance().then((pref) async{
               if(pref.getString("tempusername") != null && pref.getString("tempusername") != "null") {
                 await MyApiService.getDriverId(pref.getString("tempusername")!).then((data) {
                   int id = data["auth_user"]["id"];
                   driver.initializeDriverId(id);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const NotificationView()
-                    ),
+                  Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context) => const NotificationView()),
                   );
                 });
-            } else if(pref.getString("username") != null && pref.getString("username") != "null") {
+              }else if(pref.getString("username") != null && pref.getString("username") != "null"){
                 await MyApiService.getDriverId(pref.getString("username")!).then((data) {
                   int id = data["auth_user"]["id"];
                   driver.initializeDriverId(id);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const NotificationView()
-                    ),
+                  Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context) => const NotificationView()),
                   );
                 });
               }
-           });
-         }
-      ),
+            });
+
+          }),
+
+
     );
+
+
   }
 }

@@ -1145,13 +1145,16 @@ class signupFormState extends State<SignupDetails> {
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(80.0),
-          child: AppBar(
-            title: Image.asset(
-                'assets/images/icon.png',
-                height: 100
-            ),
-            centerTitle: true,
-            backgroundColor: const Color(0xFFFFA600),
+          child :AppBar(
+            // title: Image.asset(
+            // 'assets/images/icon_2.png',
+            // height: 60,
+            // ),
+              elevation: 0,
+              flexibleSpace: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: <Color>[const Color(0xFFffcc33), Colors.orange.shade700]),))
           ),
         ),
         body: Container(
@@ -1161,8 +1164,8 @@ class signupFormState extends State<SignupDetails> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
                 colors: <Color>[
-                  Colors.yellow.shade700,
-                  Colors.orange.shade700
+                  const Color(0xFFffcc33),
+                  Colors.orange.shade700,
                 ]
             )
           ),
@@ -1178,6 +1181,22 @@ class signupFormState extends State<SignupDetails> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
+                          Align(
+                            alignment: Alignment.center,
+                            child:
+                            Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 30,
+
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 50,
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(right: 30.0, left: 30.0),
                             child: Column(
@@ -1199,7 +1218,7 @@ class signupFormState extends State<SignupDetails> {
                                         ),
                                         hintText: 'Full Name As Per IC *',
                                         hintStyle: TextStyle(
-                                            color: Colors.white60,
+                                            color: Colors.white,
                                             fontSize: 14.5
                                         ),
                                         enabledBorder: OutlineInputBorder(
@@ -1236,7 +1255,7 @@ class signupFormState extends State<SignupDetails> {
                                         ),
                                         hintText: 'Login Username *',
                                         hintStyle: TextStyle(
-                                            color: Colors.white60,
+                                            color: Colors.white,
                                             fontSize: 14.5
                                         ),
                                         enabledBorder: OutlineInputBorder(
@@ -1273,7 +1292,7 @@ class signupFormState extends State<SignupDetails> {
                                         ),
                                         hintText: 'Login Password *',
                                         hintStyle: TextStyle(
-                                            color: Colors.white60,
+                                            color: Colors.white,
                                             fontSize: 14.5
                                         ),
                                         enabledBorder: OutlineInputBorder(
@@ -1308,7 +1327,7 @@ class signupFormState extends State<SignupDetails> {
                                         ),
                                         hintText: 'Identity Card Number *',
                                         hintStyle: TextStyle(
-                                            color: Colors.white60,
+                                            color: Colors.white,
                                             fontSize: 14.5
                                         ),
                                         enabledBorder: OutlineInputBorder(
@@ -1343,7 +1362,7 @@ class signupFormState extends State<SignupDetails> {
                                         ),
                                         hintText: 'Mobile Phone Number *',
                                         hintStyle: TextStyle(
-                                            color: Colors.white60,
+                                            color: Colors.white,
                                             fontSize: 14.5
                                         ),
                                         enabledBorder: OutlineInputBorder(
@@ -1380,7 +1399,7 @@ class signupFormState extends State<SignupDetails> {
                                         ),
                                         hintText: 'Emergency Contact Number *',
                                         hintStyle: TextStyle(
-                                            color: Colors.white60,
+                                            color: Colors.white,
                                             fontSize: 14.5
                                         ),
                                         enabledBorder: OutlineInputBorder(
@@ -1409,30 +1428,36 @@ class signupFormState extends State<SignupDetails> {
                                         children: <Widget> [
                                           Padding(
                                               padding: EdgeInsets.only(bottom: 10.0),
-                                              child: Text("Employment Type")
+                                              child: Text("Employment Type", style: TextStyle(color: Colors.white),)
                                           ),
                                           Container(
                                             height: 50,
                                             width: (screenWidth - 75) / 2,
                                             decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.black.withOpacity(0.2),
-                                                      blurRadius: 4,
-                                                      offset: Offset(2, 2)
-                                                  )
-                                                ],
+                                                // boxShadow: [
+                                                //   BoxShadow(
+                                                //       color: Colors.black.withOpacity(0.2),
+                                                //       blurRadius: 4,
+                                                //       offset: Offset(2, 2)
+                                                //   )
+                                                // ],
                                                 borderRadius: BorderRadius.circular(100)
                                                     .copyWith(bottomRight: Radius.circular(0)
                                                 ),
-                                                gradient: LinearGradient(
-                                                    colors: <Color> [
-                                                      Colors.yellow.shade700,
-                                                      Colors.orange.shade700
-                                                    ]
-                                                )
+                                                // gradient: LinearGradient(
+                                                //     colors: <Color> [
+                                                //       Colors.yellow.shade700,
+                                                //       Colors.orange.shade700
+                                                //     ]
+                                                // )
+                                                border: Border.all(color: Colors.white38, width: 1.0),
+                                                color: Colors.transparent,
                                             ),
                                             child: DropdownButtonFormField<String>(
+                                              dropdownColor: Colors.orange,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                              ),
                                               value: employment_type_value,
                                               items: employment_type.map((String employment_type) {
                                                 return DropdownMenuItem(
@@ -1441,7 +1466,8 @@ class signupFormState extends State<SignupDetails> {
                                                 );
                                               }).toList(),
                                               icon: const Icon(
-                                                  Icons.keyboard_arrow_down
+                                                  Icons.keyboard_arrow_down,
+                                                  color: Colors.white70,
                                               ),
                                               onChanged: (String? newValue) {
                                                 setState(() {
@@ -1463,34 +1489,40 @@ class signupFormState extends State<SignupDetails> {
                                         children: <Widget> [
                                           Padding(
                                               padding: EdgeInsets.only(bottom: 10.0),
-                                              child: Text("Region")
+                                              child: Text("Region", style: TextStyle(color: Colors.white),)
                                           ),
                                           Container(
                                               height: 50,
                                               width: (screenWidth - 75) / 2,
                                               decoration: BoxDecoration(
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                        color: Colors.black.withOpacity(0.2),
-                                                        blurRadius: 4,
-                                                        offset: Offset(2, 2)
-                                                    )
-                                                  ],
+                                                  // boxShadow: [
+                                                  //   BoxShadow(
+                                                  //       color: Colors.black.withOpacity(0.2),
+                                                  //       blurRadius: 4,
+                                                  //       offset: Offset(2, 2)
+                                                  //   )
+                                                  // ],
                                                   borderRadius: BorderRadius.circular(100)
                                                       .copyWith(bottomRight: Radius.circular(0)
                                                   ),
-                                                  gradient: LinearGradient(
-                                                      colors: <Color> [
-                                                        Colors.yellow.shade700,
-                                                        Colors.orange.shade700
-                                                      ]
-                                                  )
+                                                  // gradient: LinearGradient(
+                                                  //     colors: <Color> [
+                                                  //       Colors.yellow.shade700,
+                                                  //       Colors.orange.shade700
+                                                  //     ]
+                                                  // )
+                                                  border: Border.all(color: Colors.white38, width: 1.0),
+                                                  color: Colors.transparent,
                                               ),
                                               child: FutureBuilder(
                                                   future: getRegions(),
                                                   builder: (context, snapshot) {
                                                     //input field for region
                                                     return DropdownButtonFormField<String>(
+                                                      dropdownColor: Colors.orange,
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                      ),
                                                       value: region_value,
                                                       items: region.map<DropdownMenuItem<String>>((String region) {
                                                         return DropdownMenuItem(
@@ -1499,7 +1531,8 @@ class signupFormState extends State<SignupDetails> {
                                                         );
                                                       }).toList(),
                                                       icon: const Icon(
-                                                          Icons.keyboard_arrow_down
+                                                          Icons.keyboard_arrow_down,
+                                                          color: Colors.white70,
                                                       ),
                                                       onChanged: (String? newValue) {
                                                         setState(() {
@@ -1534,8 +1567,9 @@ class signupFormState extends State<SignupDetails> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text("Front Of Driver's I.C. *",
-                                        style: TextStyle(fontSize: 18)),
+                                        style: TextStyle(fontSize: 18, color: Colors.white)),
                                     GFButton(
+                                      padding: EdgeInsets.only(left: 20,right: 20),
                                       color: Colors.orange,
                                       onPressed: () {
                                         myAlert('frontic');
@@ -1568,8 +1602,9 @@ class signupFormState extends State<SignupDetails> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text("Back Of Driver's I.C. *",
-                                        style: TextStyle(fontSize: 18)),
+                                        style: TextStyle(fontSize: 18, color: Colors.white)),
                                     GFButton(
+                                      padding: EdgeInsets.only(left: 20,right: 20),
                                       color: Colors.orange,
                                       onPressed: () {
                                         myAlert('backic');
@@ -1613,32 +1648,38 @@ class signupFormState extends State<SignupDetails> {
                                   children: [
                                     const Padding(
                                       padding: EdgeInsets.only(bottom: 10.0),
-                                      child: Text("Vehicle Type"),
+                                      child: Text("Vehicle Type", style: TextStyle(color: Colors.white),),
                                     ),
                                     Container(
                                         height: 50,
                                         decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black.withOpacity(0.2),
-                                                  blurRadius: 4,
-                                                  offset: const Offset(2, 2)
-                                              )
-                                            ],
+                                            // boxShadow: [
+                                            //   BoxShadow(
+                                            //       color: Colors.black.withOpacity(0.2),
+                                            //       blurRadius: 4,
+                                            //       offset: const Offset(2, 2)
+                                            //   )
+                                            // ],
                                             borderRadius: BorderRadius.circular(100)
                                                 .copyWith(bottomRight: Radius.circular(0)
                                             ),
-                                            gradient: LinearGradient(
-                                                colors: <Color> [
-                                                  Colors.yellow.shade700,
-                                                  Colors.orange.shade700
-                                                ]
-                                            )
+                                            // gradient: LinearGradient(
+                                            //     colors: <Color> [
+                                            //       Colors.yellow.shade700,
+                                            //       Colors.orange.shade700
+                                            //     ]
+                                            // )
+                                          border: Border.all(color: Colors.white38, width: 1.0),
+                                          color: Colors.transparent,
                                         ),
                                         child: FutureBuilder(
                                           future: getVehicles(),
                                           builder: (context, snapshot) {
                                             return DropdownButtonFormField<String>(
+                                              dropdownColor: Colors.orange,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                              ),
                                               value: vehicle_type_value,
                                               items: vehicleType.map<
                                                   DropdownMenuItem<String>>(
@@ -1649,7 +1690,9 @@ class signupFormState extends State<SignupDetails> {
                                                     );
                                                   }).toList(),
                                               icon: const Icon(
-                                                  Icons.keyboard_arrow_down),
+                                                  Icons.keyboard_arrow_down,
+                                                  color: Colors.white70,
+                                              ),
                                               onChanged: (String? newValue) {
                                                 setState(() {
                                                   vehicle_type_value =
@@ -1678,7 +1721,7 @@ class signupFormState extends State<SignupDetails> {
                                       contentPadding: EdgeInsets.all(16),
                                       hintText: 'Vehicle plate',
                                       hintStyle: TextStyle(
-                                          color: Colors.white60, fontSize: 14.5
+                                          color: Colors.white, fontSize: 14.5
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                           borderRadius: BorderRadius.circular(100)
@@ -1706,7 +1749,7 @@ class signupFormState extends State<SignupDetails> {
                                       contentPadding: EdgeInsets.all(16),
                                       hintText: 'Vehicle Owner',
                                       hintStyle: TextStyle(
-                                          color: Colors.white60, fontSize: 14.5
+                                          color: Colors.white, fontSize: 14.5
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                           borderRadius: BorderRadius.circular(100)
@@ -1739,8 +1782,9 @@ class signupFormState extends State<SignupDetails> {
                                   children: [
                                     const Text(
                                         "Front Of Driver's Driving License",
-                                        style: TextStyle(fontSize: 18)),
+                                        style: TextStyle(fontSize: 18, color: Colors.white)),
                                     GFButton(
+                                      padding: EdgeInsets.only(left: 20,right: 20),
                                       color: Colors.orange,
                                       onPressed: () {
                                         myAlert('driverlicense');
@@ -1775,8 +1819,9 @@ class signupFormState extends State<SignupDetails> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text("Front Of Vehicle",
-                                        style: TextStyle(fontSize: 18)),
+                                        style: TextStyle(fontSize: 18, color: Colors.white)),
                                     GFButton(
+                                      padding: EdgeInsets.only(left: 20,right: 20),
                                       color: Colors.orange,
                                       onPressed: () {
                                         myAlert('frontvehicle');
@@ -1810,10 +1855,12 @@ class signupFormState extends State<SignupDetails> {
                                     const Text(
                                         "Back Of Vehicle",
                                         style: TextStyle(
-                                            fontSize: 18
+                                            fontSize: 18,
+                                            color: Colors.white,
                                         )
                                     ),
                                     GFButton(
+                                      padding: EdgeInsets.only(left: 20,right: 20),
                                       color: Colors.orange,
                                       onPressed: () {
                                         myAlert('backvehicle');
