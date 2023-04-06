@@ -3,6 +3,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/driver.dart';
 import 'package:driver_integrated/NavBar.dart';
+import 'package:intl/intl.dart';
 
 String display_merit_value = "";
 
@@ -252,38 +253,47 @@ class meritPageState extends State<Merit> {
     }
   }
 
-  //default merit list
+  //default merit list (current month)
   Widget default_meritlist() {
     return FutureBuilder(
         future: initMerit(),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if(snapshot.hasData) {
+            DateTime now = new DateTime.now();
+            var formatter = new DateFormat('yyyy-MM-dd');
+            String formattedDate = formatter.format(now);
             return ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 itemCount: snapshot.data!.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 50,
-                    padding: EdgeInsets.only(left: 45, right: 50),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text('${meritMap["merits"][index]["date"]}'),
-                        ),
-                        Expanded(
-                          child: Text('${meritMap["merits"][index]["note"]}'),
-                        ),
-                        Expanded(
-                          child: meritMap["merits"][index]["order_id"] == null ?
-                          const Text("ad-hoc") :
-                          Text('${meritMap["merits"][index]["order_id"]}'),
-                        ),
-                        Text('${meritMap["merits"][index]["points"]}p'),
-                      ],
-                    ),
-                  );
+                  if (meritMap["merits"][index]["date"].toString().substring(6, 8) == formattedDate.substring(6,8)) {
+                    return Container(
+                      height: 50,
+                      padding: EdgeInsets.only(left: 45, right: 50),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text('${meritMap["merits"][index]["date"]}'),
+                          ),
+                          Expanded(
+                            child: Text('${meritMap["merits"][index]["note"]}'),
+                          ),
+                          Expanded(
+                            child: meritMap["merits"][index]["order_id"] == null
+                                ?
+                            const Text("ad-hoc")
+                                :
+                            Text('${meritMap["merits"][index]["order_id"]}'),
+                          ),
+                          Text('${meritMap["merits"][index]["points"]}p'),
+                        ],
+                      ),
+                    );
+                  }else{
+                    return SizedBox.shrink();
+                  }
                 }
             );
           }else{
