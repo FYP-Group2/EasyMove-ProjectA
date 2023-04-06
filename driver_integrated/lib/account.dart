@@ -120,7 +120,7 @@ class _MyAccountPageState extends State<AccountPage> {
             if(driver.status == "on") {
               driver.status = "off";
               myLocationService.stop();
-              await MyApiService.updateDriverOnOff(driver.id, "off");
+              await MyApiService.updateDriverOnOff(driver.id, "off",driver.jwtToken);
             }
             //notificationService.stop();
             await unsetPref();

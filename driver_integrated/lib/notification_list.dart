@@ -33,7 +33,7 @@ class NotificationPageState extends State<NotificationPage> {
   setUpTimedFetch() {
     Timer.periodic(const Duration(milliseconds: 5000), (timer) {
       setState(() {
-        futureNotification = MyApiService.fetchNoti(driver.id, year, month);
+        futureNotification = MyApiService.fetchNoti(driver.id, year, month, driver.jwtToken);
       });
     });
   }

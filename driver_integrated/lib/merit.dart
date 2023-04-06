@@ -52,7 +52,7 @@ class meritPageState extends State<Merit> {
   }
 
   Future<List<dynamic>> initMerit() async {
-    meritMap = await MyApiService.getMeritStatement(driver.id.toString());
+    meritMap = await MyApiService.getMeritStatement(driver.id.toString(), driver.jwtToken);
     List<dynamic> meritData = meritMap["merits"];
     return meritData;
   }
@@ -136,7 +136,7 @@ class meritPageState extends State<Merit> {
         color: Colors.orange,
         onPressed: () async {
           //call api - notice page
-          await MyApiService.convertMerit(driver.id).then((value){
+          await MyApiService.convertMerit(driver.id, driver.jwtToken).then((value){
             if(value == true){
               showSuccessDialog();
               Navigator.push(context,MaterialPageRoute(builder:(context) => Merit()));

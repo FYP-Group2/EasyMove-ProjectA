@@ -6,6 +6,7 @@ class Driver {
   late String name;
   late int mobileNumber;
   late String plateNumber;
+  late String jwtToken;
   String status = "off";
 
   Driver._internal();
@@ -15,13 +16,14 @@ class Driver {
   }
 
   void initializeDriver(
-      int id, int region, int vehicleType, String name, int mobileNumber, String plateNumber) {
+      int id, int region, int vehicleType, String name, int mobileNumber, String plateNumber, String jwtToken) {
     this.id = id;
     this.region = region;
     this.vehicleType = vehicleType;
     this.name = name;
     this.mobileNumber = mobileNumber;
     this.plateNumber = plateNumber;
+    this.jwtToken = jwtToken;
     status = "off";
   }
 

@@ -24,7 +24,7 @@ class NotificationViewState extends State<NotificationView> {
   @override
   void initState() {
     super.initState();
-    futureNoti = MyApiService.fetchNoti(driver.id, now.year.toString(), now.month.toString());
+    futureNoti = MyApiService.fetchNoti(driver.id, now.year.toString(), now.month.toString(), driver.jwtToken);
     iniBadger();
   }
 

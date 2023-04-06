@@ -119,7 +119,7 @@ class _HomeState extends State<HomePage> {
         textValue = 'on';
         locationService.start();
 
-        MyApiService.updateDriverOnOff(driver.id, textValue);
+        MyApiService.updateDriverOnOff(driver.id, textValue, driver.jwtToken);
       });
     } else {
       setState(() {
@@ -128,7 +128,7 @@ class _HomeState extends State<HomePage> {
         textValue = 'off';
         locationService.stop();
 
-        MyApiService.updateDriverOnOff(driver.id, textValue);
+        MyApiService.updateDriverOnOff(driver.id, textValue, driver.jwtToken);
       });
     }
   }
@@ -148,7 +148,7 @@ class _HomeState extends State<HomePage> {
   }
 
   Future<List<dynamic>> initNews() async {
-    newsMap = await MyApiService.getNews();
+    newsMap = await MyApiService.getNews(driver.id, driver.jwtToken);
     List<dynamic> newsData = newsMap["message"];
     return newsData;
   }

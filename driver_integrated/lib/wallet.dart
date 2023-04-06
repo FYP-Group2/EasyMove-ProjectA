@@ -51,7 +51,7 @@ class walletPageState extends State<Wallet> {
 
   //apiservice for wallet
   Future<Map<String, dynamic>> initWallet() async {
-    final meritData = await MyApiService.getCommissionStatement(driver.id.toString());
+    final meritData = await MyApiService.getCommissionStatement(driver.id.toString(), driver.jwtToken);
     widget.text = meritData;
     return meritData;
   }

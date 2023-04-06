@@ -881,7 +881,8 @@ class signupFormState extends State<SignupDetails> {
                                           "plate": vehicleplate_value.text,
                                           "owner": vehicleowner_value.text,
                                           "username": username_value.text,
-                                          "password": password_value.text
+                                          "password": password_value.text,
+                                          "token" : firebaseService.fcmToken!
                                         };
 
                                         await MyApiService.driverApply(body)
@@ -912,8 +913,8 @@ class signupFormState extends State<SignupDetails> {
                                                   data["auth_user"];
                                               int id = authUser["id"];
 
-                                              MyApiService.updateToken(id,
-                                                  firebaseService.fcmToken!);
+                                              // MyApiService.updateToken(id,
+                                              //     firebaseService.fcmToken!,driver.jwtToken);
                                             });
 
                                             await SharedPreferences

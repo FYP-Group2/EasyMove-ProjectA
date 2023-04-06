@@ -40,10 +40,10 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
 
   Future<List<MyOrder>> populateOrders(String orderStatus, bool assign) async {
     List<MyOrder> myOrders = [];
-    List orderIds = await MyApiService.getOrdersId(driver.id, orderStatus);
+    List orderIds = await MyApiService.getOrdersId(driver.id, orderStatus, driver.jwtToken);
     //myOrders.sort((a, b) =>(double.parse(a.collectTime)).compareTo((double.parse(b.collectTime))));
     for (var oid in orderIds) {
-      final data = await MyApiService.getOrder(oid);
+      final data = await MyApiService.getOrder(oid, driver.jwtToken);
       String status = data["status"].toString();
       String origin = data["origin"].toString();
       String destination = data["destination"];
@@ -539,7 +539,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   onPressed: () {
                     Navigator.of(context).pop(false);
                     if (action == "accept") {
-                      MyApiService.updateOrder(driver.id, orderId, action);
+                      MyApiService.updateOrder(driver.id, orderId, action, driver.jwtToken);
                       setState(() {});
                     } else {
                       uploadImageAlertBox(orderId, action);
@@ -625,7 +625,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
             actions: [
               TextButton(
                   onPressed: () {
-                    MyApiService.updateOrder(driver.id, oid, "decline");
+                    MyApiService.updateOrder(driver.id, oid, "decline", driver.jwtToken);
                     Navigator.of(context).pop();
                     setState(() {});
                   },
@@ -633,7 +633,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                       style: TextStyle(fontSize: 20, color: Colors.redAccent))),
               TextButton(
                   onPressed: () {
-                    MyApiService.updateOrder(driver.id, oid, "accept");
+                    MyApiService.updateOrder(driver.id, oid, "accept", driver.jwtToken);
                     Navigator.of(context).pop();
                     setState(() {});
                   },
@@ -656,10 +656,10 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
 
   void uploadImage(int orderId, String filePath, String action) {
     if (action == "collect") {
-      MyApiService.updateOrder(driver.id, orderId, "collect");
+      MyApiService.updateOrder(driver.id, orderId, "collect", driver.jwtToken);
       MyApiService.photoPOC(orderId, filePath);
     } else if (action == "pod") {
-      MyApiService.updateOrder(driver.id, orderId, "pod");
+      MyApiService.updateOrder(driver.id, orderId, "pod", driver.jwtToken);
       MyApiService.photoPOD(orderId, filePath);
     }
     setState(() {});

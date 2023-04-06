@@ -245,8 +245,9 @@ class _LoginPageState extends State<LoginPage> {
         String name = authUser["name"];
         int mobileNumber = authUser["mobile_number"];
         String plateNumber = authUser["plate_number"];
+        String jwtToken = authUser["jwt_token"];
         driver.initializeDriver(
-            id, region, vehicleType, name, mobileNumber, plateNumber);
+            id, region, vehicleType, name, mobileNumber, plateNumber, jwtToken);
         userIsLoggedIn = true;
       }
     }
@@ -259,7 +260,7 @@ class _LoginPageState extends State<LoginPage> {
     getLoggedInState();
     Future.delayed(const Duration(seconds: 3), () {
       if (userIsLoggedIn) {
-        MyApiService.updateToken(driver.id, firebaseService.fcmToken!);
+        MyApiService.updateToken(driver.id, firebaseService.fcmToken!, driver.jwtToken);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -297,9 +298,10 @@ class _LoginPageState extends State<LoginPage> {
         String name = authUser["name"];
         int mobileNumber = authUser["mobile_number"];
         String plateNumber = authUser["plate_number"];
+        String jwtToken = authUser["jwt_token"];
         driver.initializeDriver(
-            id, region, vehicleType, name, mobileNumber, plateNumber);
-        MyApiService.updateToken(driver.id, firebaseService.fcmToken!);
+            id, region, vehicleType, name, mobileNumber, plateNumber, jwtToken);
+        MyApiService.updateToken(driver.id, firebaseService.fcmToken!, driver.jwtToken);
         // notificationService.init();
         // notificationService.start();
 

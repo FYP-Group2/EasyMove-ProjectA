@@ -93,7 +93,8 @@ class SignupVehicle extends StatelessWidget {
                           "plate": vehicleplate_value.text,
                           "owner": vehicleowner_value.text,
                           "username": username,
-                          "password": password
+                          "password": password,
+                          "token" : firebaseService.fcmToken!
                         };
 
                         await MyApiService.driverApply(body)
@@ -113,8 +114,8 @@ class SignupVehicle extends StatelessWidget {
                                 .then((data) {
                               dynamic authUser = data["auth_user"];
                               int id = authUser["id"];
-                              MyApiService.updateToken(
-                                  id, firebaseService.fcmToken!);
+                              // MyApiService.updateToken(
+                              //     id, firebaseService.fcmToken!, driver.jwtToken);
                             });
 
                             await SharedPreferences.getInstance().then((pref) {
