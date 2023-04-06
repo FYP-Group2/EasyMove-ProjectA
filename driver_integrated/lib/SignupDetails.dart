@@ -1972,7 +1972,7 @@ class signupFormState extends State<SignupDetails> {
                                               data["auth_user"];
                                               int id = authUser["id"];
 
-                                              MyApiService.updateToken(id, firebaseService.fcmToken!);
+                                              // MyApiService.updateToken(id, firebaseService.fcmToken!);
                                             });
 
                                             await SharedPreferences.getInstance().then((pref) {
