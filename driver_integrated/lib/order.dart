@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:getwidget/getwidget.dart';
 import 'dart:io';
 import 'package:driver_integrated/order_details.dart';
 import 'package:driver_integrated/my_api_service.dart';
@@ -18,6 +19,7 @@ class OrderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
@@ -126,44 +128,48 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           //child: DefaultTabController(
           //length: 3,
           child: Container(
-            margin: EdgeInsets.only(top: 10, bottom: 10),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 246, 232, 206),
-              borderRadius: BorderRadius.circular(50),
-            ),
+            margin: const EdgeInsets.only(top: 10, bottom: 10),
             child: TabBar(
               labelColor: Colors.black,
-              indicator: BoxDecoration(
-                color: Colors.orange,
-                borderRadius: BorderRadius.circular(50),
-              ),
+              unselectedLabelColor: Colors.grey.shade400,
               isScrollable: true,
               controller: _tabController,
               tabs: const [
                 Tab(
-                  text: 'Nearby Orders',
+                  text: 'Nearby',
                 ),
                 Tab(
-                  text: 'Assigned Orders',
+                  text: 'Assigned',
                 ),
                 Tab(
-                  text: 'Accepted Orders',
+                  text: 'Accepted',
                 ),
                 Tab(
-                  text: 'Collected Orders',
+                  text: 'Collected',
                 ),
                 Tab(
-                  text: 'Orders History',
+                  text: 'History',
                 ),
               ],
             ),
           ),
         ),
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Colors.black),
+        title: SizedBox(
+            child: Padding(
+              padding: EdgeInsets.only(top: 50, bottom: 30),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:  [
+                  Text(' | ',
+                      style: TextStyle(
+                          color: Colors.orange.shade700, fontWeight: FontWeight.w900, fontSize: 32.0)),
+                  Flexible(
+                    child: Text("Order List", style: TextStyle(fontSize: 30.0),),
+                  ),
+                ],
+              ),
+            )
         ),
-        centerTitle: true,
       ),
       body: TabBarView(
         controller: _tabController,
@@ -183,38 +189,38 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   ],
                 );
               }
-              final now = DateTime.now();
-              //final data = snapshot.data;
-              final data = snapshot.data!
-                  .where((item) => DateFormat('dd/MM/yy hh:mm a')
-                          .parse(item.createdTime
-                              .replaceAll(',', '')
-                              .replaceAll('am', ' AM')
-                              .replaceAll('pm', ' PM'))
-                          .isAfter(now)
-                      //&&item.vehicleType == '${driver.vehicleType}'
-                      )
-                  .toList();
-              data.sort((a, b) => a.collectTime.compareTo(b.collectTime));
+              final data = snapshot.data;
+              data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
               return ListView.builder(
                 itemCount: data!.length + 1,
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance:${data[index].distance} KM\n"
-                        "Collect Time: ${data[index].collectTime}\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                            "Destination:\n${data[index].destination}\n\n"
+                            "Distance: ${data[index].distance} KM\n\n"
+                            "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
-                    return ElevatedButton(
+                    return SizedBox(
+                      width: 180,
+                      height: 40,
+                      child: GFButton(
+                        color: Colors.orangeAccent,
+                        borderSide: const BorderSide(
+                          color: Colors.orange,
+                          style: BorderStyle.solid,
+
+                        ),
                         onPressed: () => setState(() {}),
+                        shape: GFButtonShape.pills,
                         child: const Text(
                           "Refresh",
                           style: TextStyle(fontSize: 20),
-                        ));
+                        ),
+                      ),
+                    );
                   }
                 },
               );
@@ -243,19 +249,30 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n"
-                        "Collect Time: ${data[index].collectTime}\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                            "Destination:\n${data[index].destination}\n\n"
+                            "Distance: ${data[index].distance} KM\n\n"
+                            "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
-                    return ElevatedButton(
+                    return SizedBox(
+                      width:180,
+                      height:40,
+                      child: GFButton(
+                        color: Colors.orangeAccent,
+                        borderSide: const BorderSide(
+                          color: Colors.orange,
+                          style: BorderStyle.solid,
+                          width: 1,
+                        ),
                         onPressed: () => setState(() {}),
+                        shape: GFButtonShape.pills,
                         child: const Text(
                           "Refresh",
                           style: TextStyle(fontSize: 20),
-                        ));
+                        ),
+                      ),
+                    );
                   }
                 },
               );
@@ -284,20 +301,31 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n"
-                        "Status: ${data[index].status}\n"
-                        "Collect Time: ${data[index].collectTime}\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                            "Destination:\n${data[index].destination}\n\n"
+                            "Distance: ${data[index].distance} KM\n\n"
+
+                            "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
-                    return ElevatedButton(
+                    return SizedBox(
+                      width:180,
+                      height:40,
+                      child: GFButton(
+                        color: Colors.orangeAccent,
+                        borderSide: const BorderSide(
+                          color: Colors.orange,
+                          style: BorderStyle.solid,
+                          width: 1,
+                        ),
                         onPressed: () => setState(() {}),
+                        shape: GFButtonShape.pills,
                         child: const Text(
                           "Refresh",
                           style: TextStyle(fontSize: 20),
-                        ));
+                        ),
+                      ),
+                    );
                   }
                 },
               );
@@ -326,20 +354,30 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n"
-                        "Status: ${data[index].status}\n"
-                        "Collect Time: ${data[index].collectTime}\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                            "Destination:\n${data[index].destination}\n\n"
+                            "Distance: ${data[index].distance} KM\n\n"
+                            "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
-                    return ElevatedButton(
+                    return SizedBox(
+                      width:180,
+                      height:40,
+                      child: GFButton(
+                        color: Colors.orangeAccent,
+                        borderSide: const BorderSide(
+                          color: Colors.orange,
+                          style: BorderStyle.solid,
+                          width: 1,
+                        ),
                         onPressed: () => setState(() {}),
+                        shape: GFButtonShape.pills,
                         child: const Text(
                           "Refresh",
                           style: TextStyle(fontSize: 20),
-                        ));
+                        ),
+                      ),
+                    );
                   }
                 },
               );
@@ -368,20 +406,30 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n"
-                        "Status: ${data[index].status}\n"
-                        "Collect Time: ${data[index].collectTime}\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                            "Destination:\n${data[index].destination}\n\n"
+                            "Distance: ${data[index].distance} KM\n\n"
+                            "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         true);
                   } else {
-                    return ElevatedButton(
+                    return SizedBox(
+                      width:180,
+                      height:40,
+                      child: GFButton(
+                        color: Colors.orangeAccent,
+                        borderSide: const BorderSide(
+                          color: Colors.orange,
+                          style: BorderStyle.solid,
+                          width: 1,
+                        ),
                         onPressed: () => setState(() {}),
+                        shape: GFButtonShape.pills,
                         child: const Text(
                           "Refresh",
                           style: TextStyle(fontSize: 20),
-                        ));
+                        ),
+                      ),
+                    );
                   }
                 },
               );
@@ -395,17 +443,17 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
   Widget myList(String child, MyOrder order, bool limitDirection) {
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 2,
-            offset: const Offset(0, 3),
-          )
-        ],
-      ),
+      // decoration: BoxDecoration(
+      //   border: Border.all(color: Colors.white),
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.grey.withOpacity(0.2),
+      //       spreadRadius: 2,
+      //       blurRadius: 2,
+      //       offset: const Offset(0, 3),
+      //     )
+      //   ],
+      // ),
       child: Dismissible(
         direction: limitDirection
             ? DismissDirection.startToEnd
@@ -429,6 +477,17 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         key: UniqueKey(),
         background: Container(
           color: const Color.fromARGB(255, 208, 208, 208),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 208, 208, 208),
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              )
+            ],
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
@@ -441,7 +500,18 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           ),
         ),
         secondaryBackground: Container(
-          color: const Color(0xFF7BC043),
+          margin: EdgeInsets.only(top: 20),
+          decoration: BoxDecoration(
+            color: const Color(0xFF7BC043),
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              )
+            ],
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -451,13 +521,25 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           ),
         ),
         child: Container(
+          margin: EdgeInsets.only(top: 20),
           width: 500,
-          color: const Color.fromARGB(255, 246, 232, 206),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              )
+            ],
+          ),
+
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: Text(
             child,
             textAlign: TextAlign.start,
-            style: const TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
       ),

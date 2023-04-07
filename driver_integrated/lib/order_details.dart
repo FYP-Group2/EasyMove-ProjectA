@@ -127,7 +127,7 @@ class _RowOrder extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: const TextStyle(
-                                color: Colors.orange,
+                                color: Colors.black,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
                               )),
@@ -142,10 +142,10 @@ class _RowOrder extends StatelessWidget {
                 //color: const Color.fromARGB(255, 246, 232, 206),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(0, 3),
@@ -156,12 +156,12 @@ class _RowOrder extends StatelessWidget {
                 child: Row(
                   children: [
                     const Padding(
-                      padding: EdgeInsets.only(left: 5, right: 0),
+                      padding: EdgeInsets.only(left: 20, right: 0),
                     ),
                     const Icon(
-                      Icons.calendar_today,
+                      Icons.calendar_month_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -205,10 +205,10 @@ class _RowOrder extends StatelessWidget {
                 //color: const Color.fromARGB(255, 246, 232, 206),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(0, 3),
@@ -218,11 +218,11 @@ class _RowOrder extends StatelessWidget {
                 margin: const EdgeInsets.all(10),
                 child: Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(left: 20)),
                     const Icon(
-                      Icons.apartment,
+                      Icons.store_mall_directory_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -266,10 +266,10 @@ class _RowOrder extends StatelessWidget {
                 //color: const Color.fromARGB(255, 246, 232, 206),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(0, 3),
@@ -279,11 +279,11 @@ class _RowOrder extends StatelessWidget {
                 margin: const EdgeInsets.all(10),
                 child: Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(left: 20)),
                     const Icon(
-                      Icons.person,
+                      Icons.person_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -325,10 +325,10 @@ class _RowOrder extends StatelessWidget {
                 //color: const Color.fromARGB(255, 246, 232, 206),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(0, 3),
@@ -338,11 +338,11 @@ class _RowOrder extends StatelessWidget {
                 margin: const EdgeInsets.all(10),
                 child: Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(left: 20)),
                     const Icon(
-                      Icons.phone,
+                      Icons.phone_enabled_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -369,25 +369,25 @@ class _RowOrder extends StatelessWidget {
                                   await FlutterLaunch.launchWhatsapp(phone: order.phone, message: "");
                                 },
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const FaIcon(
-                                      FontAwesomeIcons.whatsapp,
-                                      color: Colors.green,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Text(
-                                        order.phone,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: const TextStyle(
-                                          color: Colors.green,
-                                          fontSize: 20,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const FaIcon(
+                                        FontAwesomeIcons.whatsapp,
+                                        color: Colors.green,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 10),
+                                        child: Text(
+                                          order.phone,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: const TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 20,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ]
+                                    ]
                                 ),
                               ),
 
@@ -404,10 +404,10 @@ class _RowOrder extends StatelessWidget {
                 //color: const Color.fromARGB(255, 246, 232, 206),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(0, 3),
@@ -418,12 +418,12 @@ class _RowOrder extends StatelessWidget {
                 child: Row(
                   children: [
                     const Padding(
-                      padding: EdgeInsets.only(left: 5, right: 0),
+                      padding: EdgeInsets.only(left: 20, right: 0),
                     ),
                     const Icon(
-                      Icons.location_city,
+                      Icons.my_location,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -448,7 +448,7 @@ class _RowOrder extends StatelessWidget {
                               child: Text(
                                 order.zone,
                                 overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
+                                maxLines: 2,
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -469,10 +469,10 @@ class _RowOrder extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(20),
                       topLeft: Radius.circular(20)),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(3, 0),
@@ -482,11 +482,11 @@ class _RowOrder extends StatelessWidget {
                 margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(left: 20)),
                     const Icon(
-                      Icons.assistant_direction_rounded,
+                      Icons.location_on_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -533,10 +533,10 @@ class _RowOrder extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20)),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(3, 3),
@@ -546,11 +546,11 @@ class _RowOrder extends StatelessWidget {
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(left: 20)),
                     const Icon(
-                      Icons.house,
+                      Icons.location_on_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -595,10 +595,10 @@ class _RowOrder extends StatelessWidget {
                 height: 70,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(0, 3),
@@ -608,11 +608,11 @@ class _RowOrder extends StatelessWidget {
                 margin: const EdgeInsets.all(10),
                 child: Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(left: 20)),
                     const Icon(
-                      Icons.route,
+                      Icons.route_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -656,10 +656,10 @@ class _RowOrder extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                       topRight: Radius.circular(20),
                       topLeft: Radius.circular(20)),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(3, 0),
@@ -669,11 +669,11 @@ class _RowOrder extends StatelessWidget {
                 margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(left: 20)),
                     const Icon(
-                      Icons.timelapse,
+                      Icons.access_time_filled_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -718,10 +718,10 @@ class _RowOrder extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20)),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(3, 3),
@@ -731,11 +731,11 @@ class _RowOrder extends StatelessWidget {
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(left: 20)),
                     const Icon(
-                      Icons.emoji_transportation,
+                      Icons.access_time_filled_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -778,10 +778,10 @@ class _RowOrder extends StatelessWidget {
                 height: 70,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(0, 3),
@@ -791,11 +791,11 @@ class _RowOrder extends StatelessWidget {
                 margin: const EdgeInsets.all(10),
                 child: Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(left: 20)),
                     const Icon(
-                      Icons.time_to_leave,
+                      Icons.time_to_leave_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -836,10 +836,10 @@ class _RowOrder extends StatelessWidget {
                 height: 95,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 246, 232, 206),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.shade200,
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(0, 3),
@@ -849,11 +849,11 @@ class _RowOrder extends StatelessWidget {
                 margin: const EdgeInsets.all(10),
                 child: Row(
                   children: [
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(left: 20)),
                     const Icon(
-                      Icons.note,
+                      Icons.edit_note_rounded,
                       color: Colors.orange,
-                      size: 50.0,
+                      size: 35.0,
                     ),
                     Expanded(
                       child: Column(
@@ -903,7 +903,9 @@ class _RowOrder extends StatelessWidget {
                         onPressed: () => openMapsList(context),
                         child: const Text('Open Maps',
                             style: TextStyle(
-                                color: Color.fromARGB(255, 246, 232, 206))),
+                              color: Colors.white,
+                            )
+                        ),
                       );
                     },
                   ),

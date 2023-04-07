@@ -30,12 +30,28 @@ class walletPageState extends State<Wallet> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            "Wallet",
-            style: TextStyle(color: Colors.white),
+          iconTheme:  const IconThemeData(
+            color: Colors.black, //change your color here
+            size: 35,
           ),
-          backgroundColor: const Color.fromARGB(255, 255, 168, 0),
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(16.0),
+            child: Container(
+              color: Colors.orangeAccent,
+              height: 4.0,
+            ),
+          ),
+          centerTitle: true,
+          title: const Padding(
+            padding: EdgeInsets.only(top: 10.0),
+            child: Text(
+              "Wallet",
+              style: TextStyle(color: Colors.black, fontSize: 25.0),
+
+            ),
+          ),
+          backgroundColor: Colors.white,
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -60,15 +76,15 @@ class walletPageState extends State<Wallet> {
   Widget _commission() {
     return Container(
       width: double.maxFinite,
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(20),
       margin: const EdgeInsets.only(left: 50, right: 50, top: 30),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Colors.black, width: 0.1),
-        borderRadius: BorderRadius.circular(5.0),
+        // border: Border.all(color: Colors.black, width: 0.1),
+        borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.grey.shade200,
             spreadRadius: 5,
             blurRadius: 7,
             offset: const Offset(0, 3),
@@ -108,15 +124,15 @@ class walletPageState extends State<Wallet> {
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           return Container(
             width: double.maxFinite,
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(20),
             margin: const EdgeInsets.only(left: 50, right: 50, top: 20),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: Colors.black, width: 0.1),
-              borderRadius: BorderRadius.circular(5.0),
+              //border: Border.all(color: Colors.black, width: 0.1),
+              borderRadius: BorderRadius.circular(10.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
+                  color: Colors.grey.shade200,
                   spreadRadius: 5,
                   blurRadius: 7,
                   offset: const Offset(0, 3),
@@ -159,7 +175,7 @@ class walletPageState extends State<Wallet> {
       'withdraw_merit': display_merit_value
     };
     return Padding(
-      padding: const EdgeInsets.only(top: 10, left: 175),
+      padding: const EdgeInsets.only(top: 10, left: 155),
       child: FutureBuilder(
           future: initWallet(),
           builder: (BuildContext context,
@@ -223,7 +239,8 @@ class walletPageState extends State<Wallet> {
                 }
               },
               shape: GFButtonShape.pills,
-              child: const Text("Request Withdrawal"),
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: const Text("Request Withdrawal", style: TextStyle(fontWeight: FontWeight.bold),),
             );
           }),
     );
@@ -237,7 +254,7 @@ class walletPageState extends State<Wallet> {
       'withdraw_merit': display_merit_value
     };
     return Padding(
-      padding: const EdgeInsets.only(top: 10, left: 175),
+      padding: const EdgeInsets.only(top: 10, left: 155),
       child: FutureBuilder(
           future: initWallet(),
           builder: (BuildContext context,
@@ -275,7 +292,8 @@ class walletPageState extends State<Wallet> {
                 }
               },
               shape: GFButtonShape.pills,
-              child: const Text("Request Withdrawal"),
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: const Text("Request Withdrawal", style: TextStyle(fontWeight: FontWeight.bold),),
             );
           }),
     );

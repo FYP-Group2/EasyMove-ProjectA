@@ -29,11 +29,31 @@ class _HomeState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: const TextStyle(color: Colors.white),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(16.0),
+          child: Container(
+            height: 4.0,
+          ),
         ),
-        backgroundColor: const Color.fromARGB(255, 255, 168, 0),
+        title: SizedBox(
+            child: Padding(
+              padding: EdgeInsets.only(top: 50, bottom: 30),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(' | ',
+                      style: TextStyle(
+                          color: Colors.orange.shade700, fontWeight: FontWeight.w900, fontSize: 32.0)),
+                  Flexible(
+                    child: Text("Home", style: TextStyle(fontSize: 30.0, color: Colors.black),),
+                  ),
+                ],
+              ),
+            )
+        ),
       ),
       body: Center(
         child: Column(
@@ -50,63 +70,138 @@ class _HomeState extends State<HomePage> {
     return Container(
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         _driverProfile(),
-        _statusSwitch(),
+        //_statusSwitch(),
       ]),
     );
   }
 
   Widget _driverProfile() {
-    return Container(
-      margin: const EdgeInsets.only(left: 20, top: 20, right: 0, bottom: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // profile pic
-          Container(
-            constraints: const BoxConstraints.expand(height: 100, width: 100),
-            // child: Placeholder(
-            //     color: Colors.black,
-            //     strokeWidth: 4,
-            //     fallbackWidth: 10,
-            //     fallbackHeight: 100,
-            // ),
-            child: Image.asset("assets/icon/profilepic.png"),
+    return Center(
+      child: Card(
+          margin: EdgeInsets.all(30),
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
-          Container(
-            constraints: const BoxConstraints.expand(height: 25, width: 300),
-            //name
-            child: Text(
-              "Name : ${driver.name}",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5
-                  ?.copyWith(fontWeight: FontWeight.bold),
+          clipBehavior: Clip.hardEdge,
+          child: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: <Color>[
+                      Color(0xFFf8b500),
+                      Color(0xFFfceabb),
+                    ]
+                )
             ),
-          ),
-          //phone number
-          Container(
-            constraints: const BoxConstraints.expand(height: 25, width: 300),
-            //name
-            child: Text(
-              "Phone No. : ${driver.mobileNumber}",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5
-                  ?.copyWith(fontWeight: FontWeight.bold),
+            child: InkWell(
+              splashColor: Colors.orange.withAlpha(30),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                width: 350,
+                height: 200,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // profile pic
+                    Column(
+                      children: [
+                        Container(constraints: const BoxConstraints.expand(height: 100, width: 100),
+                          margin: const EdgeInsets.only(top:10, bottom: 10, left: 10, right: 20,),
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.white,
+                          ),
+                          // child: Placeholder(
+                          //     color: Colors.black,
+                          //     strokeWidth: 4,
+                          //     fallbackWidth: 10,
+                          //     fallbackHeight: 100,
+                          // ),
+                          child: Image.asset("assets/icon/profilepic.png"),
+                        ),
+                        Container(
+                          // decoration: BoxDecoration(
+                          //   border: Border.all(
+                          //     width: 1,
+                          //     color: Colors.white,
+                          //   ),
+                          //   borderRadius: BorderRadius.circular(50),
+                          //   ),
+                          width: 135,
+                          child: Image.asset("assets/images/icon_2.png"),
+                        )
+                      ],
+                    ),
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 10.0,
+                            ),
+                            Container(
+                              constraints: const BoxConstraints.expand(height: 32, width: 300),
+                              //name
+                              child: Text(
+                                "Name : ${driver.name}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ),
+                            //phone number
+                            Container(
+                              constraints: const BoxConstraints.expand(height: 32, width: 300),
+                              //name
+                              child: Text(
+                                "Phone No. : ${driver.mobileNumber}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ),
+                            //vehicle plate no.
+                            Container(
+                              constraints: const BoxConstraints.expand(height: 32, width: 300),
+                              child: Text(
+                                "Plate No. : ${driver.plateNumber}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ),
+                            Container(
+                              constraints: const BoxConstraints.expand(height: 32, width: 300),
+                              child: Row(
+                                children: [
+                                  Text("Status : ",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        ?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),),
+                                  Switch(
+                                      value: isSwitched,
+                                      activeColor: Colors.green,
+                                      activeTrackColor: Colors.green.shade300,
+                                      inactiveThumbColor: Colors.red,
+                                      inactiveTrackColor: Colors.red.shade300,
+                                      onChanged: toggleSwitch)
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                    )
+                  ],
+                ),
+              ),
             ),
-          ),
-          //vehicle plate no.
-          Container(
-            constraints: const BoxConstraints.expand(height: 25, width: 300),
-            child: Text(
-              "Plate No. : ${driver.plateNumber}",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
+          )
+
       ),
     );
   }
@@ -155,58 +250,102 @@ class _HomeState extends State<HomePage> {
 
   Widget _news(){
     return Expanded(
-      child: FutureBuilder(
-        future: initNews(),
-        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-          if(snapshot.hasData) {
-            return ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: snapshot.data!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    padding: const EdgeInsets.only(
-                        left: 30, right: 30, top: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: newsMap["message"][index]["photo"] == ""
-                              ? const Text("No Image available")
-                              : Image.memory(base64Decode("${newsMap["message"][index]["photo"]}")),
-                          ),
-                        ),
-                        Expanded(
-                            flex: 5,
-                            child: Column(
-                              children: [
-                                Text(
-                                  '${newsMap["message"][index]["title"]}',
-                                  style: const TextStyle(fontSize: 18,
-                                      fontWeight: FontWeight.bold),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 16.0),
+          height: MediaQuery.of(context).size.height * 0.35,
+          child: FutureBuilder(
+            future: initNews(),
+            builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+              if(snapshot.hasData) {
+                return ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (BuildContext context, int index)
+                    {
+                      return Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: InkWell(
+                              child: Container(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, top: 10),
+                                height: 210,
+                                width: double.infinity,
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16.0),
+
+                                  ),
+                                  elevation: 2,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Expanded(
+                                        flex: 5,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(16.0)
+                                              .copyWith(bottomRight: Radius.circular(0), topRight: Radius.circular(0)),
+                                          child: newsMap["message"][index]["photo"] == ""
+                                              ? const Text("       No Image available")
+                                              : Image.memory(base64Decode("${newsMap["message"][index]["photo"]}",),fit: BoxFit.fill,),
+
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 7,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 20, left: 15, right: 15),
+                                          child: Column(
+                                            children: [
+                                              Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                  '${newsMap["message"][index]["title"]}',
+                                                  style: const TextStyle(fontSize: 18,
+                                                    fontWeight: FontWeight.bold,),
+                                                ),
+                                              ),
+                                              Align(
+                                                alignment: Alignment.topRight,
+                                                child:Text(
+                                                  '${newsMap["message"][index]["release_date"]}',
+                                                  style: TextStyle(color: Colors.grey.shade500),
+                                                ),
+                                              ),
+                                              Text(
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 5,
+                                                  '${newsMap["message"][index]["news_content"]}'
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                    '${newsMap["message"][index]["release_date"]}'
-                                ),
-                                Text(
-                                    '${newsMap["message"][index]["news_content"]}'
-                                ),
-                              ],
-                            )
-                        ),
-                      ],
-                    ),
-                  );
-                });
-          }else{
-            return const CircularProgressIndicator();
-          }
-        },
-      )
+                              ),
+                              // onTap: () {
+                              //   Navigator.of(context).push(
+                              //       MaterialPageRoute(
+                              //           builder: (context) => AnnouncementPage(announcementData: snapshot.data![index],)
+                              //       )
+                              //   );
+                              // }
+                          )
+                      );
+                    }
+                );
+              }else{
+                return Container(
+                  height: 70.0,
+                  child: new Center(child: new CircularProgressIndicator()),
+                );
+              }
+            },
+          ),
+        )
     );
   }
 }

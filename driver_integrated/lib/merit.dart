@@ -24,9 +24,28 @@ class meritPageState extends State<Merit> {
     return WillPopScope(
       child: Scaffold(
         appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: Colors.black, //change your color here
+            size: 35,
+          ),
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(20.0),
+            child: Container(
+              color: Colors.orangeAccent,
+              height: 4.0,
+            ),
+          ),
           centerTitle: true,
-          title: Text("Merit", style: const TextStyle(color: Colors.white),),
-          backgroundColor: const Color.fromARGB(255, 255, 168, 0),
+          title: const Padding(
+            padding: EdgeInsets.only(top: 10.0),
+            child: Text(
+              "Merit",
+              style: TextStyle(color: Colors.black, fontSize: 25.0),
+
+            ),
+          ),
+          backgroundColor: Colors.white,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -65,7 +84,7 @@ class meritPageState extends State<Merit> {
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           return Container(
             margin: EdgeInsets.only(left: 50, right: 50, top: 20),
-            padding: EdgeInsets.only(top: 15, bottom: 15),
+            padding: EdgeInsets.only(top: 15, bottom: 25),
             decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.black, width: 0.1),
@@ -81,7 +100,7 @@ class meritPageState extends State<Merit> {
             child: Column(
               children: [
                 Container(
-                  height: 70,
+                  height: 90,
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -146,6 +165,7 @@ class meritPageState extends State<Merit> {
             }
           });
         },
+        padding: const EdgeInsets.only(left: 20, right: 20),
         child: Text("Withdraw",style: TextStyle(fontSize: 16)),
         shape: GFButtonShape.pills,
       ),

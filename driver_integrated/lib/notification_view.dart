@@ -42,8 +42,31 @@ class NotificationViewState extends State<NotificationView> {
 
   PreferredSizeWidget appBar(){
     return AppBar(
-      title: const Text('Notification'),
-      backgroundColor: const Color.fromARGB(255, 255, 168, 0),
+      automaticallyImplyLeading: false,
+      backgroundColor: Colors.white,
+      elevation: 0,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(16.0),
+        child: Container(
+          height: 4.0,
+        ),
+      ),
+      title: SizedBox(
+          child: Padding(
+            padding: EdgeInsets.only(top: 50, bottom: 30),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(' | ',
+                    style: TextStyle(
+                        color: Colors.orange.shade700, fontWeight: FontWeight.w900, fontSize: 32.0)),
+                Flexible(
+                  child: Text("Notification", style: TextStyle(fontSize: 30.0, color: Colors.black),),
+                ),
+              ],
+            ),
+          )
+      ),
     );
   }
 
