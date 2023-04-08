@@ -509,7 +509,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         },
         key: UniqueKey(),
         background: Container(
-          color: const Color.fromARGB(255, 208, 208, 208),
+          //color: const Color.fromARGB(255, 208, 208, 208),
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 208, 208, 208),
             borderRadius: BorderRadius.circular(10.0),
