@@ -42,10 +42,17 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
 
   Future<List<MyOrder>> populateOrders(String orderStatus, bool assign) async {
     List<MyOrder> myOrders = [];
-    List orderIds = await MyApiService.getOrdersId(driver.id, orderStatus, driver.jwtToken);
+    List orderIds = await MyApiService.getOrdersId(
+      driver.id,
+      orderStatus,
+      driver.jwtToken
+    );
     //myOrders.sort((a, b) =>(double.parse(a.collectTime)).compareTo((double.parse(b.collectTime))));
     for (var oid in orderIds) {
-      final data = await MyApiService.getOrder(oid, driver.jwtToken);
+      final data = await MyApiService.getOrder(
+        oid,
+        driver.jwtToken
+      );
       String status = data["status"].toString();
       String origin = data["origin"].toString();
       String destination = data["destination"];
@@ -107,17 +114,30 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
   }
 
   late TabController _tabController;
+  late Map<String, int> vehicleMap = {};
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+    MyApiService.getVehicles().then((vehicles) {
+      setState(() {
+        vehicleMap = vehicles[0];
+      });
+    });
+  }
+
+  String? getVehicleType(int value) {
+    return vehicleMap.entries
+        .firstWhere((entry) => entry.value == value,
+            orElse: () => MapEntry('', 0))
+        .key;
   }
 
   @override
   Widget build(BuildContext context) {
-    //List<MyOrder> orders = [];
-    //orders.sort((a, b) => (double.parse(a.collectTime)).compareTo((double.parse(b.collectTime))));
+    int vehicleType = driver.vehicleType;
+    String? vehicle = getVehicleType(vehicleType);
 
     return Scaffold(
       appBar: AppBar(
@@ -156,20 +176,24 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         ),
         title: SizedBox(
             child: Padding(
-              padding: EdgeInsets.only(top: 50, bottom: 30),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:  [
-                  Text(' | ',
-                      style: TextStyle(
-                          color: Colors.orange.shade700, fontWeight: FontWeight.w900, fontSize: 32.0)),
-                  Flexible(
-                    child: Text("Order List", style: TextStyle(fontSize: 30.0),),
-                  ),
-                ],
+          padding: EdgeInsets.only(top: 50, bottom: 30),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(' | ',
+                  style: TextStyle(
+                      color: Colors.orange.shade700,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 32.0)),
+              Flexible(
+                child: Text(
+                  "Order List",
+                  style: TextStyle(fontSize: 30.0),
+                ),
               ),
-            )
-        ),
+            ],
+          ),
+        )),
       ),
       body: TabBarView(
         controller: _tabController,
@@ -189,17 +213,28 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   ],
                 );
               }
-              final data = snapshot.data;
-              data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
+              //final data = snapshot.data;
+              final now = DateTime.now();
+              final data = snapshot.data!
+                  .where((item) =>
+                      DateFormat('dd/MM/yy hh:mm a')
+                          .parse(item.createdTime
+                              .replaceAll(',', '')
+                              .replaceAll('am', ' AM')
+                              .replaceAll('pm', ' PM'))
+                          .isAfter(now) &&
+                      item.vehicleType == '$vehicle')
+                  .toList();
+              data.sort((a, b) => a.collectTime.compareTo(b.collectTime));
               return ListView.builder(
                 itemCount: data!.length + 1,
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
@@ -211,7 +246,6 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                         borderSide: const BorderSide(
                           color: Colors.orange,
                           style: BorderStyle.solid,
-
                         ),
                         onPressed: () => setState(() {}),
                         shape: GFButtonShape.pills,
@@ -249,15 +283,15 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
                     return SizedBox(
-                      width:180,
-                      height:40,
+                      width: 180,
+                      height: 40,
                       child: GFButton(
                         color: Colors.orangeAccent,
                         borderSide: const BorderSide(
@@ -301,16 +335,15 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n\n"
-
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
                     return SizedBox(
-                      width:180,
-                      height:40,
+                      width: 180,
+                      height: 40,
                       child: GFButton(
                         color: Colors.orangeAccent,
                         borderSide: const BorderSide(
@@ -354,15 +387,15 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         false);
                   } else {
                     return SizedBox(
-                      width:180,
-                      height:40,
+                      width: 180,
+                      height: 40,
                       child: GFButton(
                         color: Colors.orangeAccent,
                         borderSide: const BorderSide(
@@ -406,15 +439,15 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   if (index < data.length) {
                     return myList(
                         "Origin:\n${data[index].origin}\n\n"
-                            "Destination:\n${data[index].destination}\n\n"
-                            "Distance: ${data[index].distance} KM\n\n"
-                            "Delivery Time: ${data[index].deliverTime}",
+                        "Destination:\n${data[index].destination}\n\n"
+                        "Distance: ${data[index].distance} KM\n\n"
+                        "Delivery Time: ${data[index].deliverTime}",
                         data[index],
                         true);
                   } else {
                     return SizedBox(
-                      width:180,
-                      height:40,
+                      width: 180,
+                      height: 40,
                       child: GFButton(
                         color: Colors.orangeAccent,
                         borderSide: const BorderSide(
@@ -534,7 +567,6 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               )
             ],
           ),
-
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: Text(
             child,
@@ -621,7 +653,12 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                   onPressed: () {
                     Navigator.of(context).pop(false);
                     if (action == "accept") {
-                      MyApiService.updateOrder(driver.id, orderId, action, driver.jwtToken);
+                      MyApiService.updateOrder(
+                        driver.id,
+                        orderId,
+                        action,
+                        driver.jwtToken
+                      );
                       setState(() {});
                     } else {
                       uploadImageAlertBox(orderId, action);
@@ -707,7 +744,12 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
             actions: [
               TextButton(
                   onPressed: () {
-                    MyApiService.updateOrder(driver.id, oid, "decline", driver.jwtToken);
+                    MyApiService.updateOrder(
+                      driver.id,
+                      oid,
+                      "decline",
+                      driver.jwtToken
+                    );
                     Navigator.of(context).pop();
                     setState(() {});
                   },
@@ -715,7 +757,12 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                       style: TextStyle(fontSize: 20, color: Colors.redAccent))),
               TextButton(
                   onPressed: () {
-                    MyApiService.updateOrder(driver.id, oid, "accept", driver.jwtToken);
+                    MyApiService.updateOrder(
+                      driver.id,
+                      oid,
+                      "accept",
+                      driver.jwtToken
+                    );
                     Navigator.of(context).pop();
                     setState(() {});
                   },
@@ -738,10 +785,20 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
 
   void uploadImage(int orderId, String filePath, String action) {
     if (action == "collect") {
-      MyApiService.updateOrder(driver.id, orderId, "collect", driver.jwtToken);
+      MyApiService.updateOrder(
+        driver.id,
+        orderId,
+        "collect",
+        driver.jwtToken
+      );
       MyApiService.photoPOC(orderId, filePath);
     } else if (action == "pod") {
-      MyApiService.updateOrder(driver.id, orderId, "pod", driver.jwtToken);
+      MyApiService.updateOrder(
+        driver.id,
+        orderId,
+        "pod",
+        driver.jwtToken
+      );
       MyApiService.photoPOD(orderId, filePath);
     }
     setState(() {});
