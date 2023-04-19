@@ -7,6 +7,7 @@ import 'package:driver_integrated/driver.dart';
 import 'package:driver_integrated/my_order.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'material_design_indicator.dart';
 
 void main() {
   runApp(const OrderPage());
@@ -150,6 +151,12 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           child: Container(
             margin: const EdgeInsets.only(top: 10, bottom: 10),
             child: TabBar(
+              // indicator: BoxDecoration(
+              //   color: Colors.orange,
+              //   borderRadius: BorderRadius.circular(50),
+              // ),
+              indicator: MaterialDesignIndicator(
+                  indicatorHeight: 3, indicatorColor: Colors.orange),
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey.shade400,
               isScrollable: true,
@@ -244,14 +251,13 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                       child: GFButton(
                         color: Colors.orangeAccent,
                         borderSide: const BorderSide(
-                          color: Colors.orange,
                           style: BorderStyle.solid,
                         ),
                         onPressed: () => setState(() {}),
                         shape: GFButtonShape.pills,
                         child: const Text(
                           "Refresh",
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 20, color: Colors.white),
                         ),
                       ),
                     );
@@ -303,7 +309,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                         shape: GFButtonShape.pills,
                         child: const Text(
                           "Refresh",
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 20, color: Colors.white),
                         ),
                       ),
                     );
@@ -355,7 +361,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                         shape: GFButtonShape.pills,
                         child: const Text(
                           "Refresh",
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 20, color: Colors.white),
                         ),
                       ),
                     );
@@ -407,7 +413,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                         shape: GFButtonShape.pills,
                         child: const Text(
                           "Refresh",
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 20, color: Colors.white),
                         ),
                       ),
                     );
@@ -459,7 +465,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                         shape: GFButtonShape.pills,
                         child: const Text(
                           "Refresh",
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 20, color: Colors.white),
                         ),
                       ),
                     );
