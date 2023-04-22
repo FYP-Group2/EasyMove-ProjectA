@@ -149,6 +149,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           //child: DefaultTabController(
           //length: 3,
           child: Container(
+
             margin: const EdgeInsets.only(top: 10, bottom: 10),
             child: TabBar(
               // indicator: BoxDecoration(
@@ -183,19 +184,19 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         ),
         title: SizedBox(
             child: Padding(
-          padding: EdgeInsets.only(top: 50, bottom: 30),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(' | ',
-                  style: TextStyle(
-                      color: Colors.orange.shade700,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 32.0)),
-              Flexible(
-                child: Text(
-                  "Order List",
-                  style: TextStyle(fontSize: 30.0),
+              padding: EdgeInsets.only(top: 50, bottom: 30),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(' | ',
+                      style: TextStyle(
+                          color: Colors.orange,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 32.0)),
+                  Flexible(
+                    child: Text(
+                      "Order List",
+                      style: TextStyle(fontSize: 30.0),
                 ),
               ),
             ],

@@ -65,7 +65,7 @@ class _MyAccountPageState extends State<AccountPage> {
                 children: [
                   Text(' | ',
                       style: TextStyle(
-                          color: Colors.orange.shade700, fontWeight: FontWeight.w900, fontSize: 32.0)),
+                          color: Colors.orange, fontWeight: FontWeight.w900, fontSize: 32.0)),
                   Flexible(
                     child: Text("Account", style: TextStyle(fontSize: 30.0, color: Colors.black),),
                   ),

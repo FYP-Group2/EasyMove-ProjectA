@@ -261,7 +261,7 @@ class HomepageState extends State<Homepage>{
                     ),
                   ),
                   SizedBox(
-                    height: 120,
+                    height: 100,
                   ),
                   Column(
                     children: <Widget>[

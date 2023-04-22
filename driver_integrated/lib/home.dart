@@ -46,7 +46,7 @@ class _HomeState extends State<HomePage> {
                 children: [
                   Text(' | ',
                       style: TextStyle(
-                          color: Colors.orange.shade700, fontWeight: FontWeight.w900, fontSize: 32.0)),
+                          color: Colors.orange, fontWeight: FontWeight.w900, fontSize: 32.0)),
                   Flexible(
                     child: Text("Home", style: TextStyle(fontSize: 30.0, color: Colors.black),),
                   ),
@@ -102,7 +102,7 @@ class _HomeState extends State<HomePage> {
               splashColor: Colors.orange.withAlpha(30),
               child: Container(
                 padding: const EdgeInsets.all(16),
-                width: 350,
+                width: MediaQuery.of(context).size.width*0.845,
                 height: 200,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +110,8 @@ class _HomeState extends State<HomePage> {
                     // profile pic
                     Column(
                       children: [
-                        Container(constraints: const BoxConstraints.expand(height: 100, width: 100),
+                        Container(
+                          constraints: const BoxConstraints.expand(height: 100, width: 100),
                           margin: const EdgeInsets.only(top:10, bottom: 10, left: 10, right: 20,),
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -158,7 +159,7 @@ class _HomeState extends State<HomePage> {
                             ),
                             //phone number
                             Container(
-                              constraints: const BoxConstraints.expand(height: 32, width: 300),
+                              constraints: const BoxConstraints.expand(height: 50, width: 300),
                               //name
                               child: Text(
                                 "Phone No. : ${driver.mobileNumber}",
