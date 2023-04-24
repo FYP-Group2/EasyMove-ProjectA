@@ -214,6 +214,7 @@ import 'package:driver_integrated/SignupDetails.dart';
 import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/firebase_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 String? response_message;
 
@@ -610,6 +611,53 @@ class _LoginPageState extends State<LoginPage> {
 
                                         child: ElevatedButton(
                                           onPressed: () async {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Stack(
+                                                    children: [
+                                                      Container(
+                                                        padding: EdgeInsets.all(16),
+                                                        height: 90,
+                                                        decoration: const BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                  color: Colors.black ,
+                                                                  blurRadius: 2.0,
+                                                                  offset: Offset(2.0,2.0)
+                                                              )
+                                                            ]
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            showErrorMessage
+                                                                ? Row(
+                                                                children: [
+                                                                  if(username_value.text == "" && password_value.text != "")...[
+                                                                    const Text("Username is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
+                                                                  ]else if(username_value.text != "" && password_value.text == "")...[
+                                                                    const Text("Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
+                                                                  ]else if(username_value.text == "" && password_value.text == "")...[
+                                                                    const Text("Username and Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
+                                                                  ]else if(response_message == null && username_value.text != "" && password_value.text != "")...[
+                                                                    const Text("Incorrect Username or Password.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),)
+                                                                  ]else ...[
+                                                                    const SizedBox.shrink(),
+                                                                  ]
+                                                                ]
+                                                            ) : Container(),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  behavior: SnackBarBehavior.floating,
+                                                  backgroundColor: Colors.transparent,
+                                                  elevation: 0,
+                                                  margin: EdgeInsets.only(bottom: 30.0),
+                                                )
+                                            );
                                             setState(() {
                                               showErrorMessage = true;
                                             });
@@ -636,27 +684,7 @@ class _LoginPageState extends State<LoginPage> {
                                           ),
                                         )
                                     ),
-                                    //error message
-                                    Row(
-                                        children: [
-                                          showErrorMessage
-                                          ? Row(
-                                              children: [
-                                                if(username_value.text == "" && password_value.text != "")...[
-                                                  const Text("Username is empty."),
-                                                ]else if(username_value.text != "" && password_value.text == "")...[
-                                                  const Text("Password is empty."),
-                                                ]else if(username_value.text == "" && password_value.text == "")...[
-                                                  const Text("Username and Password is empty."),
-                                                ]else if(response_message == null && username_value.text != "" && password_value.text != "")...[
-                                                  const Text("Incorrect Username or Password.")
-                                                ]else ...[
-                                                  const SizedBox.shrink(),
-                                                ]
-                                              ]
-                                          ) : Container(),
-                                        ],
-                                      ),
+
                                     const SizedBox(width: 35, height: 35),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,

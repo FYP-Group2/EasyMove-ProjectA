@@ -58,6 +58,7 @@ dependencies:
   email_validator: ^2.1.17
   fluttertoast: ^8.1.2
   intl: ^0.18.0
+  awesome_snackbar_content: ^0.1.1
 
 dev_dependencies:
   flutter_test:
