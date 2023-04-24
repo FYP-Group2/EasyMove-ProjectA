@@ -217,6 +217,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 String? response_message;
 
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -225,6 +226,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool showErrorMessage = false;
   Driver driver = Driver();
   bool userIsLoggedIn = false;
   FirebaseService firebaseService = FirebaseService();
@@ -293,23 +295,23 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     Future<void> makePostRequest(
         Map<String, String> requestBody, bool newLogIn) async {
-      Map<String, dynamic> data = await MyApiService.driverLogIn(requestBody);
-      dynamic authUser = data["auth_user"];
-      response_message = (data["auth_user"]["message"]);
-
-      if (response_message == "Login successfully.") {
-        int id = authUser["id"];
-        int region = authUser["region"];
-        int vehicleType = authUser["vehicle_type"];
-        String name = authUser["name"];
-        int mobileNumber = authUser["mobile_number"];
-        String plateNumber = authUser["plate_number"];
-        String jwtToken = authUser["jwt_token"];
-        driver.initializeDriver(
-            id, region, vehicleType, name, mobileNumber, plateNumber, jwtToken);
-        MyApiService.updateToken(driver.id, firebaseService.fcmToken!, driver.jwtToken);
-        // notificationService.init();
-        // notificationService.start();
+        Map<String, dynamic> data = await MyApiService.driverLogIn(requestBody);
+        dynamic authUser = data["auth_user"];
+        response_message = (data["auth_user"]["message"]);
+        
+        if (response_message == "Login successfully.") {
+          int id = authUser["id"];
+          int region = authUser["region"];
+          int vehicleType = authUser["vehicle_type"];
+          String name = authUser["name"];
+          int mobileNumber = authUser["mobile_number"];
+          String plateNumber = authUser["plate_number"];
+          String jwtToken = authUser["jwt_token"];
+          driver.initializeDriver(
+              id, region, vehicleType, name, mobileNumber, plateNumber, jwtToken);
+          MyApiService.updateToken(driver.id, firebaseService.fcmToken!, driver.jwtToken);
+          // notificationService.init();
+          // notificationService.start();
 
         if (newLogIn) {
           await SharedPreferences.getInstance().then((pref) {
@@ -608,6 +610,9 @@ class _LoginPageState extends State<LoginPage> {
 
                                         child: ElevatedButton(
                                           onPressed: () async {
+                                            setState(() {
+                                              showErrorMessage = true;
+                                            });
                                             final Map<String, String> body = {
                                               "username": username_value.text,
                                               "password": password_value.text
@@ -622,16 +627,36 @@ class _LoginPageState extends State<LoginPage> {
                                                   .copyWith(bottomRight: Radius.circular(0)),
                                             ),
                                           ),
-                                          child: Text(
+                                          child: const Text(
                                             "Login", style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 18,
                                             color: Colors.white,
-
                                           ),
                                           ),
                                         )
                                     ),
+                                    //error message
+                                    Row(
+                                        children: [
+                                          showErrorMessage
+                                          ? Row(
+                                              children: [
+                                                if(username_value.text == "" && password_value.text != "")...[
+                                                  const Text("Username is empty."),
+                                                ]else if(username_value.text != "" && password_value.text == "")...[
+                                                  const Text("Password is empty."),
+                                                ]else if(username_value.text == "" && password_value.text == "")...[
+                                                  const Text("Username and Password is empty."),
+                                                ]else if(response_message == null && username_value.text != "" && password_value.text != "")...[
+                                                  const Text("Incorrect Username or Password.")
+                                                ]else ...[
+                                                  const SizedBox.shrink(),
+                                                ]
+                                              ]
+                                          ) : Container(),
+                                        ],
+                                      ),
                                     const SizedBox(width: 35, height: 35),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
