@@ -642,6 +642,8 @@ class _LoginPageState extends State<LoginPage> {
                                                                     const Text("Username and Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
                                                                   ]else if(response_message == null && username_value.text != "" && password_value.text != "")...[
                                                                     const Text("Incorrect Username or Password.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),)
+                                                                  ]else if(response_message == "Login successfully.")...[
+                                                                    const SizedBox.shrink(),
                                                                   ]else ...[
                                                                     const SizedBox.shrink(),
                                                                   ]
