@@ -441,6 +441,9 @@ class _LoginPageState extends State<LoginPage> {
                                   //     color: Colors.white
                                   // ),
                                   child: TextFormField(
+                                    obscureText: true,
+                                    enableSuggestions: false,
+                                    autocorrect: false,
                                     controller: password_value,
                                     decoration: InputDecoration(
                                         label: Text("Password"),
