@@ -68,9 +68,9 @@ class MyApiService{
   }
 
   /// Function to get details of order by specifying the id of order, [oid]
-  static Future<Map<String, dynamic>> getOrder(int oid, String jwtToken) async{
+  static Future<Map<String, dynamic>> getOrder(int uid, int oid, String jwtToken) async{
     const String unencodedPath = "/easymovenpick.com/api/driver_order_JWT.php";
-    final Map<String, String> body = {"oid" : "$oid", "jwt_token": jwtToken};
+    final Map<String, String> body = {"uid" : "$uid","oid" : "$oid", "jwt_token": jwtToken};
     final response = await http.post(Uri.http(url, unencodedPath), body: body);
     final data = json.decode(response.body);
 
