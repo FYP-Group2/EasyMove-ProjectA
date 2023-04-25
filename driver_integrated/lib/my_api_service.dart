@@ -144,7 +144,7 @@ class MyApiService{
   }
 
   static Future<Map<String, dynamic>> getMeritStatement(String userId, String jwtToken) async {
-    const String unencodedPath = "/easymovenpick.com/api/api/merit_statement_JWT.php";
+    const String unencodedPath = "/easymovenpick.com/api/merit_statement_JWT.php";
     final Map<String, String> body = {
       'uid': userId,
       'jwt_token': jwtToken
