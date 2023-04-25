@@ -227,7 +227,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool showErrorMessage = false;
   Driver driver = Driver();
   bool userIsLoggedIn = false;
   FirebaseService firebaseService = FirebaseService();
@@ -634,24 +633,19 @@ class _LoginPageState extends State<LoginPage> {
                                                         ),
                                                         child: Row(
                                                           children: [
-                                                            showErrorMessage
-                                                                ? Row(
-                                                                children: [
-                                                                  if(username_value.text == "" && password_value.text != "")...[
-                                                                    const Text("Username is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
-                                                                  ]else if(username_value.text != "" && password_value.text == "")...[
-                                                                    const Text("Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
-                                                                  ]else if(username_value.text == "" && password_value.text == "")...[
-                                                                    const Text("Username and Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
-                                                                  ]else if(response_message == null && username_value.text != "" && password_value.text != "")...[
-                                                                    const Text("Incorrect Username or Password.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),)
-                                                                  ]else if(response_message == "Login successfully.")...[
-                                                                    const SizedBox.shrink(),
-                                                                  ]else ...[
-                                                                    const SizedBox.shrink(),
-                                                                  ]
-                                                                ]
-                                                            ) : Container(),
+                                                            if(username_value.text == "" && password_value.text != "")...[
+                                                              const Text("Username is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
+                                                            ]else if(username_value.text != "" && password_value.text == "")...[
+                                                              const Text("Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
+                                                            ]else if(username_value.text == "" && password_value.text == "")...[
+                                                              const Text("Username and Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
+                                                            ]else if(response_message == null && username_value.text != "" && password_value.text != "")...[
+                                                              const Text("Incorrect Username or Password.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),)
+                                                            ]else if(response_message == "Login successfully.")...[
+                                                              const SizedBox.shrink(),
+                                                            ]else ...[
+                                                              const SizedBox.shrink(),
+                                                            ]
                                                           ],
                                                         ),
                                                       ),
@@ -664,7 +658,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 )
                                             );
                                             setState(() {
-                                              showErrorMessage = true;
+
                                             });
                                             final Map<String, String> body = {
                                               "username": username_value.text,
