@@ -238,7 +238,7 @@ class signupFormState extends State<SignupDetails> {
                                           size: 22,
                                         ),
                                         labelText: 'Full Name As Per IC *',
-                                        hintStyle: TextStyle(
+                                        labelStyle: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14.5
                                         ),
@@ -279,7 +279,7 @@ class signupFormState extends State<SignupDetails> {
                                           size: 22,
                                         ),
                                         labelText: 'Login Username *',
-                                        hintStyle: TextStyle(
+                                        labelStyle: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14.5
                                         ),
@@ -320,7 +320,7 @@ class signupFormState extends State<SignupDetails> {
                                           size: 22,
                                         ),
                                         labelText: 'Login Password *',
-                                        hintStyle: TextStyle(
+                                        labelStyle: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14.5
                                         ),
@@ -359,7 +359,7 @@ class signupFormState extends State<SignupDetails> {
                                           size: 22,
                                         ),
                                         labelText: 'Identity Card Number *',
-                                        hintStyle: TextStyle(
+                                        labelStyle: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14.5
                                         ),
@@ -398,7 +398,7 @@ class signupFormState extends State<SignupDetails> {
                                           size: 22,
                                         ),
                                         labelText: 'Mobile Phone Number *',
-                                        hintStyle: TextStyle(
+                                        labelStyle: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14.5
                                         ),
@@ -439,7 +439,7 @@ class signupFormState extends State<SignupDetails> {
                                           size: 22,
                                         ),
                                         labelText: 'Emergency Contact Number *',
-                                        hintStyle: TextStyle(
+                                        labelStyle: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14.5
                                         ),
@@ -509,8 +509,12 @@ class signupFormState extends State<SignupDetails> {
                                               },
                                               decoration: const InputDecoration(
                                                 labelText: 'Employment Type',
+                                                labelStyle: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16
+                                                ),
                                                 border: InputBorder.none,
-                                                contentPadding: EdgeInsets.all(16),
+                                                contentPadding: EdgeInsets.all(20),
                                               ),
                                             ),
                                           ),
@@ -534,32 +538,41 @@ class signupFormState extends State<SignupDetails> {
                                                   border: Border.all(color: Colors.white38, width: 1.0),
                                                   color: Colors.transparent,
                                               ),
-                                              child: DropdownButtonFormField<String>(
-                                                dropdownColor: Colors.orange,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                                value: region_value,
-                                                items: region.map<DropdownMenuItem<String>>((String region) {
-                                                  return DropdownMenuItem(
-                                                      value: region,
-                                                      child: Text(region)
+                                              child: FutureBuilder(
+                                                future: getRegions(),
+                                                builder: (context, snapshot) {
+                                                  return DropdownButtonFormField<String>(
+                                                    dropdownColor: Colors.orange,
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                    value: region_value,
+                                                    items: region.map<DropdownMenuItem<String>>((String region) {
+                                                      return DropdownMenuItem(
+                                                          value: region,
+                                                          child: Text(region)
+                                                      );
+                                                    }).toList(),
+                                                    icon: const Icon(
+                                                      Icons.keyboard_arrow_down,
+                                                      color: Colors.white70,
+                                                    ),
+                                                    onChanged: (String? newValue) {
+                                                      setState(() {
+                                                        region_value = newValue!;
+                                                      });
+                                                    },
+                                                    decoration: const InputDecoration(
+                                                      labelText: 'Region',
+                                                      labelStyle: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 16
+                                                      ),
+                                                      border: InputBorder.none,
+                                                      contentPadding: EdgeInsets.all(20),
+                                                    ),
                                                   );
-                                                }).toList(),
-                                                icon: const Icon(
-                                                  Icons.keyboard_arrow_down,
-                                                  color: Colors.white70,
-                                                ),
-                                                onChanged: (String? newValue) {
-                                                  setState(() {
-                                                    region_value = newValue!;
-                                                  });
-                                                  },
-                                                decoration: const InputDecoration(
-                                                  labelText: 'Region',
-                                                  border: InputBorder.none,
-                                                  contentPadding: EdgeInsets.all(16),
-                                                ),
+                                                }
                                               )
                                           ),
                                         ],
@@ -673,36 +686,45 @@ class signupFormState extends State<SignupDetails> {
                                           border: Border.all(color: Colors.white38, width: 1.0),
                                           color: Colors.transparent,
                                         ),
-                                        child: DropdownButtonFormField<String>(
-                                          dropdownColor: Colors.orange,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                          value: vehicle_type_value,
-                                          items: vehicleType.map<
-                                              DropdownMenuItem<String>>(
-                                                  (String vehicleType) {
+                                        child: FutureBuilder(
+                                          future: getVehicles(),
+                                          builder: (context, snapshot) {
+                                            return DropdownButtonFormField<String>(
+                                              dropdownColor: Colors.orange,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                              value: vehicle_type_value,
+                                              items: vehicleType.map<
+                                                  DropdownMenuItem<String>>(
+                                                      (String vehicleType) {
                                                     return DropdownMenuItem(
                                                       value: vehicleType,
                                                       child: Text(vehicleType),
                                                     );
                                                   }).toList(),
-                                          icon: const Icon(
-                                            Icons.keyboard_arrow_down,
-                                            color: Colors.white70,
-                                          ),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              vehicle_type_value =
-                                              newValue!;
-                                            });
-                                            },
-                                          decoration: const InputDecoration(
-                                            labelText: 'Vehicle Type',
-                                            border: InputBorder.none,
-                                            contentPadding:
-                                            EdgeInsets.all(16),
-                                          ),
+                                              icon: const Icon(
+                                                Icons.keyboard_arrow_down,
+                                                color: Colors.white70,
+                                              ),
+                                              onChanged: (String? newValue) {
+                                                setState(() {
+                                                  vehicle_type_value =
+                                                  newValue!;
+                                                });
+                                              },
+                                              decoration: const InputDecoration(
+                                                labelText: 'Vehicle Type',
+                                                labelStyle: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16
+                                                ),
+                                                border: InputBorder.none,
+                                                contentPadding:
+                                                EdgeInsets.all(20),
+                                              ),
+                                            );
+                                          },
                                         )
                                     ),
                                   ],
@@ -715,7 +737,7 @@ class signupFormState extends State<SignupDetails> {
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(16),
                                       labelText: 'Vehicle plate',
-                                      hintStyle: TextStyle(
+                                      labelStyle: TextStyle(
                                           color: Colors.white, fontSize: 14.5
                                       ),
                                       enabledBorder: OutlineInputBorder(
@@ -747,7 +769,7 @@ class signupFormState extends State<SignupDetails> {
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(16),
                                       labelText: 'Vehicle Owner',
-                                      hintStyle: TextStyle(
+                                      labelStyle: TextStyle(
                                           color: Colors.white, fontSize: 14.5
                                       ),
                                       enabledBorder: OutlineInputBorder(
