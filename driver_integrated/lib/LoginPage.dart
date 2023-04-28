@@ -374,7 +374,7 @@ class _LoginPageState extends State<LoginPage> {
                           height: 80,
                         ),
                         Image.asset(
-                          'assets/images/logo.png',
+                          'assets/images/EMXicon.png',
                           width: 220,
                         ),
                         Form(

@@ -134,8 +134,8 @@ class _HomeState extends State<HomePage> {
                           //   ),
                           //   borderRadius: BorderRadius.circular(50),
                           //   ),
-                          width: 135,
-                          child: Image.asset("assets/images/icon_2.png"),
+                          width: 95,
+                          child: Image.asset("assets/images/EMXword.png"),
                         )
                       ],
                     ),

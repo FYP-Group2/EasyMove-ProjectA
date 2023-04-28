@@ -256,8 +256,8 @@ class HomepageState extends State<Homepage>{
                   ),
                   Container(
                     child: Image.asset(
-                      'assets/images/logo.png',
-                      width: 230,
+                      'assets/images/EMXicon.png',
+                      width: 250,
                     ),
                   ),
                   SizedBox(
