@@ -513,23 +513,26 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
       child: Dismissible(
-        onDismissed: (DismissDirection direction) {
-          if (direction == DismissDirection.startToEnd) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Order_details(
-                          order: order,
-                        )
-                )
-            );
-          } else {
-            if (order.isAssigned && order.status == "Ordered") {
-              assignedAlertBox(order.id);
+          direction: limitDirection
+              ? DismissDirection.startToEnd
+              : DismissDirection.horizontal,
+          onDismissed: (direction) {
+            if (direction == DismissDirection.startToEnd) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Order_details(
+                            order: order,
+                          )
+                  )
+              );
             } else {
-              orderActionAlertBox(order.id, myAlertBoxAction(order.status));
+              if (order.isAssigned && order.status == "Ordered") {
+                assignedAlertBox(order.id);
+              } else {
+                orderActionAlertBox(order.id, myAlertBoxAction(order.status));
+              }
             }
-          }
         },
         key: UniqueKey(),
         background: Container(
@@ -591,67 +594,147 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               )
             ],
           ),
-          child: Padding(
+          child: Container(
             padding: EdgeInsets.all(18.0),
-              child: Column(
-                children: <Widget> [
-                  Row(
+            child: Column(
+              children: [
+                Container(
+                  child: Row(
                     children: [
                       Icon(
                         Icons.location_on,
-                        color: Colors.orange
+                        color: Colors.orange,
                       ),
-                      SizedBox(width: 8.0),
-                      Text(
-                        "Origin: " + origin + "\n"
-                        "Destination: " + destination,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                          )
+                      SizedBox(width: 16.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Origin: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: origin,
+                                ),
+                              ],
+                            ),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Destination: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: destination,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.0),
-                  Row(
+                ),
+                SizedBox(height: 12.0),
+                Container(
+                  child: Row(
                     children: [
                       Icon(
                         Icons.signpost,
-                        color: Colors.orange
+                        color: Colors.orange,
                       ),
-                      SizedBox(width: 8.0),
-                      Text(
-                        "Destination: " + destination,
-                        textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
+                      SizedBox(width: 16.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Distance: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: distance,
+                                ),
+                              ],
+                            ),
                           )
+                        ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.0),
-                  Row(
+                ),
+                SizedBox(height: 12.0),
+                Container(
+                  child: Row(
                     children: [
                       Icon(
                         Icons.access_time_filled,
-                        color: Colors.orange
+                        color: Colors.orange,
                       ),
-                      SizedBox(width: 8.0),
-                      Text(
-                        "Delivery Time: " + deliveryTime + "\n"
-                        "Collect Time: " + collectTime,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                          )
+                      SizedBox(width: 16.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Delivery Time: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: deliveryTime,
+                                ),
+                              ],
+                            ),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Collected Time: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: collectTime,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              )
+                )
+              ],
+            ),
           )
         ),
       ),
