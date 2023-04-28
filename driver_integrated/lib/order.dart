@@ -147,38 +147,23 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         backgroundColor: Colors.white,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
-          //child: DefaultTabController(
-          //length: 3,
           child: Container(
-
             margin: const EdgeInsets.only(top: 10, bottom: 10),
             child: TabBar(
-              // indicator: BoxDecoration(
-              //   color: Colors.orange,
-              //   borderRadius: BorderRadius.circular(50),
-              // ),
               indicator: MaterialDesignIndicator(
-                  indicatorHeight: 3, indicatorColor: Colors.orange),
+                  indicatorHeight: 3,
+                  indicatorColor: Colors.orange
+              ),
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey.shade400,
               isScrollable: true,
               controller: _tabController,
               tabs: const [
-                Tab(
-                  text: 'Nearby',
-                ),
-                Tab(
-                  text: 'Assigned',
-                ),
-                Tab(
-                  text: 'Accepted',
-                ),
-                Tab(
-                  text: 'Collected',
-                ),
-                Tab(
-                  text: 'History',
-                ),
+                Tab(text: 'Nearby'),
+                Tab(text: 'Assigned'),
+                Tab(text: 'Accepted'),
+                Tab(text: 'Collected'),
+                Tab(text: 'History'),
               ],
             ),
           ),
@@ -241,10 +226,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
-                        "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                        data[index].origin,
+                        data[index].destination,
+                        data[index].distance.toString(),
+                        data[index].deliverTime.toString(),
+                        data[index].collectTime.toString(),
                         data[index],
                         false);
                   } else {
@@ -300,10 +286,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
-                        "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                        data[index].origin,
+                        data[index].destination,
+                        data[index].distance.toString(),
+                        data[index].deliverTime.toString(),
+                        data[index].collectTime.toString(),
                         data[index],
                         false);
                   } else {
@@ -359,10 +346,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
-                        "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                        data[index].origin,
+                        data[index].destination,
+                        data[index].distance.toString(),
+                        data[index].deliverTime.toString(),
+                        data[index].collectTime.toString(),
                         data[index],
                         false);
                   } else {
@@ -418,10 +406,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
-                        "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                        data[index].origin,
+                        data[index].destination,
+                        data[index].distance.toString(),
+                        data[index].deliverTime.toString(),
+                        data[index].collectTime.toString(),
                         data[index],
                         false);
                   } else {
@@ -477,10 +466,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 itemBuilder: (context, index) {
                   if (index < data.length) {
                     return myList(
-                        "Origin:\n${data[index].origin}\n\n"
-                        "Destination:\n${data[index].destination}\n\n"
-                        "Distance: ${data[index].distance} KM\n\n"
-                        "Delivery Time: ${data[index].deliverTime}",
+                        data[index].origin,
+                        data[index].destination,
+                        data[index].distance.toString(),
+                        data[index].deliverTime.toString(),
+                        data[index].collectTime.toString(),
                         data[index],
                         true);
                   } else {
@@ -519,22 +509,21 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
     );
   }
 
-  Widget myList(String child, MyOrder order, bool limitDirection) {
+  Widget myList(String origin, String destination, String distance, String deliveryTime,String collectTime, MyOrder order, bool limitDirection) {
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
       child: Dismissible(
-        direction: limitDirection
-            ? DismissDirection.startToEnd
-            : DismissDirection.horizontal,
-        onDismissed: (direction) {
+        onDismissed: (DismissDirection direction) {
           if (direction == DismissDirection.startToEnd) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => Order_details(
                           order: order,
-                        )));
-          } else if (direction == DismissDirection.endToStart) {
+                        )
+                )
+            );
+          } else {
             if (order.isAssigned && order.status == "Ordered") {
               assignedAlertBox(order.id);
             } else {
@@ -602,12 +591,68 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               )
             ],
           ),
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-          child: Text(
-            child,
-            textAlign: TextAlign.start,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
+          child: Padding(
+            padding: EdgeInsets.all(18.0),
+              child: Column(
+                children: <Widget> [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: Colors.orange
+                      ),
+                      SizedBox(width: 8.0),
+                      Text(
+                        "Origin: " + origin + "\n"
+                        "Destination: " + destination,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                          )
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.signpost,
+                        color: Colors.orange
+                      ),
+                      SizedBox(width: 8.0),
+                      Text(
+                        "Destination: " + destination,
+                        textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                          )
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.access_time_filled,
+                        color: Colors.orange
+                      ),
+                      SizedBox(width: 8.0),
+                      Text(
+                        "Delivery Time: " + deliveryTime + "\n"
+                        "Collect Time: " + collectTime,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                          )
+                      ),
+                    ],
+                  ),
+                ],
+              )
+          )
         ),
       ),
     );
