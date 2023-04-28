@@ -218,7 +218,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                     Text("No order found",
                         style: TextStyle(
                           fontSize: 32,
-                        ))
+                        )
+                    )
                   ],
                 );
               }
@@ -247,21 +248,30 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                         data[index],
                         false);
                   } else {
-                    return SizedBox(
-                      width: 180,
-                      height: 40,
-                      child: GFButton(
-                        color: Colors.orangeAccent,
-                        borderSide: const BorderSide(
-                          style: BorderStyle.solid,
+                    return Column(
+                      children: <Widget> [
+                        Padding(
+                            padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0)
                         ),
-                        onPressed: () => setState(() {}),
-                        shape: GFButtonShape.pills,
-                        child: const Text(
-                          "Refresh",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width-20,
+                          height: 40,
+                          child: GFButton(
+                            color: Colors.orangeAccent,
+                            borderSide: const BorderSide(
+                              color: Colors.orange,
+                              style: BorderStyle.solid,
+                              width: 1,
+                            ),
+                            onPressed: () => setState(() {}),
+                            shape: GFButtonShape.pills,
+                            child: const Text(
+                              "Refresh",
+                              style: TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                        )
+                      ] ,
                     );
                   }
                 },
@@ -297,23 +307,30 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                         data[index],
                         false);
                   } else {
-                    return SizedBox(
-                      width: 180,
-                      height: 40,
-                      child: GFButton(
-                        color: Colors.orangeAccent,
-                        borderSide: const BorderSide(
-                          color: Colors.orange,
-                          style: BorderStyle.solid,
-                          width: 1,
+                    return Column(
+                      children: <Widget> [
+                        Padding(
+                            padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0)
                         ),
-                        onPressed: () => setState(() {}),
-                        shape: GFButtonShape.pills,
-                        child: const Text(
-                          "Refresh",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width-40,
+                          height: 40,
+                          child: GFButton(
+                            color: Colors.orangeAccent,
+                            borderSide: const BorderSide(
+                              color: Colors.orange,
+                              style: BorderStyle.solid,
+                              width: 1,
+                            ),
+                            onPressed: () => setState(() {}),
+                            shape: GFButtonShape.pills,
+                            child: const Text(
+                              "Refresh",
+                              style: TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                        )
+                      ] ,
                     );
                   }
                 },
@@ -349,23 +366,30 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                         data[index],
                         false);
                   } else {
-                    return SizedBox(
-                      width: 180,
-                      height: 40,
-                      child: GFButton(
-                        color: Colors.orangeAccent,
-                        borderSide: const BorderSide(
-                          color: Colors.orange,
-                          style: BorderStyle.solid,
-                          width: 1,
+                    return Column(
+                      children: <Widget> [
+                        Padding(
+                          padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0)
                         ),
-                        onPressed: () => setState(() {}),
-                        shape: GFButtonShape.pills,
-                        child: const Text(
-                          "Refresh",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width-40,
+                          height: 40,
+                          child: GFButton(
+                            color: Colors.orangeAccent,
+                            borderSide: const BorderSide(
+                              color: Colors.orange,
+                              style: BorderStyle.solid,
+                              width: 1,
+                            ),
+                            onPressed: () => setState(() {}),
+                            shape: GFButtonShape.pills,
+                            child: const Text(
+                              "Refresh",
+                              style: TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                        )
+                      ] ,
                     );
                   }
                 },
@@ -401,23 +425,30 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                         data[index],
                         false);
                   } else {
-                    return SizedBox(
-                      width: 180,
-                      height: 40,
-                      child: GFButton(
-                        color: Colors.orangeAccent,
-                        borderSide: const BorderSide(
-                          color: Colors.orange,
-                          style: BorderStyle.solid,
-                          width: 1,
+                    return Column(
+                      children: <Widget> [
+                        Padding(
+                            padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0)
                         ),
-                        onPressed: () => setState(() {}),
-                        shape: GFButtonShape.pills,
-                        child: const Text(
-                          "Refresh",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width-40,
+                          height: 40,
+                          child: GFButton(
+                            color: Colors.orangeAccent,
+                            borderSide: const BorderSide(
+                              color: Colors.orange,
+                              style: BorderStyle.solid,
+                              width: 1,
+                            ),
+                            onPressed: () => setState(() {}),
+                            shape: GFButtonShape.pills,
+                            child: const Text(
+                              "Refresh",
+                              style: TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                        )
+                      ] ,
                     );
                   }
                 },
@@ -453,23 +484,30 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                         data[index],
                         true);
                   } else {
-                    return SizedBox(
-                      width: 180,
-                      height: 40,
-                      child: GFButton(
-                        color: Colors.orangeAccent,
-                        borderSide: const BorderSide(
-                          color: Colors.orange,
-                          style: BorderStyle.solid,
-                          width: 1,
+                    return Column(
+                      children: <Widget> [
+                        Padding(
+                            padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0)
                         ),
-                        onPressed: () => setState(() {}),
-                        shape: GFButtonShape.pills,
-                        child: const Text(
-                          "Refresh",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width-40,
+                          height: 40,
+                          child: GFButton(
+                            color: Colors.orangeAccent,
+                            borderSide: const BorderSide(
+                              color: Colors.orange,
+                              style: BorderStyle.solid,
+                              width: 1,
+                            ),
+                            onPressed: () => setState(() {}),
+                            shape: GFButtonShape.pills,
+                            child: const Text(
+                              "Refresh",
+                              style: TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                        )
+                      ] ,
                     );
                   }
                 },
@@ -484,17 +522,6 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
   Widget myList(String child, MyOrder order, bool limitDirection) {
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-      // decoration: BoxDecoration(
-      //   border: Border.all(color: Colors.white),
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.grey.withOpacity(0.2),
-      //       spreadRadius: 2,
-      //       blurRadius: 2,
-      //       offset: const Offset(0, 3),
-      //     )
-      //   ],
-      // ),
       child: Dismissible(
         direction: limitDirection
             ? DismissDirection.startToEnd
@@ -517,7 +544,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         },
         key: UniqueKey(),
         background: Container(
-          //color: const Color.fromARGB(255, 208, 208, 208),
+          margin: EdgeInsets.only(top: 20),
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 208, 208, 208),
             borderRadius: BorderRadius.circular(10.0),
@@ -562,8 +589,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           ),
         ),
         child: Container(
-          margin: EdgeInsets.only(top: 20),
-          width: 500,
+          margin: EdgeInsets.only(top: 20, left: 10.0, right:10.0),
+          width: MediaQuery.of(context).size.width-20,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10.0),
