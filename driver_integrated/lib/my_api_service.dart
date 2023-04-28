@@ -107,18 +107,21 @@ class MyApiService{
   static Future<List> getRegions() async{
     Map<String, int> regionMap = {};
     List<String> regionList = [];
+
     // const String unencodedPath = "/easysuperapps.com/api/regions.php/regions.php";
-    const String unencodedPath = "awcgroup.com.my/easymovenpick.com/api/regions.php";    const String url = "https://easysuperapps.com//easysuperapps.com/api/vehicle_types.php/vehicle_types.php";
+    const String unencodedPath = "/easymovenpick.com/api/regions.php";
+    // const String url = "https://easysuperapps.com//easysuperapps.com/api/vehicle_types.php/vehicle_types.php";
 
     final response = await http.post(Uri.http(url, unencodedPath));
     final data = json.decode(response.body);
 
     List elements = data["options"];
-    for(var e in elements){
-      Map<String, int> region = {e["label"] : e["value"]};
+    for (var e in elements) {
+      Map<String, int> region = {e["label"]: e["value"]};
       regionMap.addAll(region);
       regionList.add(e["label"]);
     }
+
 
     List regions = [regionMap, regionList];
     return regions;
