@@ -10,13 +10,29 @@ class UnableWithdrawal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80.0),
-          child: AppBar(
-            title: Image.asset('assets/images/icon.png', height: 100),
-            centerTitle: true,
-            backgroundColor: Color(0xFFFFA600),
+        appBar: AppBar(
+          iconTheme:  const IconThemeData(
+            color: Colors.black, //change your color here
+            size: 35,
           ),
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(16.0),
+            child: Container(
+              color: Colors.orangeAccent,
+              height: 4.0,
+            ),
+          ),
+          centerTitle: true,
+          title: const Padding(
+            padding: EdgeInsets.only(top: 10.0),
+            child: Text(
+              "Withdrawal",
+              style: TextStyle(color: Colors.black, fontSize: 25.0),
+
+            ),
+          ),
+          backgroundColor: Colors.white,
         ),
         body: Center(
             child: Column(

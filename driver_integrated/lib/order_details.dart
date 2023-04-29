@@ -15,6 +15,7 @@ class Order_details extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Order Details Page',
+      debugShowCheckedModeBanner: false,
       home: _RowOrder(order),
     );
   }
@@ -494,14 +495,16 @@ class _RowOrder extends StatelessWidget {
                           const FittedBox(
                             child: Padding(
                               padding: EdgeInsets.only(top: 10, bottom: 5),
-                              child: Text(
-                                'Pick Up Location:',
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
+                              child: Center(
+                                child: Text(
+                                  'Pick Up Location:',
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
                           ),
