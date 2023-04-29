@@ -210,16 +210,16 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               }
               //final data = snapshot.data;
               final now = DateTime.now();
-              final data = snapshot.data!
-                  .where((item) =>
-                      DateFormat('dd/MM/yy hh:mm a')
-                          .parse(item.createdTime
-                              .replaceAll(',', '')
-                              .replaceAll('am', ' AM')
-                              .replaceAll('pm', ' PM'))
-                          .isAfter(now) &&
-                      item.vehicleType == '$vehicle')
-                  .toList();
+              final data = snapshot.data!;
+                  // .where((item) =>
+                  //     DateFormat('dd/MM/yy hh:mm a')
+                  //         .parse(item.createdTime
+                  //             .replaceAll(',', '')
+                  //             .replaceAll('am', ' AM')
+                  //             .replaceAll('pm', ' PM'))
+                  //         .isAfter(now) &&
+                  //     item.vehicleType == '$vehicle')
+                  // .toList();
               data.sort((a, b) => a.collectTime.compareTo(b.collectTime));
               return ListView.builder(
                 itemCount: data!.length + 1,
@@ -537,6 +537,10 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         key: UniqueKey(),
         background: Container(
           margin: EdgeInsets.only(top: 20),
+<<<<<<< Updated upstream
+=======
+          //color: const Color.fromARGB(255, 208, 208, 208),
+>>>>>>> Stashed changes
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 208, 208, 208),
             borderRadius: BorderRadius.circular(10.0),
