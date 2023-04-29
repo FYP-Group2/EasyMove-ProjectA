@@ -211,6 +211,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               //final data = snapshot.data;
               final now = DateTime.now();
               final data = snapshot.data!;
+                  //
+
                   // .where((item) =>
                   //     DateFormat('dd/MM/yy hh:mm a')
                   //         .parse(item.createdTime
@@ -537,10 +539,6 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         key: UniqueKey(),
         background: Container(
           margin: EdgeInsets.only(top: 20),
-<<<<<<< Updated upstream
-=======
-          //color: const Color.fromARGB(255, 208, 208, 208),
->>>>>>> Stashed changes
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 208, 208, 208),
             borderRadius: BorderRadius.circular(10.0),
