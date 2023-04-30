@@ -1118,7 +1118,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 10),
+            margin: EdgeInsets.symmetric(vertical: ScreenSize.screenHeight(context) * 0.01),
             child: TabBar(
               indicator: MaterialDesignIndicator(
                   indicatorHeight: 3,
@@ -1140,7 +1140,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         ),
         title: SizedBox(
           child: Padding(
-            padding: EdgeInsets.only(top: 50, bottom: 30),
+            padding: EdgeInsets.symmetric(vertical: ScreenSize.screenHeight(context) * 0.01),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
