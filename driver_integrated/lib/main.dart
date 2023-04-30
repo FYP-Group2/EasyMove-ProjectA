@@ -70,7 +70,7 @@ class HomepageState extends State<Homepage>{
             height: ScreenSize.screenHeight(context),
             padding: EdgeInsets.symmetric(
                 horizontal: ScreenSize.screenWidth(context) * 0.05,
-                vertical: ScreenSize.screenHeight(context) * 0.1
+                vertical: ScreenSize.screenHeight(context) * 0.15
             ),
             decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -80,130 +80,127 @@ class HomepageState extends State<Homepage>{
                     ]
                 )
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                // even space distribution
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                verticalDirection: VerticalDirection.down,
-                children: <Widget> [
-                  Column(
-                    children: <Widget> [
-                      Text(
-                        "Welcome",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
+            child: Column(
+              children: <Widget> [
+                // Title
+                Text(
+                  "Welcome",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
+                ),
+                SizedBox(height: ScreenSize.screenHeight(context) * 0.1),
+                // Company Logo
+                Image.asset(
+                  'assets/images/EMXicon.png',
+                  width: 220,
+                ),
+                SizedBox(height: ScreenSize.screenHeight(context) * 0.1),
+                // Login and Sign-Up Buttons
+                Column(
+                  children: <Widget>[
+                    // Login Button
+                    Container(
+                        width: double.infinity,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white70),
+                          borderRadius: BorderRadius.circular(50)
+                              .copyWith(bottomRight: Radius.circular(0)
+                          ),
+                          gradient:  LinearGradient(
+                              colors: <Color>[
+                                Color(0xFFffcc33),
+                                Colors.orange.shade700
+                              ]
+                          ),
                         ),
-                      ),
-                      SizedBox(height: ScreenSize.screenHeight(context) * 0.15),
-                    ],
-                  ),
-                  // Company Logo
-                  Container(
-                    child: Image.asset(
-                      'assets/images/EMXicon.png',
-                      width: 250,
+                        child: ElevatedButton(
+                          onPressed: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context)=> const LoginPage()
+                                )
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)
+                                  .copyWith(bottomRight: Radius.circular(0)),
+                            ),
+                          ),
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18
+                            ),
+                          ),
+                        )
                     ),
-                  ),
-                  SizedBox(height: ScreenSize.screenHeight(context) * 0.08),
-                  Column(
-                    children: <Widget>[
-                      // Login Button
-                      Container(
-                          width: double.infinity,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white70),
-                            borderRadius: BorderRadius.circular(50)
-                                .copyWith(bottomRight: Radius.circular(0)
-                            ),
-                            gradient:  LinearGradient(
-                                colors: <Color>[
-                                  Color(0xFFffcc33),
-                                  Colors.orange.shade700
-                                ]
+                    // creating the signup button
+                    SizedBox(height: ScreenSize.screenHeight(context) * 0.02),
+                    // Sign-Up Button
+                    Container(
+                        width: double.infinity,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50)
+                              .copyWith(bottomRight: Radius.circular(0)
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 4,
+                                color: Colors.black12.withOpacity(0.2),
+                                offset: Offset(2,2)
+                            )
+                          ],
+                          gradient:  LinearGradient(
+                              colors: <Color>[
+                                Color(0xFFffcc33),
+                                Colors.orange.shade700
+                              ]
+                          ),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context)=> SignupDetails()
+                                )
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50)
+                                  .copyWith(bottomRight: Radius.circular(0)),
                             ),
                           ),
-                          child: ElevatedButton(
-                            onPressed: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context)=> const LoginPage()
-                                  )
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                            ),
-                            child: Text(
-                              "Login",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18
-                              ),
-                            ),
-                          )
-                      ),
-                      // creating the signup button
-                      SizedBox(height: ScreenSize.screenHeight(context) * 0.02),
-                      // Sign-Up Button
-                      Container(
-                          width: double.infinity,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50)
-                                .copyWith(bottomRight: Radius.circular(0)
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                  blurRadius: 4,
-                                  color: Colors.black12.withOpacity(0.2),
-                                  offset: Offset(2,2)
-                              )
-                            ],
-                            gradient:  LinearGradient(
-                                colors: <Color>[
-                                  Color(0xFFffcc33),
-                                  Colors.orange.shade700
-                                ]
+                          child: Text(
+                            "Sign up",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18
                             ),
                           ),
-                          child: ElevatedButton(
-                            onPressed: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context)=> SignupDetails()
-                                  )
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                              elevation: 5,
-                            ),
-                            child: Text(
-                              "Sign up",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18
-                              ),
-                            ),
-                          )
-                      ),
-                    ] ,
-                  )
-                ],
-              ),
+                        )
+                    ),
+                  ] ,
+                )
+              ],
             ),
           ),
+          // Floating Noti Button
           Positioned(
             bottom: 20,
             right: 20,
