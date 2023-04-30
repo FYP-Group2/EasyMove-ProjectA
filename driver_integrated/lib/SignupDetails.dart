@@ -1,14 +1,16 @@
 import 'dart:io';
+import 'Notice.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:driver_integrated/screen_size.dart';
 import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/firebase_service.dart';
 import 'package:driver_integrated/validation_helpers.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'Notice.dart';
+
 
 //for uploading image
 XFile? front_ic_image;
@@ -122,7 +124,7 @@ class signupFormState extends State<SignupDetails> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    //function for uploading image
+    // Upload Image Window
     void myAlert(String info) {
       showDialog(
           context: context,
@@ -169,376 +171,386 @@ class signupFormState extends State<SignupDetails> {
     }
 
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(80.0),
-          child :AppBar(
-              elevation: 0,
-              flexibleSpace: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: <Color>[const Color(0xFFffcc33), Colors.orange.shade700]),))
-          ),
+      appBar: AppBar(
+        title: Text('Sign Up'),
+        centerTitle: true,
+        backgroundColor: Colors.orange.shade700,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        body: Container(
-          height: double.infinity,
-          width: double.infinity,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: <Color>[
-                  const Color(0xFFffcc33),
-                  Colors.orange.shade700,
-                ]
-            )
-          ),
-          child: Center(
+      ),
+      body: Stack(
+        children: [
+          Container(
+            width: ScreenSize.screenWidth(context),
+            height: ScreenSize.screenHeight(context),
+            padding: EdgeInsets.symmetric(
+              horizontal: ScreenSize.screenWidth(context) * 0.05,
+              vertical: ScreenSize.screenHeight(context) * 0.02
+            ),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: <Color>[
+                      Color(0xFFffcc33),
+                      Colors.orange.shade700
+                    ]
+                )
+            ),
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget> [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Form(
-                      key: _signupformKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Align(
-                            alignment: Alignment.center,
-                            child:
-                            Text(
-                              "Sign Up",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-
+                child: Column(
+                  children: <Widget>[
+                    // Sign-Up Form
+                    Form(
+                        key: _signupformKey,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Container(
+                                height: 60,
+                                child: TextFormField(
+                                  controller: fullname_value,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(16),
+                                    prefixIconConstraints: BoxConstraints(
+                                        minWidth: 55
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.person,
+                                      color: Colors.white70,
+                                      size: 22,
+                                    ),
+                                    labelText: 'Full Name As Per IC *',
+                                    labelStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.5
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white70)
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
+                                    ),
+                                  ),
+                                  validator: (value) => validateName (
+                                      value, "Full name as per IC"
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 50,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 30.0, left: 30.0),
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                    height: 60,
-                                    child: TextFormField(
-                                      controller: fullname_value,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.all(16),
-                                        prefixIconConstraints: BoxConstraints(
-                                            minWidth: 55
-                                        ),
-                                        prefixIcon: Icon(
-                                          Icons.person,
-                                          color: Colors.white70,
-                                          size: 22,
-                                        ),
-                                        labelText: 'Full Name As Per IC *',
-                                        labelStyle: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.5
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(100)
-                                              .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white70)
-                                        ),
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                      ),
-                                      validator: (value) => validateName (
-                                          value, "Full name as per IC"
-                                      ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Container(
+                                height: 60,
+                                child: TextFormField(
+                                  controller: username_value,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(16),
+                                    prefixIconConstraints: BoxConstraints(
+                                        minWidth: 55
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.account_circle,
+                                      color: Colors.white70,
+                                      size: 22,
+                                    ),
+                                    labelText: 'Login Username *',
+                                    labelStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.5
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white70)
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
                                     ),
                                   ),
-                                const SizedBox(height: 15.0),
-                                Container(
-                                    height: 60,
-                                    child: TextFormField(
-                                      controller: username_value,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.all(16),
-                                        prefixIconConstraints: BoxConstraints(
-                                            minWidth: 55
-                                        ),
-                                        prefixIcon: Icon(
-                                          Icons.account_circle,
-                                          color: Colors.white70,
-                                          size: 22,
-                                        ),
-                                        labelText: 'Login Username *',
-                                        labelStyle: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.5
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white70)
-                                        ),
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                      ),
-                                      validator: (value) => validateStringNotEmpty (
-                                          value, "username"
-                                      ),
+                                  validator: (value) => validateStringNotEmpty (
+                                      value, "username"
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Container(
+                                height: 60,
+                                child: TextFormField(
+                                  controller: password_value,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(16),
+                                    prefixIconConstraints: BoxConstraints(
+                                        minWidth: 55
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.lock,
+                                      color: Colors.white70,
+                                      size: 22,
+                                    ),
+                                    labelText: 'Login Password *',
+                                    labelStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.5
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white70)
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
                                     ),
                                   ),
-                                const SizedBox(height: 15.0),
-                                Container(
-                                    height: 60,
-                                    child: TextFormField(
-                                      controller: password_value,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.all(16),
-                                        prefixIconConstraints: BoxConstraints(
-                                            minWidth: 55
-                                        ),
-                                        prefixIcon: Icon(
-                                          Icons.lock,
-                                          color: Colors.white70,
-                                          size: 22,
-                                        ),
-                                        labelText: 'Login Password *',
-                                        labelStyle: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.5
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white70)
-                                        ),
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                      ),
-                                      validator: validatePassword,
+                                  validator: validatePassword,
+                                ),
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Container(
+                                height: 60,
+                                child: TextFormField(
+                                  controller: ic_value,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(16),
+                                    prefixIconConstraints: BoxConstraints(
+                                        minWidth: 55
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.credit_card_rounded,
+                                      color: Colors.white70,
+                                      size: 22,
+                                    ),
+                                    labelText: 'Identity Card Number *',
+                                    labelStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.5
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white70)
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
                                     ),
                                   ),
-                                const SizedBox(height: 15.0),
-                                Container(
-                                    height: 60,
-                                    child: TextFormField(
-                                      controller: ic_value,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.all(16),
-                                        prefixIconConstraints: BoxConstraints(
-                                            minWidth: 55
-                                        ),
-                                        prefixIcon: Icon(
-                                          Icons.credit_card_rounded,
-                                          color: Colors.white70,
-                                          size: 22,
-                                        ),
-                                        labelText: 'Identity Card Number *',
-                                        labelStyle: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.5
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white70)
-                                        ),
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                      ),
-                                      validator: validateIcNumber,
+                                  validator: validateIcNumber,
+                                ),
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Container(
+                                height: 60,
+                                child: TextFormField(
+                                  controller: mobilenumber_value,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(16),
+                                    prefixIconConstraints: BoxConstraints(
+                                        minWidth: 55
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.phone,
+                                      color: Colors.white70,
+                                      size: 22,
+                                    ),
+                                    labelText: 'Mobile Phone Number *',
+                                    labelStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.5
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white70)
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
                                     ),
                                   ),
-                                const SizedBox(height: 15.0),
-                                Container(
-                                    height: 60,
-                                    child: TextFormField(
-                                      controller: mobilenumber_value,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.all(16),
-                                        prefixIconConstraints: BoxConstraints(
-                                            minWidth: 55
-                                        ),
-                                        prefixIcon: Icon(
-                                          Icons.phone,
-                                          color: Colors.white70,
-                                          size: 22,
-                                        ),
-                                        labelText: 'Mobile Phone Number *',
-                                        labelStyle: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.5
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white70)
-                                        ),
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                      ),
-                                      validator: (value) => validatePhoneNumber (
-                                          value, "Phone Number"
-                                      ),
+                                  validator: (value) => validatePhoneNumber (
+                                      value, "Phone Number"
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Container(
+                                height: 60,
+                                child: TextFormField(
+                                  controller: emergencycontact_value,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(16),
+                                    prefixIconConstraints: BoxConstraints(
+                                        minWidth: 55
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.emergency,
+                                      color: Colors.white70,
+                                      size: 22,
+                                    ),
+                                    labelText: 'Emergency Contact Number *',
+                                    labelStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.5
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white70)
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
                                     ),
                                   ),
-                                const SizedBox(height: 15.0),
-                                Container(
-                                    height: 60,
-                                    child: TextFormField(
-                                      controller: emergencycontact_value,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.all(16),
-                                        prefixIconConstraints: BoxConstraints(
-                                            minWidth: 55
-                                        ),
-                                        prefixIcon: Icon(
-                                          Icons.emergency,
-                                          color: Colors.white70,
-                                          size: 22,
-                                        ),
-                                        labelText: 'Emergency Contact Number *',
-                                        labelStyle: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.5
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white70)
-                                        ),
-                                        border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)),
-                                            borderSide: BorderSide(color: Colors.white38)
-                                        ),
-                                      ),
-                                      validator: (value) => validatePhoneNumber (
-                                          value, "Emergency Phone Number"
-                                      ),
-                                    ),
+                                  validator: (value) => validatePhoneNumber (
+                                      value, "Emergency Phone Number"
                                   ),
-                                const SizedBox(height: 15.0),
-                                // employment type and region dropdown
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget> [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget> [
-                                          Padding(
-                                              padding: EdgeInsets.only(bottom: 10.0),
-                                              child: Text("Employment Type", style: TextStyle(color: Colors.white),)
+                                ),
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            "Employment Type",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(color: Colors.white)
+                                        ),
+                                        SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                                        Container(
+                                          height: 50,
+                                          width: (screenWidth - 75) / 2,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(100)
+                                                .copyWith(bottomRight: Radius.circular(0)
+                                            ),
+                                            border: Border.all(color: Colors.white38, width: 1.0),
+                                            color: Colors.transparent,
                                           ),
-                                          Container(
+                                          child: DropdownButtonFormField<String>(
+                                            dropdownColor: Colors.orange,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            value: employment_type_value,
+                                            items: employment_type.map((String employment_type) {
+                                              return DropdownMenuItem(
+                                                value: employment_type,
+                                                child: Text(employment_type),
+                                              );
+                                            }).toList(),
+                                            icon: const Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Colors.white70,
+                                            ),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                employment_type_value = newValue!;
+                                              } );
+                                            },
+                                            decoration: const InputDecoration(
+                                              labelText: 'Employment Type',
+                                              labelStyle: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16
+                                              ),
+                                              border: InputBorder.none,
+                                              contentPadding: EdgeInsets.all(20),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    // child: Padding(
+                                    //   padding: EdgeInsets.all(8.0),
+                                    //   child: DropdownButtonFormField<String>(
+                                    //     decoration: InputDecoration(
+                                    //       border: OutlineInputBorder(),
+                                    //       labelText: 'First dropdown',
+                                    //     ),
+                                    //     items: [
+                                    //       DropdownMenuItem(
+                                    //         value: 'option1',
+                                    //         child: Text('Option 1'),
+                                    //       ),
+                                    //       DropdownMenuItem(
+                                    //         value: 'option2',
+                                    //         child: Text('Option 2'),
+                                    //       ),
+                                    //       DropdownMenuItem(
+                                    //         value: 'option3',
+                                    //         child: Text('Option 3'),
+                                    //       ),
+                                    //     ],
+                                    //     onChanged: (value) {},
+                                    //   ),
+                                    // ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                            padding: EdgeInsets.only(bottom: 10.0),
+                                            child: Text("Region", style: TextStyle(color: Colors.white),)
+                                        ),
+                                        Container(
                                             height: 50,
                                             width: (screenWidth - 75) / 2,
                                             decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(100)
-                                                    .copyWith(bottomRight: Radius.circular(0)
-                                                ),
-                                                border: Border.all(color: Colors.white38, width: 1.0),
-                                                color: Colors.transparent,
+                                              borderRadius: BorderRadius.circular(100)
+                                                  .copyWith(bottomRight: Radius.circular(0)
+                                              ),
+                                              border: Border.all(color: Colors.white38, width: 1.0),
+                                              color: Colors.transparent,
                                             ),
-                                            child: DropdownButtonFormField<String>(
-                                              dropdownColor: Colors.orange,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                              value: employment_type_value,
-                                              items: employment_type.map((String employment_type) {
-                                                return DropdownMenuItem(
-                                                  value: employment_type,
-                                                  child: Text(employment_type),
-                                                );
-                                              }).toList(),
-                                              icon: const Icon(
-                                                  Icons.keyboard_arrow_down,
-                                                  color: Colors.white70,
-                                              ),
-                                              onChanged: (String? newValue) {
-                                                setState(() {
-                                                  employment_type_value = newValue!;
-                                                } );
-                                              },
-                                              decoration: const InputDecoration(
-                                                labelText: 'Employment Type',
-                                                labelStyle: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16
-                                                ),
-                                                border: InputBorder.none,
-                                                contentPadding: EdgeInsets.all(20),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 10.0),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget> [
-                                          Padding(
-                                              padding: EdgeInsets.only(bottom: 10.0),
-                                              child: Text("Region", style: TextStyle(color: Colors.white),)
-                                          ),
-                                          Container(
-                                              height: 50,
-                                              width: (screenWidth - 75) / 2,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(100)
-                                                      .copyWith(bottomRight: Radius.circular(0)
-                                                  ),
-                                                  border: Border.all(color: Colors.white38, width: 1.0),
-                                                  color: Colors.transparent,
-                                              ),
-                                              child: FutureBuilder(
+                                            child: FutureBuilder(
                                                 future: getRegions(),
                                                 builder: (context, snapshot) {
                                                   return DropdownButtonFormField<String>(
@@ -573,166 +585,154 @@ class signupFormState extends State<SignupDetails> {
                                                     ),
                                                   );
                                                 }
-                                              )
-                                          ),
-                                        ],
+                                            )
+                                        ),
+                                      ],
+                                    )
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.02),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  // upload front ic
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Front Of Driver's I.C. *",
+                                          style: TextStyle(fontSize: 18, color: Colors.white)),
+                                      GFButton(
+                                        padding: EdgeInsets.only(left: 20,right: 20),
+                                        color: Colors.orange,
+                                        onPressed: () {
+                                          myAlert('frontic');
+                                        },
+                                        text: "Upload Image",
+                                        shape: GFButtonShape.pills,
                                       )
                                     ],
                                   ),
-                              ]
-                            ),
-                          ),
-                          const SizedBox(height: 15.0),
-                          Padding(
-                            padding:
-                            const EdgeInsets.only(top: 20.0, left: 30.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                // upload front ic
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Front Of Driver's I.C. *",
-                                        style: TextStyle(fontSize: 18, color: Colors.white)),
-                                    GFButton(
-                                      padding: EdgeInsets.only(left: 20,right: 20),
-                                      color: Colors.orange,
-                                      onPressed: () {
-                                        myAlert('frontic');
-                                      },
-                                      text: "Upload Image",
-                                      shape: GFButtonShape.pills,
-                                    )
-                                  ],
-                                ),
-                                front_ic_image != null
-                                    ? Padding(
-                                  padding:
-                                  const EdgeInsets.only(bottom: 20.0),
-                                  child: ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(8),
-                                    child: Image.file(
-                                      File(front_ic_image!.path),
-                                      fit: BoxFit.cover,
-                                      width: screenWidth,
-                                      height: 250,
+                                  front_ic_image != null
+                                      ? Padding(
+                                    padding:
+                                    const EdgeInsets.only(bottom: 20.0),
+                                    child: ClipRRect(
+                                      borderRadius:
+                                      BorderRadius.circular(8),
+                                      child: Image.file(
+                                        File(front_ic_image!.path),
+                                        fit: BoxFit.cover,
+                                        width: screenWidth,
+                                        height: 250,
+                                      ),
                                     ),
+                                  )
+                                      : const Text("",
+                                      style: TextStyle(fontSize: 20)),
+                                  const SizedBox(height: 15.0),
+                                  // upload back ic
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Back Of Driver's I.C. *",
+                                          style: TextStyle(fontSize: 18, color: Colors.white)),
+                                      GFButton(
+                                        padding: EdgeInsets.only(left: 20,right: 20),
+                                        color: Colors.orange,
+                                        onPressed: () {
+                                          myAlert('backic');
+                                        },
+                                        text: "Upload Image",
+                                        shape: GFButtonShape.pills,
+                                      )
+                                    ],
                                   ),
-                                )
-                                    : const Text("",
-                                    style: TextStyle(fontSize: 20)),
-                                const SizedBox(height: 15.0),
-                                // upload back ic
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Back Of Driver's I.C. *",
-                                        style: TextStyle(fontSize: 18, color: Colors.white)),
-                                    GFButton(
-                                      padding: EdgeInsets.only(left: 20,right: 20),
-                                      color: Colors.orange,
-                                      onPressed: () {
-                                        myAlert('backic');
-                                      },
-                                      text: "Upload Image",
-                                      shape: GFButtonShape.pills,
-                                    )
-                                  ],
-                                ),
-                                back_ic_image != null
-                                    ? Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 5.0,
-                                      right: 5.0,
-                                      bottom: 20.0),
-                                  child: ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(8),
-                                    child: Image.file(
-                                      File(back_ic_image!.path),
-                                      fit: BoxFit.cover,
-                                      width: screenWidth,
-                                      height: 250,
+                                  back_ic_image != null
+                                      ? Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5.0,
+                                        right: 5.0,
+                                        bottom: 20.0),
+                                    child: ClipRRect(
+                                      borderRadius:
+                                      BorderRadius.circular(8),
+                                      child: Image.file(
+                                        File(back_ic_image!.path),
+                                        fit: BoxFit.cover,
+                                        width: screenWidth,
+                                        height: 250,
+                                      ),
                                     ),
+                                  )
+                                      : const Text("",
+                                      style: TextStyle(fontSize: 20)),
+                                ],
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(bottom: 10.0),
+                                    child: Text("Vehicle Type", style: TextStyle(color: Colors.white),),
                                   ),
-                                )
-                                    : const Text("",
-                                    style: TextStyle(fontSize: 20)),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 15.0),
-                          Padding(
-                            padding:
-                            const EdgeInsets.only(right: 30.0, left: 30.0),
-                            child: Column(
-                              children: <Widget>[
-                                // vehicle type drop down
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(bottom: 10.0),
-                                      child: Text("Vehicle Type", style: TextStyle(color: Colors.white),),
-                                    ),
-                                    Container(
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(100)
-                                                .copyWith(bottomRight: Radius.circular(0)
-                                            ),
-                                          border: Border.all(color: Colors.white38, width: 1.0),
-                                          color: Colors.transparent,
+                                  Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)
                                         ),
-                                        child: FutureBuilder(
-                                          future: getVehicles(),
-                                          builder: (context, snapshot) {
-                                            return DropdownButtonFormField<String>(
-                                              dropdownColor: Colors.orange,
-                                              style: const TextStyle(
-                                                color: Colors.white,
+                                        border: Border.all(color: Colors.white38, width: 1.0),
+                                        color: Colors.transparent,
+                                      ),
+                                      child: FutureBuilder(
+                                        future: getVehicles(),
+                                        builder: (context, snapshot) {
+                                          return DropdownButtonFormField<String>(
+                                            dropdownColor: Colors.orange,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            value: vehicle_type_value,
+                                            items: vehicleType.map<
+                                                DropdownMenuItem<String>>(
+                                                    (String vehicleType) {
+                                                  return DropdownMenuItem(
+                                                    value: vehicleType,
+                                                    child: Text(vehicleType),
+                                                  );
+                                                }).toList(),
+                                            icon: const Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Colors.white70,
+                                            ),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                vehicle_type_value =
+                                                newValue!;
+                                              });
+                                            },
+                                            decoration: const InputDecoration(
+                                              labelText: 'Vehicle Type',
+                                              labelStyle: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16
                                               ),
-                                              value: vehicle_type_value,
-                                              items: vehicleType.map<
-                                                  DropdownMenuItem<String>>(
-                                                      (String vehicleType) {
-                                                    return DropdownMenuItem(
-                                                      value: vehicleType,
-                                                      child: Text(vehicleType),
-                                                    );
-                                                  }).toList(),
-                                              icon: const Icon(
-                                                Icons.keyboard_arrow_down,
-                                                color: Colors.white70,
-                                              ),
-                                              onChanged: (String? newValue) {
-                                                setState(() {
-                                                  vehicle_type_value =
-                                                  newValue!;
-                                                });
-                                              },
-                                              decoration: const InputDecoration(
-                                                labelText: 'Vehicle Type',
-                                                labelStyle: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16
-                                                ),
-                                                border: InputBorder.none,
-                                                contentPadding:
-                                                EdgeInsets.all(20),
-                                              ),
-                                            );
-                                          },
-                                        )
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 15.0),
-                                Container(
-                                  height: 60,
-                                  child: TextFormField(
+                                              border: InputBorder.none,
+                                              contentPadding:
+                                              EdgeInsets.all(20),
+                                            ),
+                                          );
+                                        },
+                                      )
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Container(
+                                height: 60,
+                                child: TextFormField(
                                     controller: vehicleplate_value,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(16),
@@ -759,12 +759,12 @@ class signupFormState extends State<SignupDetails> {
                                     validator: (value) => validateStringNotEmpty(
                                         value, "vehicle plate"
                                     )
-                                  ),
                                 ),
-                                const SizedBox(height: 15.0),
-                                Container(
-                                  height: 60,
-                                  child: TextFormField(
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Container(
+                                height: 60,
+                                child: TextFormField(
                                     controller: vehicleowner_value,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(16),
@@ -789,211 +789,217 @@ class signupFormState extends State<SignupDetails> {
                                       ),
                                     ),
                                     validator: (value) => validateName(
-                                      value, "owner of vehicle"
+                                        value, "owner of vehicle"
                                     )
-                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 15.0),
-                          Padding(
-                            padding:
-                            const EdgeInsets.only(top: 20.0, left: 30.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                        "Front Of Driver's Driving License",
-                                        style: TextStyle(fontSize: 18, color: Colors.white)),
-                                    GFButton(
-                                      padding: EdgeInsets.only(left: 20,right: 20),
-                                      color: Colors.orange,
-                                      onPressed: () {
-                                        myAlert('driverlicense');
-                                      },
-                                      text: "Upload Image",
-                                      shape: GFButtonShape.pills,
-                                    )
-                                  ],
-                                ),
-                                driver_license_image != null ? Padding(
-                                  padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 20.0
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                          "Front Of Driver's Driving License",
+                                          style: TextStyle(fontSize: 18, color: Colors.white)),
+                                      GFButton(
+                                        padding: EdgeInsets.only(left: 20,right: 20),
+                                        color: Colors.orange,
+                                        onPressed: () {
+                                          myAlert('driverlicense');
+                                        },
+                                        text: "Upload Image",
+                                        shape: GFButtonShape.pills,
+                                      )
+                                    ],
                                   ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.file(
-                                      File(driver_license_image!.path),
-                                      fit: BoxFit.cover,
-                                      width: screenWidth,
-                                      height: 250,
+                                  driver_license_image != null ? Padding(
+                                    padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 20.0
                                     ),
-                                  ),
-                                )
-                                : const Text(
-                                    "",
-                                    style: TextStyle(
-                                        fontSize: 20
-                                    )
-                                ),
-                                const SizedBox(height: 15.0),
-                                // upload back ic
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Front Of Vehicle",
-                                        style: TextStyle(fontSize: 18, color: Colors.white)),
-                                    GFButton(
-                                      padding: EdgeInsets.only(left: 20,right: 20),
-                                      color: Colors.orange,
-                                      onPressed: () {
-                                        myAlert('frontvehicle');
-                                      },
-                                      text: "Upload Image",
-                                      shape: GFButtonShape.pills,
-                                    )
-                                  ],
-                                ),
-                                front_vehicle_image != null ? Padding(
-                                  padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 20.0
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.file(
-                                      File(front_vehicle_image!.path),
-                                      fit: BoxFit.cover,
-                                      width: screenWidth,
-                                      height: 250,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.file(
+                                        File(driver_license_image!.path),
+                                        fit: BoxFit.cover,
+                                        width: screenWidth,
+                                        height: 250,
+                                      ),
                                     ),
+                                  )
+                                      : const Text(
+                                      "",
+                                      style: TextStyle(
+                                          fontSize: 20
+                                      )
                                   ),
-                                )
-                                : const Text(
-                                    "",
-                                    style: TextStyle(fontSize: 20)
-                                ),
-                                const SizedBox(height: 15.0),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget> [
-                                    const Text(
-                                        "Back Of Vehicle",
-                                        style: TextStyle(
+                                  const SizedBox(height: 15.0),
+                                  // upload back ic
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Front Of Vehicle",
+                                          style: TextStyle(fontSize: 18, color: Colors.white)),
+                                      GFButton(
+                                        padding: EdgeInsets.only(left: 20,right: 20),
+                                        color: Colors.orange,
+                                        onPressed: () {
+                                          myAlert('frontvehicle');
+                                        },
+                                        text: "Upload Image",
+                                        shape: GFButtonShape.pills,
+                                      )
+                                    ],
+                                  ),
+                                  front_vehicle_image != null ? Padding(
+                                    padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 20.0
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.file(
+                                        File(front_vehicle_image!.path),
+                                        fit: BoxFit.cover,
+                                        width: screenWidth,
+                                        height: 250,
+                                      ),
+                                    ),
+                                  )
+                                      : const Text(
+                                      "",
+                                      style: TextStyle(fontSize: 20)
+                                  ),
+                                  const SizedBox(height: 15.0),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget> [
+                                      const Text(
+                                          "Back Of Vehicle",
+                                          style: TextStyle(
                                             fontSize: 18,
                                             color: Colors.white,
-                                        )
-                                    ),
-                                    GFButton(
-                                      padding: EdgeInsets.only(left: 20,right: 20),
-                                      color: Colors.orange,
-                                      onPressed: () {
-                                        myAlert('backvehicle');
-                                      },
-                                      text: "Upload Image",
-                                      shape: GFButtonShape.pills,
-                                    )
-                                  ],
-                                ),
-                                back_vehicle_image != null ? Padding(
-                                  padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 20.0
+                                          )
+                                      ),
+                                      GFButton(
+                                        padding: EdgeInsets.only(left: 20,right: 20),
+                                        color: Colors.orange,
+                                        onPressed: () {
+                                          myAlert('backvehicle');
+                                        },
+                                        text: "Upload Image",
+                                        shape: GFButtonShape.pills,
+                                      )
+                                    ],
                                   ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.file(
-                                      File(back_vehicle_image!.path),
-                                      fit: BoxFit.cover,
-                                      width: screenWidth,
-                                      height: 250,
+                                  back_vehicle_image != null ? Padding(
+                                    padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 20.0
                                     ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.file(
+                                        File(back_vehicle_image!.path),
+                                        fit: BoxFit.cover,
+                                        width: screenWidth,
+                                        height: 250,
+                                      ),
+                                    ),
+                                  )
+                                      : const Text(
+                                      "",
+                                      style: TextStyle(
+                                          fontSize: 20
+                                      )
                                   ),
-                                )
-                                : const Text(
-                                    "",
-                                    style: TextStyle(
-                                        fontSize: 20
-                                    )
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 15.0),
-                          Padding(
-                            padding:
-                            const EdgeInsets.only(right: 30.0, left: 30.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: <Widget> [
-                                    Checkbox(
-                                      value: agree,
-                                      checkColor: Colors.white,
-                                      activeColor: Colors.transparent,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          agree = value ?? false;
-                                        });
-                                      },
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        const url =
-                                            "https://easysuperapps.com/policy.php";
-                                        final uri = Uri.parse(url);
-                                        try {
-                                          if (await launchUrl(uri)) {
-                                            setState(() {});
-                                          }
-                                        } catch (e) {
-                                          showDialog(
-                                              context: context,
-                                              builder: (ctx) => AlertDialog(
-                                                title: const Text(
-                                                  "Problem redirecting to T&C",
-                                                  style: TextStyle(
-                                                      color: Colors.blue),
-                                                ),
-                                                content: const Text(
-                                                    "Please try again later"),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(ctx)
-                                                          .pop();
-                                                    },
-                                                    child: Container(
-                                                      color: Colors.orange,
-                                                      padding: const EdgeInsets.all(14),
-                                                      child: const Text(
-                                                          "Close",
-                                                          style: TextStyle(color: Colors
-                                                                  .white)
-                                                      ),
+                                ],
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Row(
+                                children: <Widget> [
+                                  Checkbox(
+                                    value: agree,
+                                    checkColor: Colors.white,
+                                    activeColor: Colors.transparent,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        agree = value ?? false;
+                                      });
+                                    },
+                                  ),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      const url =
+                                          "https://easysuperapps.com/policy.php";
+                                      final uri = Uri.parse(url);
+                                      try {
+                                        if (await launchUrl(uri)) {
+                                          setState(() {});
+                                        }
+                                      } catch (e) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (ctx) => AlertDialog(
+                                              title: const Text(
+                                                "Problem redirecting to T&C",
+                                                style: TextStyle(
+                                                    color: Colors.blue),
+                                              ),
+                                              content: const Text(
+                                                  "Please try again later"),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(ctx)
+                                                        .pop();
+                                                  },
+                                                  child: Container(
+                                                    color: Colors.orange,
+                                                    padding: const EdgeInsets.all(14),
+                                                    child: const Text(
+                                                        "Close",
+                                                        style: TextStyle(color: Colors
+                                                            .white)
                                                     ),
                                                   ),
-                                                ],
-                                              )
-                                          );
-                                        }
-                                      },
-                                      child: const Text(
-                                        'I have read and accept terms and conditions',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            decoration:
-                                            TextDecoration.underline,
-                                            color: Color.fromARGB(255, 16, 145, 251)
-                                        ),
+                                                ),
+                                              ],
+                                            )
+                                        );
+                                      }
+                                    },
+                                    child: const Text(
+                                      'I have read and accept terms and conditions',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          decoration:
+                                          TextDecoration.underline,
+                                          color: Color.fromARGB(255, 16, 145, 251)
                                       ),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(height: 10.0),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 20.0),
-                                  child: GestureDetector(
-                                    onTap: () async {
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Container(
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                          blurRadius: 4,
+                                          color: Colors.black12.withOpacity(0.2),
+                                          offset: Offset(2,2)
+                                      )
+                                    ],
+                                    gradient: LinearGradient(
+                                        colors: <Color>[
+                                          Color(0xFFffcc33),
+                                          Colors.orange.shade700
+                                        ]
+                                    ),
+                                    borderRadius: BorderRadius.circular(50)
+                                        .copyWith(bottomRight: Radius.circular(0)),
+                                  ),
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: () async {
                                       if (!_signupformKey.currentState!
                                           .validate()) {
                                         return;
@@ -1061,52 +1067,991 @@ class signupFormState extends State<SignupDetails> {
                                         );
                                       }
                                     },
-                                    child: Container(
-                                      height: 45,
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                                blurRadius: 4,
-                                                color: Colors.black12.withOpacity(0.2),
-                                                offset: Offset(2,2)
-                                            )
-                                          ],
-                                          borderRadius: BorderRadius.circular(100)
-                                              .copyWith(bottomRight: Radius.circular(0)
-                                          ),
-                                          gradient: LinearGradient(
-                                              colors: <Color> [
-                                                Colors.yellow.shade700,
-                                                Colors.orange.shade700
-                                              ]
-                                          )
-                                      ),
-                                      child: const Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Submit",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold
-                                          ),
-                                        ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50)
+                                            .copyWith(bottomRight: Radius.circular(0)),
                                       ),
                                     ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ]
-                      )
+                                    child: const Text(
+                                      "Submit",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                            ]
+                        )
                     )
-                  )
-                ],
-              ),
+                  ],
+                ),
             )
-          )
-        )
+          ),
+
+          // Positioned(
+          //   top: 40,
+          //   left: 20,
+          //   child: Container(
+          //     child: IconButton(
+          //       icon: Icon(
+          //         Icons.arrow_back,
+          //         color: Colors.white,
+          //       ),
+          //       onPressed: () {
+          //         Navigator.pop(context);
+          //       },
+          //     ),
+          //   ),
+          // )
+        ],
+      )
     );
+
+    // return Scaffold(
+    //     appBar: PreferredSize(
+    //       preferredSize: const Size.fromHeight(80.0),
+    //       child :AppBar(
+    //           elevation: 0,
+    //           flexibleSpace: Container(
+    //               decoration: BoxDecoration(
+    //                 gradient: LinearGradient(
+    //                     colors: <Color>[const Color(0xFFffcc33), Colors.orange.shade700]),))
+    //       ),
+    //     ),
+    //     body: Container(
+    //       height: double.infinity,
+    //       width: double.infinity,
+    //       alignment: Alignment.center,
+    //       decoration: BoxDecoration(
+    //         gradient: LinearGradient(
+    //             colors: <Color>[
+    //               const Color(0xFFffcc33),
+    //               Colors.orange.shade700,
+    //             ]
+    //         )
+    //       ),
+    //       child: Center(
+    //         child: SingleChildScrollView(
+    //           child: Column(
+    //             mainAxisAlignment: MainAxisAlignment.center,
+    //             children: <Widget> [
+    //               Padding(
+    //                 padding: const EdgeInsets.only(top: 20.0),
+    //                 child: Form(
+    //                   key: _signupformKey,
+    //                   child: Column(
+    //                     crossAxisAlignment: CrossAxisAlignment.stretch,
+    //                     children: <Widget>[
+    //                       Align(
+    //                         alignment: Alignment.center,
+    //                         child:
+    //                         Text(
+    //                           "Sign Up",
+    //                           style: TextStyle(
+    //                             color: Colors.white,
+    //                             fontWeight: FontWeight.bold,
+    //                             fontSize: 30,
+    //
+    //                           ),
+    //                         ),
+    //                       ),
+    //                       SizedBox(
+    //                         height: 50,
+    //                       ),
+    //                       Padding(
+    //                         padding: const EdgeInsets.only(right: 30.0, left: 30.0),
+    //                         child: Column(
+    //                           children: <Widget>[
+    //                             Container(
+    //                                 height: 60,
+    //                                 child: TextFormField(
+    //                                   controller: fullname_value,
+    //                                   decoration: InputDecoration(
+    //                                     contentPadding: EdgeInsets.all(16),
+    //                                     prefixIconConstraints: BoxConstraints(
+    //                                         minWidth: 55
+    //                                     ),
+    //                                     prefixIcon: Icon(
+    //                                       Icons.person,
+    //                                       color: Colors.white70,
+    //                                       size: 22,
+    //                                     ),
+    //                                     labelText: 'Full Name As Per IC *',
+    //                                     labelStyle: TextStyle(
+    //                                         color: Colors.white,
+    //                                         fontSize: 14.5
+    //                                     ),
+    //                                     enabledBorder: OutlineInputBorder(
+    //                                       borderRadius: BorderRadius.circular(100)
+    //                                           .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                     focusedBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white70)
+    //                                     ),
+    //                                     border: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                   ),
+    //                                   validator: (value) => validateName (
+    //                                       value, "Full name as per IC"
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                             const SizedBox(height: 15.0),
+    //                             Container(
+    //                                 height: 60,
+    //                                 child: TextFormField(
+    //                                   controller: username_value,
+    //                                   decoration: InputDecoration(
+    //                                     contentPadding: EdgeInsets.all(16),
+    //                                     prefixIconConstraints: BoxConstraints(
+    //                                         minWidth: 55
+    //                                     ),
+    //                                     prefixIcon: Icon(
+    //                                       Icons.account_circle,
+    //                                       color: Colors.white70,
+    //                                       size: 22,
+    //                                     ),
+    //                                     labelText: 'Login Username *',
+    //                                     labelStyle: TextStyle(
+    //                                         color: Colors.white,
+    //                                         fontSize: 14.5
+    //                                     ),
+    //                                     enabledBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                     focusedBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white70)
+    //                                     ),
+    //                                     border: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                   ),
+    //                                   validator: (value) => validateStringNotEmpty (
+    //                                       value, "username"
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                             const SizedBox(height: 15.0),
+    //                             Container(
+    //                                 height: 60,
+    //                                 child: TextFormField(
+    //                                   controller: password_value,
+    //                                   decoration: InputDecoration(
+    //                                     contentPadding: EdgeInsets.all(16),
+    //                                     prefixIconConstraints: BoxConstraints(
+    //                                         minWidth: 55
+    //                                     ),
+    //                                     prefixIcon: Icon(
+    //                                       Icons.lock,
+    //                                       color: Colors.white70,
+    //                                       size: 22,
+    //                                     ),
+    //                                     labelText: 'Login Password *',
+    //                                     labelStyle: TextStyle(
+    //                                         color: Colors.white,
+    //                                         fontSize: 14.5
+    //                                     ),
+    //                                     enabledBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                     focusedBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white70)
+    //                                     ),
+    //                                     border: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                   ),
+    //                                   validator: validatePassword,
+    //                                 ),
+    //                               ),
+    //                             const SizedBox(height: 15.0),
+    //                             Container(
+    //                                 height: 60,
+    //                                 child: TextFormField(
+    //                                   controller: ic_value,
+    //                                   decoration: InputDecoration(
+    //                                     contentPadding: EdgeInsets.all(16),
+    //                                     prefixIconConstraints: BoxConstraints(
+    //                                         minWidth: 55
+    //                                     ),
+    //                                     prefixIcon: Icon(
+    //                                       Icons.credit_card_rounded,
+    //                                       color: Colors.white70,
+    //                                       size: 22,
+    //                                     ),
+    //                                     labelText: 'Identity Card Number *',
+    //                                     labelStyle: TextStyle(
+    //                                         color: Colors.white,
+    //                                         fontSize: 14.5
+    //                                     ),
+    //                                     enabledBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                     focusedBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white70)
+    //                                     ),
+    //                                     border: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                   ),
+    //                                   validator: validateIcNumber,
+    //                                 ),
+    //                               ),
+    //                             const SizedBox(height: 15.0),
+    //                             Container(
+    //                                 height: 60,
+    //                                 child: TextFormField(
+    //                                   controller: mobilenumber_value,
+    //                                   decoration: InputDecoration(
+    //                                     contentPadding: EdgeInsets.all(16),
+    //                                     prefixIconConstraints: BoxConstraints(
+    //                                         minWidth: 55
+    //                                     ),
+    //                                     prefixIcon: Icon(
+    //                                       Icons.phone,
+    //                                       color: Colors.white70,
+    //                                       size: 22,
+    //                                     ),
+    //                                     labelText: 'Mobile Phone Number *',
+    //                                     labelStyle: TextStyle(
+    //                                         color: Colors.white,
+    //                                         fontSize: 14.5
+    //                                     ),
+    //                                     enabledBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                     focusedBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white70)
+    //                                     ),
+    //                                     border: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                   ),
+    //                                   validator: (value) => validatePhoneNumber (
+    //                                       value, "Phone Number"
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                             const SizedBox(height: 15.0),
+    //                             Container(
+    //                                 height: 60,
+    //                                 child: TextFormField(
+    //                                   controller: emergencycontact_value,
+    //                                   decoration: InputDecoration(
+    //                                     contentPadding: EdgeInsets.all(16),
+    //                                     prefixIconConstraints: BoxConstraints(
+    //                                         minWidth: 55
+    //                                     ),
+    //                                     prefixIcon: Icon(
+    //                                       Icons.emergency,
+    //                                       color: Colors.white70,
+    //                                       size: 22,
+    //                                     ),
+    //                                     labelText: 'Emergency Contact Number *',
+    //                                     labelStyle: TextStyle(
+    //                                         color: Colors.white,
+    //                                         fontSize: 14.5
+    //                                     ),
+    //                                     enabledBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                     focusedBorder: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white70)
+    //                                     ),
+    //                                     border: OutlineInputBorder(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)),
+    //                                         borderSide: BorderSide(color: Colors.white38)
+    //                                     ),
+    //                                   ),
+    //                                   validator: (value) => validatePhoneNumber (
+    //                                       value, "Emergency Phone Number"
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                             const SizedBox(height: 15.0),
+    //                             // employment type and region dropdown
+    //                             Row(
+    //                                 mainAxisAlignment: MainAxisAlignment.center,
+    //                                 children: <Widget> [
+    //                                   Column(
+    //                                     crossAxisAlignment: CrossAxisAlignment.start,
+    //                                     children: <Widget> [
+    //                                       Padding(
+    //                                           padding: EdgeInsets.only(bottom: 10.0),
+    //                                           child: Text("Employment Type", style: TextStyle(color: Colors.white),)
+    //                                       ),
+    //                                       Container(
+    //                                         height: 50,
+    //                                         width: (screenWidth - 75) / 2,
+    //                                         decoration: BoxDecoration(
+    //                                             borderRadius: BorderRadius.circular(100)
+    //                                                 .copyWith(bottomRight: Radius.circular(0)
+    //                                             ),
+    //                                             border: Border.all(color: Colors.white38, width: 1.0),
+    //                                             color: Colors.transparent,
+    //                                         ),
+    //                                         child: DropdownButtonFormField<String>(
+    //                                           dropdownColor: Colors.orange,
+    //                                           style: const TextStyle(
+    //                                             color: Colors.white,
+    //                                           ),
+    //                                           value: employment_type_value,
+    //                                           items: employment_type.map((String employment_type) {
+    //                                             return DropdownMenuItem(
+    //                                               value: employment_type,
+    //                                               child: Text(employment_type),
+    //                                             );
+    //                                           }).toList(),
+    //                                           icon: const Icon(
+    //                                               Icons.keyboard_arrow_down,
+    //                                               color: Colors.white70,
+    //                                           ),
+    //                                           onChanged: (String? newValue) {
+    //                                             setState(() {
+    //                                               employment_type_value = newValue!;
+    //                                             } );
+    //                                           },
+    //                                           decoration: const InputDecoration(
+    //                                             labelText: 'Employment Type',
+    //                                             labelStyle: TextStyle(
+    //                                                 color: Colors.white,
+    //                                                 fontSize: 16
+    //                                             ),
+    //                                             border: InputBorder.none,
+    //                                             contentPadding: EdgeInsets.all(20),
+    //                                           ),
+    //                                         ),
+    //                                       ),
+    //                                     ],
+    //                                   ),
+    //                                   const SizedBox(width: 10.0),
+    //                                   Column(
+    //                                     crossAxisAlignment: CrossAxisAlignment.start,
+    //                                     children: <Widget> [
+    //                                       Padding(
+    //                                           padding: EdgeInsets.only(bottom: 10.0),
+    //                                           child: Text("Region", style: TextStyle(color: Colors.white),)
+    //                                       ),
+    //                                       Container(
+    //                                           height: 50,
+    //                                           width: (screenWidth - 75) / 2,
+    //                                           decoration: BoxDecoration(
+    //                                               borderRadius: BorderRadius.circular(100)
+    //                                                   .copyWith(bottomRight: Radius.circular(0)
+    //                                               ),
+    //                                               border: Border.all(color: Colors.white38, width: 1.0),
+    //                                               color: Colors.transparent,
+    //                                           ),
+    //                                           child: FutureBuilder(
+    //                                             future: getRegions(),
+    //                                             builder: (context, snapshot) {
+    //                                               return DropdownButtonFormField<String>(
+    //                                                 dropdownColor: Colors.orange,
+    //                                                 style: const TextStyle(
+    //                                                   color: Colors.white,
+    //                                                 ),
+    //                                                 value: region_value,
+    //                                                 items: region.map<DropdownMenuItem<String>>((String region) {
+    //                                                   return DropdownMenuItem(
+    //                                                       value: region,
+    //                                                       child: Text(region)
+    //                                                   );
+    //                                                 }).toList(),
+    //                                                 icon: const Icon(
+    //                                                   Icons.keyboard_arrow_down,
+    //                                                   color: Colors.white70,
+    //                                                 ),
+    //                                                 onChanged: (String? newValue) {
+    //                                                   setState(() {
+    //                                                     region_value = newValue!;
+    //                                                   });
+    //                                                 },
+    //                                                 decoration: const InputDecoration(
+    //                                                   labelText: 'Region',
+    //                                                   labelStyle: TextStyle(
+    //                                                       color: Colors.white,
+    //                                                       fontSize: 16
+    //                                                   ),
+    //                                                   border: InputBorder.none,
+    //                                                   contentPadding: EdgeInsets.all(20),
+    //                                                 ),
+    //                                               );
+    //                                             }
+    //                                           )
+    //                                       ),
+    //                                     ],
+    //                                   )
+    //                                 ],
+    //                               ),
+    //                           ]
+    //                         ),
+    //                       ),
+    //                       const SizedBox(height: 15.0),
+    //                       Padding(
+    //                         padding:
+    //                         const EdgeInsets.only(top: 20.0, left: 30.0),
+    //                         child: Column(
+    //                           crossAxisAlignment: CrossAxisAlignment.start,
+    //                           children: <Widget>[
+    //                             // upload front ic
+    //                             Column(
+    //                               crossAxisAlignment: CrossAxisAlignment.start,
+    //                               children: [
+    //                                 const Text("Front Of Driver's I.C. *",
+    //                                     style: TextStyle(fontSize: 18, color: Colors.white)),
+    //                                 GFButton(
+    //                                   padding: EdgeInsets.only(left: 20,right: 20),
+    //                                   color: Colors.orange,
+    //                                   onPressed: () {
+    //                                     myAlert('frontic');
+    //                                   },
+    //                                   text: "Upload Image",
+    //                                   shape: GFButtonShape.pills,
+    //                                 )
+    //                               ],
+    //                             ),
+    //                             front_ic_image != null
+    //                                 ? Padding(
+    //                               padding:
+    //                               const EdgeInsets.only(bottom: 20.0),
+    //                               child: ClipRRect(
+    //                                 borderRadius:
+    //                                 BorderRadius.circular(8),
+    //                                 child: Image.file(
+    //                                   File(front_ic_image!.path),
+    //                                   fit: BoxFit.cover,
+    //                                   width: screenWidth,
+    //                                   height: 250,
+    //                                 ),
+    //                               ),
+    //                             )
+    //                                 : const Text("",
+    //                                 style: TextStyle(fontSize: 20)),
+    //                             const SizedBox(height: 15.0),
+    //                             // upload back ic
+    //                             Column(
+    //                               crossAxisAlignment: CrossAxisAlignment.start,
+    //                               children: [
+    //                                 const Text("Back Of Driver's I.C. *",
+    //                                     style: TextStyle(fontSize: 18, color: Colors.white)),
+    //                                 GFButton(
+    //                                   padding: EdgeInsets.only(left: 20,right: 20),
+    //                                   color: Colors.orange,
+    //                                   onPressed: () {
+    //                                     myAlert('backic');
+    //                                   },
+    //                                   text: "Upload Image",
+    //                                   shape: GFButtonShape.pills,
+    //                                 )
+    //                               ],
+    //                             ),
+    //                             back_ic_image != null
+    //                                 ? Padding(
+    //                               padding: const EdgeInsets.only(
+    //                                   left: 5.0,
+    //                                   right: 5.0,
+    //                                   bottom: 20.0),
+    //                               child: ClipRRect(
+    //                                 borderRadius:
+    //                                 BorderRadius.circular(8),
+    //                                 child: Image.file(
+    //                                   File(back_ic_image!.path),
+    //                                   fit: BoxFit.cover,
+    //                                   width: screenWidth,
+    //                                   height: 250,
+    //                                 ),
+    //                               ),
+    //                             )
+    //                                 : const Text("",
+    //                                 style: TextStyle(fontSize: 20)),
+    //                           ],
+    //                         ),
+    //                       ),
+    //                       const SizedBox(height: 15.0),
+    //                       Padding(
+    //                         padding:
+    //                         const EdgeInsets.only(right: 30.0, left: 30.0),
+    //                         child: Column(
+    //                           children: <Widget>[
+    //                             // vehicle type drop down
+    //                             Column(
+    //                               crossAxisAlignment: CrossAxisAlignment.start,
+    //                               children: [
+    //                                 const Padding(
+    //                                   padding: EdgeInsets.only(bottom: 10.0),
+    //                                   child: Text("Vehicle Type", style: TextStyle(color: Colors.white),),
+    //                                 ),
+    //                                 Container(
+    //                                     height: 50,
+    //                                     decoration: BoxDecoration(
+    //                                         borderRadius: BorderRadius.circular(100)
+    //                                             .copyWith(bottomRight: Radius.circular(0)
+    //                                         ),
+    //                                       border: Border.all(color: Colors.white38, width: 1.0),
+    //                                       color: Colors.transparent,
+    //                                     ),
+    //                                     child: FutureBuilder(
+    //                                       future: getVehicles(),
+    //                                       builder: (context, snapshot) {
+    //                                         return DropdownButtonFormField<String>(
+    //                                           dropdownColor: Colors.orange,
+    //                                           style: const TextStyle(
+    //                                             color: Colors.white,
+    //                                           ),
+    //                                           value: vehicle_type_value,
+    //                                           items: vehicleType.map<
+    //                                               DropdownMenuItem<String>>(
+    //                                                   (String vehicleType) {
+    //                                                 return DropdownMenuItem(
+    //                                                   value: vehicleType,
+    //                                                   child: Text(vehicleType),
+    //                                                 );
+    //                                               }).toList(),
+    //                                           icon: const Icon(
+    //                                             Icons.keyboard_arrow_down,
+    //                                             color: Colors.white70,
+    //                                           ),
+    //                                           onChanged: (String? newValue) {
+    //                                             setState(() {
+    //                                               vehicle_type_value =
+    //                                               newValue!;
+    //                                             });
+    //                                           },
+    //                                           decoration: const InputDecoration(
+    //                                             labelText: 'Vehicle Type',
+    //                                             labelStyle: TextStyle(
+    //                                                 color: Colors.white,
+    //                                                 fontSize: 16
+    //                                             ),
+    //                                             border: InputBorder.none,
+    //                                             contentPadding:
+    //                                             EdgeInsets.all(20),
+    //                                           ),
+    //                                         );
+    //                                       },
+    //                                     )
+    //                                 ),
+    //                               ],
+    //                             ),
+    //                             const SizedBox(height: 15.0),
+    //                             Container(
+    //                               height: 60,
+    //                               child: TextFormField(
+    //                                 controller: vehicleplate_value,
+    //                                 decoration: InputDecoration(
+    //                                   contentPadding: EdgeInsets.all(16),
+    //                                   labelText: 'Vehicle plate',
+    //                                   labelStyle: TextStyle(
+    //                                       color: Colors.white, fontSize: 14.5
+    //                                   ),
+    //                                   enabledBorder: OutlineInputBorder(
+    //                                       borderRadius: BorderRadius.circular(100)
+    //                                           .copyWith(bottomRight: Radius.circular(0)),
+    //                                       borderSide: BorderSide(color: Colors.white38)
+    //                                   ),
+    //                                   focusedBorder: OutlineInputBorder(
+    //                                       borderRadius: BorderRadius.circular(100)
+    //                                           .copyWith(bottomRight: Radius.circular(0)),
+    //                                       borderSide: BorderSide(color: Colors.white70)
+    //                                   ),
+    //                                   border: OutlineInputBorder(
+    //                                       borderRadius: BorderRadius.circular(100)
+    //                                           .copyWith(bottomRight: Radius.circular(0)),
+    //                                       borderSide: BorderSide(color: Colors.white38)
+    //                                   ),
+    //                                 ),
+    //                                 validator: (value) => validateStringNotEmpty(
+    //                                     value, "vehicle plate"
+    //                                 )
+    //                               ),
+    //                             ),
+    //                             const SizedBox(height: 15.0),
+    //                             Container(
+    //                               height: 60,
+    //                               child: TextFormField(
+    //                                 controller: vehicleowner_value,
+    //                                 decoration: InputDecoration(
+    //                                   contentPadding: EdgeInsets.all(16),
+    //                                   labelText: 'Vehicle Owner',
+    //                                   labelStyle: TextStyle(
+    //                                       color: Colors.white, fontSize: 14.5
+    //                                   ),
+    //                                   enabledBorder: OutlineInputBorder(
+    //                                       borderRadius: BorderRadius.circular(100)
+    //                                           .copyWith(bottomRight: Radius.circular(0)),
+    //                                       borderSide: BorderSide(color: Colors.white38)
+    //                                   ),
+    //                                   focusedBorder: OutlineInputBorder(
+    //                                       borderRadius: BorderRadius.circular(100)
+    //                                           .copyWith(bottomRight: Radius.circular(0)),
+    //                                       borderSide: BorderSide(color: Colors.white70)
+    //                                   ),
+    //                                   border: OutlineInputBorder(
+    //                                       borderRadius: BorderRadius.circular(100)
+    //                                           .copyWith(bottomRight: Radius.circular(0)),
+    //                                       borderSide: BorderSide(color: Colors.white38)
+    //                                   ),
+    //                                 ),
+    //                                 validator: (value) => validateName(
+    //                                   value, "owner of vehicle"
+    //                                 )
+    //                               ),
+    //                             ),
+    //                           ],
+    //                         ),
+    //                       ),
+    //                       const SizedBox(height: 15.0),
+    //                       Padding(
+    //                         padding:
+    //                         const EdgeInsets.only(top: 20.0, left: 30.0),
+    //                         child: Column(
+    //                           crossAxisAlignment: CrossAxisAlignment.start,
+    //                           children: [
+    //                             Column(
+    //                               crossAxisAlignment: CrossAxisAlignment.start,
+    //                               children: [
+    //                                 const Text(
+    //                                     "Front Of Driver's Driving License",
+    //                                     style: TextStyle(fontSize: 18, color: Colors.white)),
+    //                                 GFButton(
+    //                                   padding: EdgeInsets.only(left: 20,right: 20),
+    //                                   color: Colors.orange,
+    //                                   onPressed: () {
+    //                                     myAlert('driverlicense');
+    //                                   },
+    //                                   text: "Upload Image",
+    //                                   shape: GFButtonShape.pills,
+    //                                 )
+    //                               ],
+    //                             ),
+    //                             driver_license_image != null ? Padding(
+    //                               padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 20.0
+    //                               ),
+    //                               child: ClipRRect(
+    //                                 borderRadius: BorderRadius.circular(8),
+    //                                 child: Image.file(
+    //                                   File(driver_license_image!.path),
+    //                                   fit: BoxFit.cover,
+    //                                   width: screenWidth,
+    //                                   height: 250,
+    //                                 ),
+    //                               ),
+    //                             )
+    //                             : const Text(
+    //                                 "",
+    //                                 style: TextStyle(
+    //                                     fontSize: 20
+    //                                 )
+    //                             ),
+    //                             const SizedBox(height: 15.0),
+    //                             // upload back ic
+    //                             Column(
+    //                               crossAxisAlignment: CrossAxisAlignment.start,
+    //                               children: [
+    //                                 const Text("Front Of Vehicle",
+    //                                     style: TextStyle(fontSize: 18, color: Colors.white)),
+    //                                 GFButton(
+    //                                   padding: EdgeInsets.only(left: 20,right: 20),
+    //                                   color: Colors.orange,
+    //                                   onPressed: () {
+    //                                     myAlert('frontvehicle');
+    //                                   },
+    //                                   text: "Upload Image",
+    //                                   shape: GFButtonShape.pills,
+    //                                 )
+    //                               ],
+    //                             ),
+    //                             front_vehicle_image != null ? Padding(
+    //                               padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 20.0
+    //                               ),
+    //                               child: ClipRRect(
+    //                                 borderRadius: BorderRadius.circular(8),
+    //                                 child: Image.file(
+    //                                   File(front_vehicle_image!.path),
+    //                                   fit: BoxFit.cover,
+    //                                   width: screenWidth,
+    //                                   height: 250,
+    //                                 ),
+    //                               ),
+    //                             )
+    //                             : const Text(
+    //                                 "",
+    //                                 style: TextStyle(fontSize: 20)
+    //                             ),
+    //                             const SizedBox(height: 15.0),
+    //                             Column(
+    //                               crossAxisAlignment: CrossAxisAlignment.start,
+    //                               children: <Widget> [
+    //                                 const Text(
+    //                                     "Back Of Vehicle",
+    //                                     style: TextStyle(
+    //                                         fontSize: 18,
+    //                                         color: Colors.white,
+    //                                     )
+    //                                 ),
+    //                                 GFButton(
+    //                                   padding: EdgeInsets.only(left: 20,right: 20),
+    //                                   color: Colors.orange,
+    //                                   onPressed: () {
+    //                                     myAlert('backvehicle');
+    //                                   },
+    //                                   text: "Upload Image",
+    //                                   shape: GFButtonShape.pills,
+    //                                 )
+    //                               ],
+    //                             ),
+    //                             back_vehicle_image != null ? Padding(
+    //                               padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 20.0
+    //                               ),
+    //                               child: ClipRRect(
+    //                                 borderRadius: BorderRadius.circular(8),
+    //                                 child: Image.file(
+    //                                   File(back_vehicle_image!.path),
+    //                                   fit: BoxFit.cover,
+    //                                   width: screenWidth,
+    //                                   height: 250,
+    //                                 ),
+    //                               ),
+    //                             )
+    //                             : const Text(
+    //                                 "",
+    //                                 style: TextStyle(
+    //                                     fontSize: 20
+    //                                 )
+    //                             ),
+    //                           ],
+    //                         ),
+    //                       ),
+    //                       const SizedBox(height: 15.0),
+    //                       Padding(
+    //                         padding:
+    //                         const EdgeInsets.only(right: 30.0, left: 30.0),
+    //                         child: Column(
+    //                           children: [
+    //                             Row(
+    //                               children: <Widget> [
+    //                                 Checkbox(
+    //                                   value: agree,
+    //                                   checkColor: Colors.white,
+    //                                   activeColor: Colors.transparent,
+    //                                   onChanged: (value) {
+    //                                     setState(() {
+    //                                       agree = value ?? false;
+    //                                     });
+    //                                   },
+    //                                 ),
+    //                                 GestureDetector(
+    //                                   onTap: () async {
+    //                                     const url =
+    //                                         "https://easysuperapps.com/policy.php";
+    //                                     final uri = Uri.parse(url);
+    //                                     try {
+    //                                       if (await launchUrl(uri)) {
+    //                                         setState(() {});
+    //                                       }
+    //                                     } catch (e) {
+    //                                       showDialog(
+    //                                           context: context,
+    //                                           builder: (ctx) => AlertDialog(
+    //                                             title: const Text(
+    //                                               "Problem redirecting to T&C",
+    //                                               style: TextStyle(
+    //                                                   color: Colors.blue),
+    //                                             ),
+    //                                             content: const Text(
+    //                                                 "Please try again later"),
+    //                                             actions: <Widget>[
+    //                                               TextButton(
+    //                                                 onPressed: () {
+    //                                                   Navigator.of(ctx)
+    //                                                       .pop();
+    //                                                 },
+    //                                                 child: Container(
+    //                                                   color: Colors.orange,
+    //                                                   padding: const EdgeInsets.all(14),
+    //                                                   child: const Text(
+    //                                                       "Close",
+    //                                                       style: TextStyle(color: Colors
+    //                                                               .white)
+    //                                                   ),
+    //                                                 ),
+    //                                               ),
+    //                                             ],
+    //                                           )
+    //                                       );
+    //                                     }
+    //                                   },
+    //                                   child: const Text(
+    //                                     'I have read and accept terms and conditions',
+    //                                     overflow: TextOverflow.ellipsis,
+    //                                     style: TextStyle(
+    //                                         decoration:
+    //                                         TextDecoration.underline,
+    //                                         color: Color.fromARGB(255, 16, 145, 251)
+    //                                     ),
+    //                                   ),
+    //                                 )
+    //                               ],
+    //                             ),
+    //                             const SizedBox(height: 10.0),
+    //                             Padding(
+    //                               padding: const EdgeInsets.only(bottom: 20.0),
+    //                               child: GestureDetector(
+    //                                 onTap: () async {
+    //                                   if (!_signupformKey.currentState!
+    //                                       .validate()) {
+    //                                     return;
+    //                                   } else if (front_ic_image == null ||
+    //                                       back_ic_image == null ||
+    //                                       driver_license_image == null ||
+    //                                       back_vehicle_image == null ||
+    //                                       front_vehicle_image == null) {
+    //                                     Fluttertoast.showToast(
+    //                                         msg: "Please provide the required images",
+    //                                         toastLength: Toast.LENGTH_SHORT,
+    //                                         gravity: ToastGravity.BOTTOM,
+    //                                         timeInSecForIosWeb: 1,
+    //                                         backgroundColor: Colors.red,
+    //                                         textColor: Colors.white,
+    //                                         fontSize: 16.0
+    //                                     );
+    //                                   } else {
+    //                                     final Map<String, String> body = {
+    //                                       'region': "$region",
+    //                                       "type": "${vehicleMap[vehicle_type_value]}",
+    //                                       "name": fullname_value.text,
+    //                                       "time": employment_type_value,
+    //                                       "mobile": mobilenumber_value.text,
+    //                                       "emergency": emergencycontact_value.text,
+    //                                       "plate": vehicleplate_value.text,
+    //                                       "owner": vehicleowner_value.text,
+    //                                       "username": username_value.text,
+    //                                       "password": password_value.text,
+    //                                       "token" : firebaseService.fcmToken!
+    //                                     };
+    //
+    //                                     await MyApiService.driverApply(body)
+    //                                         .then((result) async {
+    //                                       if (result) {
+    //                                         String icPath = File(front_ic_image!.path).path;
+    //                                         String licensePath = File(driver_license_image!.path).path;
+    //                                         String frontVehiclePath = File(front_vehicle_image!.path).path;
+    //                                         String backVehiclePath = File(back_vehicle_image!.path).path;
+    //                                         MyApiService.photoRegister(
+    //                                             username_value.text,
+    //                                             icPath,
+    //                                             licensePath,
+    //                                             frontVehiclePath,
+    //                                             backVehiclePath);
+    //
+    //                                         await MyApiService.getDriverId(username_value.text).then((data) {
+    //                                           dynamic authUser =
+    //                                           data["auth_user"];
+    //                                           int id = authUser["id"];
+    //
+    //                                           // MyApiService.updateToken(id, firebaseService.fcmToken!);
+    //                                         });
+    //
+    //                                         await SharedPreferences.getInstance().then((pref) {
+    //                                           pref.setString("temperature", username_value.text);
+    //                                         });
+    //                                       }
+    //                                     });
+    //                                     Navigator.push(
+    //                                       context,
+    //                                       MaterialPageRoute(
+    //                                           builder: (context) => const Notice()
+    //                                       ),
+    //                                     );
+    //                                   }
+    //                                 },
+    //                                 child: Container(
+    //                                   height: 45,
+    //                                   decoration: BoxDecoration(
+    //                                       boxShadow: [
+    //                                         BoxShadow(
+    //                                             blurRadius: 4,
+    //                                             color: Colors.black12.withOpacity(0.2),
+    //                                             offset: Offset(2,2)
+    //                                         )
+    //                                       ],
+    //                                       borderRadius: BorderRadius.circular(100)
+    //                                           .copyWith(bottomRight: Radius.circular(0)
+    //                                       ),
+    //                                       gradient: LinearGradient(
+    //                                           colors: <Color> [
+    //                                             Colors.yellow.shade700,
+    //                                             Colors.orange.shade700
+    //                                           ]
+    //                                       )
+    //                                   ),
+    //                                   child: const Align(
+    //                                     alignment: Alignment.center,
+    //                                     child: Text(
+    //                                       "Submit",
+    //                                       style: TextStyle(
+    //                                           fontSize: 16,
+    //                                           color: Colors.white,
+    //                                           fontWeight: FontWeight.bold
+    //                                       ),
+    //                                     ),
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                             )
+    //                           ],
+    //                         ),
+    //                       ),
+    //                     ]
+    //                   )
+    //                 )
+    //               )
+    //             ],
+    //           ),
+    //         )
+    //       )
+    //     )
+    // );
   }
 }
