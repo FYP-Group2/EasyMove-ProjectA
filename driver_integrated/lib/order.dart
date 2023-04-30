@@ -1139,25 +1139,30 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           ),
         ),
         title: SizedBox(
-            child: Padding(
-              padding: EdgeInsets.only(top: 50, bottom: 30),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(' | ',
-                      style: TextStyle(
-                          color: Colors.orange,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 32.0)),
-                  Flexible(
-                    child: Text(
-                      "Order List",
-                      style: TextStyle(fontSize: 30.0),
+          child: Padding(
+            padding: EdgeInsets.only(top: 50, bottom: 30),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  ' | ',
+                  style: TextStyle(
+                    color: Colors.orange,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 32.0)
                 ),
-              ),
-            ],
-          ),
-        )),
+                Flexible(
+                  child: Text(
+                    "Order List",
+                    style: TextStyle(
+                        fontSize: 30.0
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ),
       ),
       body: Stack(
         children: [
