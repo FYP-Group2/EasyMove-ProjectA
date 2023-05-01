@@ -364,8 +364,8 @@ import 'package:driver_integrated/screen_size.dart';
 import 'package:driver_integrated/my_api_service.dart';
 import 'package:driver_integrated/my_location_service.dart';
 
-Driver driver = Driver();
 
+Driver driver = Driver();
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title, this.onPush});
@@ -450,12 +450,6 @@ class _HomeState extends State<HomePage> {
                 vertical: ScreenSize.screenHeight(context) * 0.02
             ),
             decoration: BoxDecoration(
-                // gradient: LinearGradient(
-                //     colors: <Color>[
-                //       Color(0xFFffcc33),
-                //       Colors.orange.shade700
-                //     ]
-                // ),
               color: Colors.white
             ),
             child: Column(
@@ -592,8 +586,7 @@ class _HomeState extends State<HomePage> {
                                       padding: const EdgeInsets.all(4.0),
                                       child: InkWell(
                                         child: Container(
-                                          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                                          height: 210,
+                                          height: ScreenSize.screenHeight(context) * 0.25,
                                           width: double.infinity,
                                           child: Card(
                                             shape: RoundedRectangleBorder(
@@ -610,14 +603,13 @@ class _HomeState extends State<HomePage> {
                                                         .copyWith(bottomRight: Radius.circular(0), topRight: Radius.circular(0)),
                                                     child: newsMap["message"][index]["photo"] == ""
                                                         ? const Text("       No Image available")
-                                                        : Image.memory(base64Decode("${newsMap["message"][index]["photo"]}",),fit: BoxFit.fill,),
-
+                                                        : Image.memory(base64Decode("${newsMap["message"][index]["photo"]}",),fit: BoxFit.cover),
                                                   ),
                                                 ),
                                                 Expanded(
                                                   flex: 7,
                                                   child: Padding(
-                                                    padding: EdgeInsets.only(top: 20, left: 15, right: 15),
+                                                    padding: EdgeInsets.all(20.0),
                                                     child: Column(
                                                       children: [
                                                         Align(
