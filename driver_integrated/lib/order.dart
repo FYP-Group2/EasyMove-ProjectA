@@ -982,7 +982,6 @@ import 'package:driver_integrated/screen_size.dart';
 import 'package:driver_integrated/order_details.dart';
 import 'package:driver_integrated/my_api_service.dart';
 
-
 void main() {
   runApp(const OrderPage());
 }
@@ -1017,17 +1016,10 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
 
   Future<List<MyOrder>> populateOrders(String orderStatus, bool assign) async {
     List<MyOrder> myOrders = [];
-    List orderIds = await MyApiService.getOrdersId(
-      driver.id,
-      orderStatus,
-      driver.jwtToken
-    );
+    List orderIds =
+        await MyApiService.getOrdersId(driver.id, orderStatus, driver.jwtToken);
     for (var oid in orderIds) {
-      final data = await MyApiService.getOrder(
-        driver.id,
-        oid,
-        driver.jwtToken
-      );
+      final data = await MyApiService.getOrder(driver.id, oid, driver.jwtToken);
       String status = data["status"].toString();
       String origin = data["origin"].toString();
       String destination = data["destination"];
@@ -1111,6 +1103,9 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    int vehicleType = driver.vehicleType;
+    String? vehicle = getVehicleType(vehicleType);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -1118,12 +1113,11 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: Container(
-            margin: EdgeInsets.symmetric(vertical: ScreenSize.screenHeight(context) * 0.01),
+            margin: EdgeInsets.symmetric(
+                vertical: ScreenSize.screenHeight(context) * 0.01),
             child: TabBar(
               indicator: MaterialDesignIndicator(
-                  indicatorHeight: 3,
-                  indicatorColor: Colors.orange
-              ),
+                  indicatorHeight: 3, indicatorColor: Colors.orange),
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey.shade400,
               isScrollable: true,
@@ -1139,61 +1133,62 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           ),
         ),
         title: SizedBox(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: ScreenSize.screenHeight(context) * 0.01),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  ' | ',
+            child: Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: ScreenSize.screenHeight(context) * 0.01),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(' | ',
                   style: TextStyle(
-                    color: Colors.orange,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 32.0)
+                      color: Colors.orange,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 32.0)),
+              Flexible(
+                child: Text(
+                  "Order List",
+                  style: TextStyle(fontSize: 30.0),
                 ),
-                Flexible(
-                  child: Text(
-                    "Order List",
-                    style: TextStyle(
-                        fontSize: 30.0
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        ),
+              ),
+            ],
+          ),
+        )),
       ),
       body: Stack(
         children: [
           Container(
-              width: ScreenSize.screenWidth(context),
-              height: ScreenSize.screenHeight(context),
-              decoration: BoxDecoration(
-                color: Colors.white
-              ),
+            width: ScreenSize.screenWidth(context),
+            height: ScreenSize.screenHeight(context),
+            decoration: BoxDecoration(color: Colors.white),
             child: TabBarView(
               controller: _tabController,
               children: [
                 FutureBuilder(
                   future: populateOrders("new", false),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<List<MyOrder>> snapshot) {
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<MyOrder>> snapshot) {
                     if (!snapshot.hasData) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
-                          Text(
-                              "No order found",
+                          Text("No order found",
                               style: TextStyle(
                                 fontSize: 32,
-                              )
-                          )
+                              ))
                         ],
                       );
                     }
                     //final data = snapshot.data;
-                    final data = snapshot.data!;
+                    final data = snapshot.data!
+                        .where((item) =>
+                            DateFormat('dd/MM/yy hh:mm a')
+                                .parse(item.createdTime
+                                    .replaceAll(',', '')
+                                    .replaceAll('am', ' AM')
+                                    .replaceAll('pm', ' PM'))
+                                .isAfter(now) &&
+                            item.vehicleType == '$vehicle')
+                        .toList();
                     data.sort((a, b) => a.collectTime.compareTo(b.collectTime));
                     return ListView.builder(
                       itemCount: data!.length + 1,
@@ -1211,17 +1206,17 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                           return Container(
                               height: 50,
                               margin: EdgeInsets.symmetric(
-                                  horizontal: ScreenSize.screenWidth(context) * 0.05
-                              ),
+                                  horizontal:
+                                      ScreenSize.screenWidth(context) * 0.05),
                               decoration: BoxDecoration(
                                 color: Colors.orangeAccent,
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                                 boxShadow: [
                                   BoxShadow(
                                       blurRadius: 4,
                                       color: Colors.black12.withOpacity(0.2),
-                                      offset: Offset(2,2)
-                                  )
+                                      offset: Offset(2, 2))
                                 ],
                               ),
                               child: ElevatedButton(
@@ -1230,7 +1225,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
                                   ),
                                 ),
                                 child: const Text(
@@ -1241,8 +1237,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                                     color: Colors.white,
                                   ),
                                 ),
-                              )
-                          );
+                              ));
                         }
                       },
                     );
@@ -1250,14 +1245,13 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 ),
                 FutureBuilder(
                   future: populateOrders("new", true),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<List<MyOrder>> snapshot) {
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<MyOrder>> snapshot) {
                     if (!snapshot.hasData) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
-                          Text(
-                              "No order found",
+                          Text("No order found",
                               style: TextStyle(
                                 fontSize: 32,
                               ))
@@ -1265,7 +1259,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                       );
                     }
                     final data = snapshot.data;
-                    data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
+                    data!
+                        .sort((a, b) => a.collectTime.compareTo(b.collectTime));
                     return ListView.builder(
                       itemCount: data!.length + 1,
                       itemBuilder: (context, index) {
@@ -1282,17 +1277,17 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                           return Container(
                               height: 50,
                               margin: EdgeInsets.symmetric(
-                                  horizontal: ScreenSize.screenWidth(context) * 0.05
-                              ),
+                                  horizontal:
+                                      ScreenSize.screenWidth(context) * 0.05),
                               decoration: BoxDecoration(
                                 color: Colors.orangeAccent,
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                                 boxShadow: [
                                   BoxShadow(
                                       blurRadius: 4,
                                       color: Colors.black12.withOpacity(0.2),
-                                      offset: Offset(2,2)
-                                  )
+                                      offset: Offset(2, 2))
                                 ],
                               ),
                               child: ElevatedButton(
@@ -1301,7 +1296,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
                                   ),
                                 ),
                                 child: const Text(
@@ -1312,8 +1308,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                                     color: Colors.white,
                                   ),
                                 ),
-                              )
-                          );
+                              ));
                         }
                       },
                     );
@@ -1321,8 +1316,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 ),
                 FutureBuilder(
                   future: populateOrders("delivering", false),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<List<MyOrder>> snapshot) {
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<MyOrder>> snapshot) {
                     if (!snapshot.hasData) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1335,7 +1330,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                       );
                     }
                     final data = snapshot.data;
-                    data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
+                    data!
+                        .sort((a, b) => a.collectTime.compareTo(b.collectTime));
                     return ListView.builder(
                       itemCount: data!.length + 1,
                       itemBuilder: (context, index) {
@@ -1352,17 +1348,17 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                           return Container(
                               height: 50,
                               margin: EdgeInsets.symmetric(
-                                  horizontal: ScreenSize.screenWidth(context) * 0.05
-                              ),
+                                  horizontal:
+                                      ScreenSize.screenWidth(context) * 0.05),
                               decoration: BoxDecoration(
                                 color: Colors.orangeAccent,
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                                 boxShadow: [
                                   BoxShadow(
                                       blurRadius: 4,
                                       color: Colors.black12.withOpacity(0.2),
-                                      offset: Offset(2,2)
-                                  )
+                                      offset: Offset(2, 2))
                                 ],
                               ),
                               child: ElevatedButton(
@@ -1371,7 +1367,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
                                   ),
                                 ),
                                 child: const Text(
@@ -1382,8 +1379,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                                     color: Colors.white,
                                   ),
                                 ),
-                              )
-                          );
+                              ));
                         }
                       },
                     );
@@ -1391,8 +1387,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 ),
                 FutureBuilder(
                   future: populateOrders("collecting", false),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<List<MyOrder>> snapshot) {
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<MyOrder>> snapshot) {
                     if (!snapshot.hasData) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1405,7 +1401,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                       );
                     }
                     final data = snapshot.data;
-                    data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
+                    data!
+                        .sort((a, b) => a.collectTime.compareTo(b.collectTime));
                     return ListView.builder(
                       itemCount: data!.length + 1,
                       itemBuilder: (context, index) {
@@ -1422,17 +1419,17 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                           return Container(
                               height: 50,
                               margin: EdgeInsets.symmetric(
-                                  horizontal: ScreenSize.screenWidth(context) * 0.05
-                              ),
+                                  horizontal:
+                                      ScreenSize.screenWidth(context) * 0.05),
                               decoration: BoxDecoration(
                                 color: Colors.orangeAccent,
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                                 boxShadow: [
                                   BoxShadow(
                                       blurRadius: 4,
                                       color: Colors.black12.withOpacity(0.2),
-                                      offset: Offset(2,2)
-                                  )
+                                      offset: Offset(2, 2))
                                 ],
                               ),
                               child: ElevatedButton(
@@ -1441,7 +1438,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
                                   ),
                                 ),
                                 child: const Text(
@@ -1452,8 +1450,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                                     color: Colors.white,
                                   ),
                                 ),
-                              )
-                          );
+                              ));
                         }
                       },
                     );
@@ -1461,8 +1458,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                 ),
                 FutureBuilder(
                   future: populateOrders("delivered", false),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<List<MyOrder>> snapshot) {
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<MyOrder>> snapshot) {
                     if (!snapshot.hasData) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1475,7 +1472,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                       );
                     }
                     final data = snapshot.data;
-                    data!.sort((a, b) => a.collectTime.compareTo(b.collectTime));
+                    data!
+                        .sort((a, b) => a.collectTime.compareTo(b.collectTime));
                     return ListView.builder(
                       itemCount: data!.length + 1,
                       itemBuilder: (context, index) {
@@ -1492,17 +1490,17 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                           return Container(
                               height: 50,
                               margin: EdgeInsets.symmetric(
-                                  horizontal: ScreenSize.screenWidth(context) * 0.05
-                              ),
+                                  horizontal:
+                                      ScreenSize.screenWidth(context) * 0.05),
                               decoration: BoxDecoration(
                                 color: Colors.orangeAccent,
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                                 boxShadow: [
                                   BoxShadow(
                                       blurRadius: 4,
                                       color: Colors.black12.withOpacity(0.2),
-                                      offset: Offset(2,2)
-                                  )
+                                      offset: Offset(2, 2))
                                 ],
                               ),
                               child: ElevatedButton(
@@ -1511,7 +1509,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
                                   ),
                                 ),
                                 child: const Text(
@@ -1522,8 +1521,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                                     color: Colors.white,
                                   ),
                                 ),
-                              )
-                          );
+                              ));
                         }
                       },
                     );
@@ -1537,33 +1535,37 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
     );
   }
 
-  Widget myList(String origin, String destination, String distance, String deliveryTime,String collectTime, MyOrder order, bool limitDirection) {
+  Widget myList(
+      String origin,
+      String destination,
+      String distance,
+      String deliveryTime,
+      String collectTime,
+      MyOrder order,
+      bool limitDirection) {
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: ScreenSize.screenWidth(context) * 0.05,
-          vertical: ScreenSize.screenHeight(context) * 0.01
-      ),
+          vertical: ScreenSize.screenHeight(context) * 0.01),
       child: Dismissible(
-          direction: limitDirection
-              ? DismissDirection.startToEnd
-              : DismissDirection.horizontal,
-          onDismissed: (direction) {
-            if (direction == DismissDirection.startToEnd) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Order_details(
-                            order: order,
-                          )
-                  )
-              );
+        direction: limitDirection
+            ? DismissDirection.startToEnd
+            : DismissDirection.horizontal,
+        onDismissed: (direction) {
+          if (direction == DismissDirection.startToEnd) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Order_details(
+                          order: order,
+                        )));
+          } else {
+            if (order.isAssigned && order.status == "Ordered") {
+              assignedAlertBox(order.id);
             } else {
-              if (order.isAssigned && order.status == "Ordered") {
-                assignedAlertBox(order.id);
-              } else {
-                orderActionAlertBox(order.id, myAlertBoxAction(order.status));
-              }
+              orderActionAlertBox(order.id, myAlertBoxAction(order.status));
             }
+          }
         },
         key: UniqueKey(),
         background: Container(
@@ -1628,156 +1630,156 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           child: Column(
             children: [
               Container(
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        color: Colors.orange,
-                      ),
-                      SizedBox(width: ScreenSize.screenWidth(context) * 0.04),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: ScreenSize.screenWidth(context) * 0.6,
-                            child: RichText(
-                              text: TextSpan(
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  color: Colors.black,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: 'Origin: ',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text: origin,
-                                  ),
-                                ],
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.location_on,
+                      color: Colors.orange,
+                    ),
+                    SizedBox(width: ScreenSize.screenWidth(context) * 0.04),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: ScreenSize.screenWidth(context) * 0.6,
+                          child: RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black,
                               ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Container(
-                            width: ScreenSize.screenWidth(context) * 0.6,
-                            child: RichText(
-                              text: TextSpan(
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  color: Colors.black,
+                              children: [
+                                TextSpan(
+                                  text: 'Origin: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                children: [
-                                  TextSpan(
-                                    text: 'Destination: ',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text: destination,
-                                  ),
-                                ],
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                                TextSpan(
+                                  text: origin,
+                                ),
+                              ],
                             ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                        Container(
+                          width: ScreenSize.screenWidth(context) * 0.6,
+                          child: RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: 'Destination: ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: destination,
+                                ),
+                              ],
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
+              ),
               SizedBox(height: ScreenSize.screenHeight(context) * 0.02),
               Container(
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.signpost,
-                        color: Colors.orange,
-                      ),
-                      SizedBox(width: ScreenSize.screenWidth(context) * 0.04),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black,
-                              ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: 'Distance: ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(
-                                  text: distance,
-                                ),
-                              ],
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.signpost,
+                      color: Colors.orange,
+                    ),
+                    SizedBox(width: ScreenSize.screenWidth(context) * 0.04),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: 'Distance: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(
+                                text: distance,
+                              ),
+                            ],
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      ],
+                    ),
+                  ],
                 ),
+              ),
               SizedBox(height: ScreenSize.screenHeight(context) * 0.02),
               Container(
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.access_time_filled,
-                        color: Colors.orange,
-                      ),
-                      SizedBox(width: ScreenSize.screenWidth(context) * 0.04),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black,
-                              ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: 'Delivery Time: ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(
-                                  text: deliveryTime,
-                                ),
-                              ],
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.access_time_filled,
+                      color: Colors.orange,
+                    ),
+                    SizedBox(width: ScreenSize.screenWidth(context) * 0.04),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black,
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: 'Delivery Time: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: 'Collected Time: ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(
-                                  text: collectTime,
-                                ),
-                              ],
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                              TextSpan(
+                                text: deliveryTime,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                )
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: 'Collected Time: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(
+                                text: collectTime,
+                              ),
+                            ],
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -1861,11 +1863,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
                     Navigator.of(context).pop(false);
                     if (action == "accept") {
                       MyApiService.updateOrder(
-                        driver.id,
-                        orderId,
-                        action,
-                        driver.jwtToken
-                      );
+                          driver.id, orderId, action, driver.jwtToken);
                       setState(() {});
                     } else {
                       uploadImageAlertBox(orderId, action);
@@ -1952,11 +1950,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               TextButton(
                   onPressed: () {
                     MyApiService.updateOrder(
-                      driver.id,
-                      oid,
-                      "decline",
-                      driver.jwtToken
-                    );
+                        driver.id, oid, "decline", driver.jwtToken);
                     Navigator.of(context).pop();
                     setState(() {});
                   },
@@ -1965,11 +1959,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
               TextButton(
                   onPressed: () {
                     MyApiService.updateOrder(
-                      driver.id,
-                      oid,
-                      "accept",
-                      driver.jwtToken
-                    );
+                        driver.id, oid, "accept", driver.jwtToken);
                     Navigator.of(context).pop();
                     setState(() {});
                   },
@@ -1992,23 +1982,12 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
 
   void uploadImage(int orderId, String filePath, String action) {
     if (action == "collect") {
-      MyApiService.updateOrder(
-        driver.id,
-        orderId,
-        "collect",
-        driver.jwtToken
-      );
+      MyApiService.updateOrder(driver.id, orderId, "collect", driver.jwtToken);
       MyApiService.photoPOC(orderId, filePath);
     } else if (action == "pod") {
-      MyApiService.updateOrder(
-        driver.id,
-        orderId,
-        "pod",
-        driver.jwtToken
-      );
+      MyApiService.updateOrder(driver.id, orderId, "pod", driver.jwtToken);
       MyApiService.photoPOD(orderId, filePath);
     }
     setState(() {});
   }
 }
-
