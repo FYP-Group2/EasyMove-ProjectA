@@ -361,45 +361,64 @@ class _LoginPageState extends State<LoginPage> {
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(height: 15.0)
+                                            SizedBox(height: ScreenSize.screenHeight(context) * 0.05),
+                                            ElevatedButton(
+                                              onPressed: () async {
+                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                  content: Text('Reset Link Sent'),
+                                                  backgroundColor: Colors.green,
+                                                  duration: Duration(seconds: 4),
+                                                ));
+                                                Future.delayed(const Duration(seconds: 2)).then((_) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => const LoginPage()),
+                                                  );
+                                                });
+                                              },
+                                              style: ButtonStyle(
+                                                minimumSize: MaterialStateProperty.all(const Size(160, 40)),
+                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(10)
+                                                    )
+                                                ),
+                                                elevation: MaterialStateProperty.all<double>(8.0),
+                                                backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF000000)),
+                                              ),
+                                              child: const Text(
+                                                "Send Link",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                                            GestureDetector(
+                                              onTap: () async {
+                                                Future.delayed(const Duration(seconds: 2)).then((_) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => const LoginPage()),
+                                                  );
+                                                });
+                                              },
+                                              child: const Text(
+                                                "Cancel",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    decoration: TextDecoration.underline
+                                                ),
+                                              ),
+                                            )
                                           ],
                                         ),
                                       )
-                                  ),
-                                  actions: [
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                          content: Text('Reset Link Sent'),
-                                          backgroundColor: Colors.green,
-                                          duration: Duration(seconds: 4),
-                                        ));
-                                        Future.delayed(const Duration(seconds: 2)).then((_) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => const LoginPage()),
-                                          );
-                                        });
-                                      },
-                                      style: ButtonStyle(
-                                        minimumSize: MaterialStateProperty.all(const Size(160, 40)),
-                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10)
-                                            )
-                                        ),
-                                        elevation: MaterialStateProperty.all<double>(8.0),
-                                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF000000)),
-                                      ),
-                                      child: const Text(
-                                        "Send Link",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    )
-                                  ],
+                                  )
                                 );
                               }
                             );
