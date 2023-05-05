@@ -113,12 +113,70 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const NavBar(currentPage: PageItem.Home,)
+                  builder: (context)
+                  => const NavBar(currentPage: PageItem.Home),
               ),
-            );
+            ).then((value) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text(
+                    "Login successfully.",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            });
           });
         }
-      }
+      } else {
+          // handle login error
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Stack(
+                  children:[
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      height: 90,
+                      decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black ,
+                                blurRadius: 2.0,
+                                offset: Offset(2.0,2.0)
+                            )
+                          ]
+                      ),
+                      child: Row(
+                        children: [
+                          if(username_value.text == "" && password_value.text != "")...[
+                            const Text("Username is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
+                          ]else if(username_value.text != "" && password_value.text == "")...[
+                            const Text("Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
+                          ]else if(username_value.text == "" && password_value.text == "")...[
+                            const Text("Username and Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
+                          ]else if(response_message == null && username_value.text != "" && password_value.text != "")...[
+                            const Text("Incorrect Username or Password.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),)
+                          ]else ...[
+                            const SizedBox.shrink(),
+                          ]
+                        ],
+                      ),
+                    ),
+                  ]
+                ),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                margin: EdgeInsets.only(bottom: 30.0),
+              )
+          );
+        }
     }
 
     return Scaffold(
@@ -378,8 +436,7 @@ class _LoginPageState extends State<LoginPage> {
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () async {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: Stack(
                                         children: [
                                           Container(
@@ -420,8 +477,15 @@ class _LoginPageState extends State<LoginPage> {
                                       backgroundColor: Colors.transparent,
                                       elevation: 0,
                                       margin: EdgeInsets.only(bottom: 30.0),
-                                    )
-                                );
+                                    ));
+                                // Future.delayed(const Duration(seconds: 2)).then((_) {
+                                //   Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => const NavBar(currentPage: PageItem.Home,)
+                                //     ),
+                                //   );
+                                // });
                                 final Map<String, String> body = {
                                   "username": username_value.text,
                                   "password": password_value.text
@@ -779,53 +843,9 @@ class _LoginPageState extends State<LoginPage> {
                                     height: 50,
                                     child: ElevatedButton(
                                       onPressed: () async {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Stack(
-                                                children: [
-                                                  Container(
-                                                    padding: EdgeInsets.all(16),
-                                                    height: 90,
-                                                    decoration: const BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                              color: Colors.black ,
-                                                              blurRadius: 2.0,
-                                                              offset: Offset(2.0,2.0)
-                                                          )
-                                                        ]
-                                                    ),
-                                                    child: Row(
-                                                      children: [
-                                                        if(username_value.text == "" && password_value.text != "")...[
-                                                          const Text("Username is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
-                                                        ]else if(username_value.text != "" && password_value.text == "")...[
-                                                          const Text("Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
-                                                        ]else if(username_value.text == "" && password_value.text == "")...[
-                                                          const Text("Username and Password is empty.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),),
-                                                        ]else if(response_message == null && username_value.text != "" && password_value.text != "")...[
-                                                          const Text("Incorrect Username or Password.", style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),)
-                                                        ]else if(response_message == "Login successfully.")...[
-                                                          const SizedBox.shrink(),
-                                                        ]else ...[
-                                                          const SizedBox.shrink(),
-                                                        ]
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              behavior: SnackBarBehavior.floating,
-                                              backgroundColor: Colors.transparent,
-                                              elevation: 0,
-                                              margin: EdgeInsets.only(bottom: 30.0),
-                                            )
-                                        );
-                                        setState(() {
-
-                                        });
+                                        // setState(() {
+                                        //
+                                        // });
                                         final Map<String, String> body = {
                                           "username": username_value.text,
                                           "password": password_value.text

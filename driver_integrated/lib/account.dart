@@ -207,6 +207,7 @@ import 'package:driver_integrated/wallet.dart';
 import 'package:driver_integrated/driver.dart';
 import 'package:driver_integrated/screen_size.dart';
 import 'package:driver_integrated/my_api_service.dart';
+import 'package:driver_integrated/LoginPage.dart';
 import 'package:driver_integrated/my_location_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -401,8 +402,25 @@ class _MyAccountPageState extends State<AccountPage> {
             }
             //notificationService.stop();
             await unsetPref();
-            Navigator.popUntil(context,ModalRoute.withName(Navigator.defaultRouteName));
-          },
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text(
+                    "Logged out successfully.",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      backgroundColor: Colors.green,
+                    ),
+                );
+            // Navigate to LoginScreen
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+                  (Route<dynamic> route) => false,
+            );
+            },
           shape: GFButtonShape.pills,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
