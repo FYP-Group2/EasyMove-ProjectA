@@ -294,33 +294,32 @@ class _LoginPageState extends State<LoginPage> {
                         // Forgot Password Modal
                         GestureDetector(
                           onTap: () async {
-                            showModalBottomSheet(
-                                isScrollControlled: true,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return SingleChildScrollView(
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: SingleChildScrollView(
                                       child: Container(
-                                        height: 450,
+                                        height: ScreenSize.screenHeight(context) * 0.5,
                                         color: Colors.white,
                                         child: Column(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             const Icon(
                                                 Icons.error_rounded,
                                                 color: Colors.red,
-                                                size: 100),
+                                                size: 90),
                                             const SizedBox(height: 16.0),
                                             const Text(
                                               "Forgot Password",
                                               style: TextStyle(
-                                                fontSize: 35,
+                                                fontSize: 30,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black,
                                               ),
                                             ),
                                             const Padding(
-                                              padding: EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
+                                              padding: EdgeInsets.only(top: 10.0),
                                               child: SizedBox(
                                                 height: 40,
                                                 child: Text(
@@ -333,7 +332,7 @@ class _LoginPageState extends State<LoginPage> {
                                             ),
                                             const SizedBox(height: 20.0),
                                             Padding(
-                                              padding: const EdgeInsets.only(top: 10.0, right: 30.0, left: 30.0),
+                                              padding: const EdgeInsets.only(top: 10.0),
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                     boxShadow: [
@@ -349,7 +348,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 child: TextFormField(
                                                   controller: reset_password,
                                                   decoration: const InputDecoration(
-                                                    hintText: 'Email',
+                                                    hintText: 'Registered Email',
                                                     border: InputBorder.none,
                                                     contentPadding: EdgeInsets.all(16),
                                                   ),
@@ -362,44 +361,48 @@ class _LoginPageState extends State<LoginPage> {
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(height: 15.0),
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                  content: Text('Reset Link Sent'),
-                                                  backgroundColor: Colors.green,
-                                                  duration: Duration(seconds: 4),
-                                                ));
-                                                Future.delayed(const Duration(seconds: 2)).then((_) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => const LoginPage()),
-                                                  );
-                                                });
-                                              },
-                                              style: ButtonStyle(
-                                                minimumSize: MaterialStateProperty.all(const Size(160, 40)),
-                                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(10)
-                                                    )
-                                                ),
-                                                elevation: MaterialStateProperty.all<double>(8.0),
-                                                backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF000000)),
-                                              ),
-                                              child: const Text(
-                                                "Receive Link",
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                            ),
+                                            const SizedBox(height: 15.0)
                                           ],
                                         ),
                                       )
-                                  );
-                                });
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                          content: Text('Reset Link Sent'),
+                                          backgroundColor: Colors.green,
+                                          duration: Duration(seconds: 4),
+                                        ));
+                                        Future.delayed(const Duration(seconds: 2)).then((_) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => const LoginPage()),
+                                          );
+                                        });
+                                      },
+                                      style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(const Size(160, 40)),
+                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10)
+                                            )
+                                        ),
+                                        elevation: MaterialStateProperty.all<double>(8.0),
+                                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF000000)),
+                                      ),
+                                      child: const Text(
+                                        "Send Link",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              }
+                            );
                           },
                           child: const Text(
                             "Forgot Password?",
