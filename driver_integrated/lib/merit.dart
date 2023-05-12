@@ -980,24 +980,6 @@ class meritPageState extends State<Merit> {
     );
   }
 
-  showError() async {
-    await Future.delayed(Duration(microseconds: 1));
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Error"),
-            content: Text("HAHAHA"),
-            // actions: <Widget>[
-            //   GFButton(
-            //     child: Text("No"),
-            //     onPressed: ,
-            //   ),
-            //   FlatButton(child: Text("Yes")),
-            // ],
-          );
-        });
-  }
 }
 
 //year drop down list values
@@ -1023,6 +1005,7 @@ int month_value_num = 0;
 //year drop down list values
 var year = [
   '----',
+  '2023',
   '2022',
   '2021',
   '2020',

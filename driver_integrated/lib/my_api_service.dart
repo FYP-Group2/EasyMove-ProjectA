@@ -9,7 +9,7 @@ String year = DateTime(now.year).toString();
 String month = DateTime(now.month).toString();
 const String url = "awcgroup.com.my";
 // const String url = "easysuperapps.com";
-const String photoUrl = "https://awcgroup.com//easymovenpick.com/api/post_photo.php";
+const String photoUrl = "https://awcgroup.com.my/easymovenpick.com/api/post_photo.php";
 // const String photoUrl = "https://easysuperapps.com//easysuperapps.com/api/post_photo.php/post_photo.php";
 
 
@@ -102,6 +102,7 @@ class MyApiService{
     map["oid"] = "$oid";
     FormData formData = FormData.fromMap(map);
     final response = await Dio().post(photoUrl, data: formData);
+    print(response.toString());
   }
 
   static Future<List> getRegions() async{

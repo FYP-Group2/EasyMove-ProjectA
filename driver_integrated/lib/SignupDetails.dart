@@ -31,6 +31,7 @@ class signupFormState extends State<SignupDetails> {
   final fullname_value = TextEditingController();
   final username_value = TextEditingController();
   final password_value = TextEditingController();
+  final email_value = TextEditingController();
   final ic_value = TextEditingController();
   final mobilenumber_value = TextEditingController();
   final emergencycontact_value = TextEditingController();
@@ -42,6 +43,7 @@ class signupFormState extends State<SignupDetails> {
     fullname_value.dispose();
     username_value.dispose();
     password_value.dispose();
+    email_value.dispose();
     ic_value.dispose();
     mobilenumber_value.dispose();
     emergencycontact_value.dispose();
@@ -306,6 +308,45 @@ class signupFormState extends State<SignupDetails> {
                                       size: 22,
                                     ),
                                     labelText: 'Login Password *',
+                                    labelStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.5
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white70)
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(100)
+                                            .copyWith(bottomRight: Radius.circular(0)),
+                                        borderSide: BorderSide(color: Colors.white38)
+                                    ),
+                                  ),
+                                  validator: validatePassword,
+                                ),
+                              ),
+                              SizedBox(height: ScreenSize.screenHeight(context) * 0.01),
+                              Container(
+                                height: 60,
+                                child: TextFormField(
+                                  controller: email_value,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(16),
+                                    prefixIconConstraints: BoxConstraints(
+                                        minWidth: 55
+                                    ),
+                                    prefixIcon: Icon(
+                                      Icons.email,
+                                      color: Colors.white70,
+                                      size: 22,
+                                    ),
+                                    labelText: 'Email address *',
                                     labelStyle: TextStyle(
                                         color: Colors.white,
                                         fontSize: 14.5
@@ -991,7 +1032,7 @@ class signupFormState extends State<SignupDetails> {
                                         );
                                       } else {
                                         final Map<String, String> body = {
-                                          'region': "$region",
+                                          'region': "${regionMap[region_value]}",
                                           "type": "${vehicleMap[vehicle_type_value]}",
                                           "name": fullname_value.text,
                                           "time": employment_type_value,
@@ -1000,6 +1041,7 @@ class signupFormState extends State<SignupDetails> {
                                           "plate": vehicleplate_value.text,
                                           "owner": vehicleowner_value.text,
                                           "username": username_value.text,
+                                          "email" : email_value.text,
                                           "password": password_value.text,
                                           "token" : firebaseService.fcmToken!
                                         };
