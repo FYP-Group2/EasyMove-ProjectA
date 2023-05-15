@@ -791,7 +791,8 @@ class meritPageState extends State<Merit> {
     if (year_value != "----" && month_value == "--------") {
       return year_meritlist();
     } else if (year_value != "----" && month_value != "--------") {
-      return month_meritlist();
+      print("called");
+      return filtered_meritlist();
     } else if (year_value == "----" && month_value != "--------") {
       return month_meritlist();
     } else {
@@ -814,7 +815,7 @@ class meritPageState extends State<Merit> {
                 shrinkWrap: true,
                 itemCount: snapshot.data!.length,
                 itemBuilder: (BuildContext context, int index) {
-                  if (meritMap["merits"][index]["date"].toString().substring(6, 8) == formattedDate.substring(6,8)) {
+                  if (meritMap["merits"][index]["date"].toString().substring(3, 5) == formattedDate.substring(5,7)) {
                     return Container(
                       height: 50,
                       margin: EdgeInsets.symmetric(horizontal: ScreenSize.screenWidth(context) * 0.05),
@@ -933,6 +934,55 @@ class meritPageState extends State<Merit> {
     );
   }
 
+  //year and month filtered merit list
+  Widget filtered_meritlist() {
+    return FutureBuilder(
+        future: initMerit(),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  if (meritMap["merits"][index]["date"].toString().substring(6, 8) == year_value.substring(2, 4)) {
+                    if (meritMap["merits"][index]["date"].toString().substring(3, 5) == monthMap[month_value].toString()) {
+                      return Container(
+                      height: 50,
+                      margin: EdgeInsets.symmetric(horizontal: ScreenSize.screenWidth(context) * 0.05),
+                      child: Center(
+                          child: Row(
+                            children: [
+                              Expanded(child: Text(
+                                  '${meritMap["merits"][index]["date"]}'),),
+                              Expanded(child: Text(
+                                  '${meritMap["merits"][index]["note"]}'),),
+                              Expanded(child: Text(
+                                  '${meritMap["merits"][index]["order_id"]}'),),
+                              Text('${meritMap["merits"][index]["points"]}p'),
+                            ],
+                          )
+                      ),
+                    );
+                  } else{
+                      print(monthMap[month_value].toString());
+                      print(meritMap["merits"][index]["date"].toString().substring(3, 5));
+                      return SizedBox.shrink();
+                  }}else{
+                    print(monthMap[month_value].toString());
+                    print(meritMap["merits"][index]["date"].toString().substring(3, 5));
+                    return SizedBox.shrink();
+                  }
+                }
+            );
+          }else{
+            return const Text("Loading");
+          }
+        }
+    );
+  }
+
   showErrorDialog() async {
     await Future.delayed(Duration(microseconds: 1));
     showDialog(
@@ -983,19 +1033,19 @@ class meritPageState extends State<Merit> {
 }
 
 //year drop down list values
-const Map<String, int> monthMap = {'--------':0,
-  'January':1,
-  'February':2,
-  'March':3,
-  'April':4,
-  'May':5,
-  'June':6,
-  'July':7,
-  'August':8,
-  'September':9,
-  'October':10,
-  'November':11,
-  'December':12};
+const Map<String, String> monthMap = {'--------':"05",
+  'January':"01",
+  'February':"02",
+  'March':"03",
+  'April':"04",
+  'May':"05",
+  'June':"06",
+  'July':"07",
+  'August':"08",
+  'September':"09",
+  'October':"10",
+  'November':"11",
+  'December':"12"};
 
 
 String month_value = '--------';
@@ -1010,6 +1060,6 @@ var year = [
   '2021',
   '2020',
   '2019',
-  '2018',
 ];
+
 String year_value = '----';
