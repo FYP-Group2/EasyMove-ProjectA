@@ -791,7 +791,6 @@ class meritPageState extends State<Merit> {
     if (year_value != "----" && month_value == "--------") {
       return year_meritlist();
     } else if (year_value != "----" && month_value != "--------") {
-      print("called");
       return filtered_meritlist();
     } else if (year_value == "----" && month_value != "--------") {
       return month_meritlist();
@@ -966,12 +965,8 @@ class meritPageState extends State<Merit> {
                       ),
                     );
                   } else{
-                      print(monthMap[month_value].toString());
-                      print(meritMap["merits"][index]["date"].toString().substring(3, 5));
                       return SizedBox.shrink();
                   }}else{
-                    print(monthMap[month_value].toString());
-                    print(meritMap["merits"][index]["date"].toString().substring(3, 5));
                     return SizedBox.shrink();
                   }
                 }
