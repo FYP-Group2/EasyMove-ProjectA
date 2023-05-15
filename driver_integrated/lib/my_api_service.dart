@@ -291,4 +291,15 @@ class MyApiService{
     return (data);
   }
 
+  static Future<void> forgotPassword(String email) async {
+    const String unencodedPath = "/easymovenpick.com/api/forgot_password.php";
+    final Map<String, String> body = ({'driver_email': email});
+    await http.post(
+        Uri.http(url, unencodedPath),
+        body: body
+    );
+
+
+  }
+
 }

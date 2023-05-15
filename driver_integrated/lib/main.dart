@@ -91,13 +91,13 @@ class HomepageState extends State<Homepage>{
                     fontSize: 30,
                   ),
                 ),
-                SizedBox(height: ScreenSize.screenHeight(context) * 0.1),
+                SizedBox(height: ScreenSize.screenHeight(context) * 0.08),
                 // Company Logo
                 Image.asset(
                   'assets/images/EMXicon.png',
                   width: 220,
                 ),
-                SizedBox(height: ScreenSize.screenHeight(context) * 0.1),
+                SizedBox(height: ScreenSize.screenHeight(context) * 0.08),
                 // Login and Sign-Up Buttons
                 Column(
                   children: <Widget>[

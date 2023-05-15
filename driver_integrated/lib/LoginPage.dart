@@ -369,6 +369,9 @@ class _LoginPageState extends State<LoginPage> {
                                                   backgroundColor: Colors.green,
                                                   duration: Duration(seconds: 4),
                                                 ));
+
+                                                await MyApiService.forgotPassword(reset_password.text);
+
                                                 Future.delayed(const Duration(seconds: 2)).then((_) {
                                                   Navigator.push(
                                                     context,
