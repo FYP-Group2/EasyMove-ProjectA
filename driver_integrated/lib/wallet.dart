@@ -490,7 +490,8 @@ class walletPageState extends State<Wallet> {
     String? user_id = driver.id.toString();
     final Map<String, String> body = {
       'uid': user_id,
-      'withdraw_merit': display_merit_value
+      'withdraw_merit': display_merit_value,
+      'jwt_token' : driver.jwtToken
     };
     return Padding(
       padding: const EdgeInsets.only(top: 10, left: 155),
@@ -569,7 +570,8 @@ class walletPageState extends State<Wallet> {
     String? user_id = driver.id.toString();
     final Map<String, String> body = {
       'uid': user_id,
-      'withdraw_merit': display_merit_value
+      'withdraw_merit': display_merit_value,
+      'jwt_token' : driver.jwtToken
     };
     return Padding(
       padding: const EdgeInsets.only(top: 10, left: 155),
