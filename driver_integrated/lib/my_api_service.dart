@@ -217,7 +217,6 @@ class MyApiService{
     );
     print(response.body);
     final data = json.decode(response.body);
-    // print(data[]);
     return data;
 
   }
