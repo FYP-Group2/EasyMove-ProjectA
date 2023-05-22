@@ -1037,6 +1037,7 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
       String originLongitude = data["o_lon"];
       String destinationLatitude = data["d_lat"];
       String destinationLongitude = data["d_lon"];
+      String productDetail = data["order_detail"] ?? "-";
 
       MyOrder myOrder = MyOrder(
           oid,
@@ -1057,7 +1058,8 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           originLatitude,
           originLongitude,
           destinationLatitude,
-          destinationLongitude);
+          destinationLongitude,
+          productDetail);
 
       //print("id:${myOrder.id}, assign:${data["assign"]}, time:${myOrder.collectTime}, status:${myOrder.status}");
 
@@ -1629,6 +1631,42 @@ class _MyListPageState extends State<OrderList> with TickerProviderStateMixin {
           ),
           child: Column(
             children: [
+              Container(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.note_rounded,
+                      color: Colors.orange,
+                    ),
+                    SizedBox(width: ScreenSize.screenWidth(context) * 0.04),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.black,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: 'Order ID: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(
+                                text: order.id.toString(),
+                              ),
+                            ],
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: ScreenSize.screenHeight(context) * 0.02),
               Container(
                 child: Row(
                   children: [
